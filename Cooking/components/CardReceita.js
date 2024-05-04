@@ -1,50 +1,61 @@
-import {Text, View, StyleSheet, Pressable} from 'react-native'
-import { Image } from 'expo-image'
-import { useNavigation } from '@react-navigation/native'
+import { View, Text, Image, StyleSheet } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 
-const CardReceita = ({receita}) => {
-
-  const navigation = useNavigation()
-
+const CardReceita = ({ receita }) => {
   return (
-    <Pressable onPress={() => navigation.navigate('Receita', {receita})}>
-        <View style={styles.card}>
-            <View style={styles.foto}>
-                <Image
-                    style={styles.fotoImg}
-                    source={"https://fakeimg.pl/600x400"}
-                />
-                <Text>{receita.name}</Text>
-            </View>
-            <View>
-            <Feather name="clock" color={{color: "#000"}} size={10} />
-            <Feather name="star" color={{color: "#000"}} size={10} />
-            <Feather name="user" color={{color: "#000"}} size={10} />
-            </View>
+    <View style={styles.card}>
+      <Image source={"https://fakeimg.pl/600x400"} style={styles.fotoImg} />
+      <Text style={styles.titulo}>{receita.name}</Text>
+      <View style={styles.infoContainer}>
+        <View style={styles.infoItem}>
+          <Feather name="clock" size={15} color="#000" />
+          <Text>{receita.tempo}</Text>
         </View>
-    </Pressable>
-  )
-}
+        <View style={styles.infoItem}>
+          <Feather name="star" size={15} color="#000" />
+          <Text>{receita.avaliacao}</Text>
+        </View>
+        <View style={styles.infoItem}>
+          <Feather name="user" size={15} color="#000" />
+          <Text>{receita.porcoes}</Text>
+        </View>
+      </View>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-    card: {
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: 300,
-        height: 100,
-        backgroundColor: '#FFF',
-        borderRadius: 20,
-        marginVertical: 10,
-        marginHorizontal: 10
-    },
-    avatar: {
-        marginHorizontal: 10
-    },
-    avatarImg: {
-        width: 70,
-        height: 70,
-        borderRadius: 35
-    },
-})
+  card: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 20,
+    marginVertical: 10,
+    marginHorizontal: 10,
+    padding: 10
+  },
+  fotoImg: {
+    width: '100%'
+  },
+  infoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingHorizontal: 10,
+  },
+  titulo: {
+    fontFamily: 'Poppins_900Black',
+    fontSize: 15,
+    marginTop: 40,
+    marginLeft: 20,
+    alignSelf: 'flex-start'
 
-export default CardReceita
+},
+  infoItem: {
+    alignItems: 'center',
+    marginRight: 10
+  },
+});
+
+export default CardReceita;

@@ -10,8 +10,9 @@ const Body = () => {
     try{
       const result = await fetch('https://backcooking.onrender.com/receita')
       const data = await result.json()
+      console.log(data)
       console.log(data.success)
-      setReceitas(data.receitas)
+      setReceitas(data.receita)
     } catch (error){
       console.log('Error getReceitas ' + error.message)
     }
@@ -21,23 +22,21 @@ const Body = () => {
     getReceitas()
   },[])
 
+  console.log(receitas)
 
   return (
-    <View style={{flex: 1}}>
-        
-        <View style={styles.listReceita}>
-            {receitas.length ? 
-              <FlatList
-                style={{width: '100%'}}
-                data={receitas}
-                renderItem={({item}) => <CardReceita receita={item} />}
-                keyExtractor={item => item.id}
-                contentContainerStyle={styles.flatListReceita}
-              /> : 
-              <Text style={{color: '#FFF'}}>Loading...</Text>}
+    
+        <View style={{flex: 1}}>
+          <View style={styles.listReceita}>
+            <FlatList
+              data={receitas}
+              keyExtractor={(item) => item.id}
+              renderItem={({item}) => <CardReceita receita={item} />} 
+            />
+          </View>
         </View>
-    </View>
-  )
+      );
+  
 }
 
 const styles = StyleSheet.create({

@@ -1,7 +1,7 @@
 import {View, Text, StyleSheet} from 'react-native'
 import { Poppins_900Black } from '@expo-google-fonts/poppins'
 import { useFonts } from '@expo-google-fonts/poppins'
-import CardReceita from '../components/CardReceita';
+import Body from '../components/Body';
 
 const Home = () => {
     let [fontsLoaded] = useFonts({
@@ -15,7 +15,7 @@ const Home = () => {
     <View style={styles.container}>
       
       <Text style={styles.titulo}>Suas receitas</Text>
-    <CardReceita />
+     <Body />
      
     </View>
   )
@@ -27,17 +27,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    input: {
-      height: 40,
-      width: '100%',
-      backgroundColor: '#FFF',
-      borderWidth: 1,
-      marginBottom: 18,
-      padding: 10,
-  },
     titulo: {
         fontFamily: 'Poppins_900Black',
-        fontSize: 25
+        fontSize: 25,
+        marginTop: 40,
+        marginLeft: 20,
+        alignSelf: 'flex-start'
+
     }
 })
 
