@@ -1,9 +1,8 @@
 import {View, Text, StyleSheet} from 'react-native'
 import { Poppins_900Black } from '@expo-google-fonts/poppins'
 import { useFonts } from '@expo-google-fonts/poppins'
-import CardReceita from '../components/CardReceita';
 
-const Home = () => {
+const Receita = () => {
     let [fontsLoaded] = useFonts({
         Poppins_900Black,
       });
@@ -14,8 +13,8 @@ const Home = () => {
   return (
     <View style={styles.container}>
       
-      <Text style={styles.titulo}>Suas receitas</Text>
-    <CardReceita />
+      <Text style={styles.titulo}>Nhoque</Text>
+
      
     </View>
   )
@@ -41,4 +40,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default Home
+export default Receita
