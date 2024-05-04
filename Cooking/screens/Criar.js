@@ -1,16 +1,16 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { View, TextInput, StyleSheet, ScrollView, Text } from "react-native";
-import { Button } from "react-native";
-
-// import { useNavigation } from '@react-navigation/native'
+import Button from "../components/Button";
+import AdicionarBtn from "../components/AdicionarBtn";
 
 const Criar = () => {
-  // const navigation = useNavigation()
-
   const [txtName, setTxtName] = useState("");
   const [txtDescricao, setTxtDescricao] = useState("");
   const [txtPorcao, setTxtPorcao] = useState("");
   const [txtTempo, setTxtTempo] = useState("");
+  const [txtAvaliacao, setTxtAvaliacao] = useState("");
+  const [ingredientes, setIngredientes] = useState([""]);
+  const [passos, setPassos] = useState([""]);
 
   const postReceita = async () => {
     try {
@@ -22,8 +22,11 @@ const Criar = () => {
         body: JSON.stringify({
           name: txtName,
           descricao: txtDescricao,
-          porcao: txtPorcao,
+          porcoes: txtPorcao,
           tempo: txtTempo,
+          avaliacao: txtAvaliacao,
+          ingredientes: ingredientes.filter(ingrediente => ingrediente !== "").join("\n"),
+          instrucao: passos.filter(passo => passo !== "").join("\n"),
         }),
       });
       const data = await result.json();
@@ -39,6 +42,26 @@ const Criar = () => {
     }
   };
 
+  const addIngrediente = () => {
+    setIngredientes([...ingredientes, ""]);
+  };
+
+  const addPasso = () => {
+    setPassos([...passos, ""]);
+  };
+
+  const handleIngredienteChange = (text, index) => {
+    const newIngredientes = [...ingredientes];
+    newIngredientes[index] = text;
+    setIngredientes(newIngredientes);
+  };
+
+  const handlePassoChange = (text, index) => {
+    const newPassos = [...passos];
+    newPassos[index] = text;
+    setPassos(newPassos);
+  };
+
   return (
     <ScrollView>
       <View style={styles.form}>
@@ -51,12 +74,38 @@ const Criar = () => {
         />
         <TextInput
           style={styles.inputDesc}
-          placeholder="Compartilhe um pouco mais 
-sobre o seu prato. 
-O que você gosta nele?"
+          placeholder="Compartilhe um pouco mais sobre o seu prato. O que você gosta nele?"
           onChangeText={setTxtDescricao}
           value={txtDescricao}
+          multiline
         />
+
+        <Text style={styles.subtitulo}>Ingredientes</Text>
+        {ingredientes.map((ingrediente, index) => (
+          <TextInput
+            key={index}
+            style={styles.input}
+            placeholder="250g de açúcar"
+            onChangeText={(text) => handleIngredienteChange(text, index)}
+            value={ingrediente}
+          />
+        ))}
+        <AdicionarBtn title="Ingrediente" onPress={addIngrediente} />
+
+        <Text style={styles.subtitulo}>Passo a passo</Text>
+        {passos.map((passo, index) => (
+          <View key={index} style={styles.passoContainer}>
+            <Text style={styles.passoNumero}>{index + 1}.</Text>
+            <TextInput
+              style={styles.inputPasso}
+              placeholder="Misture a massa até se 
+tornar homogênea."
+              onChangeText={(text) => handlePassoChange(text, index)}
+              value={passo}
+            />
+          </View>
+        ))}
+        <AdicionarBtn title="Passo" onPress={addPasso} />
 
         <Text>Porções</Text>
         <TextInput
@@ -72,13 +121,15 @@ O que você gosta nele?"
           onChangeText={setTxtTempo}
           value={txtTempo}
         />
-        <Text style={styles.subtitulo}>Ingredientes</Text>
+        
+        <Text>Avaliação</Text>
         <TextInput
           style={styles.input}
-          placeholder="250g de açúcar"
-          onChangeText={setTxtTempo}
-          value={txtTempo}
+          placeholder="4.5"
+          onChangeText={setTxtAvaliacao}
+          value={txtAvaliacao}
         />
+        
         <Button title="Publicar" onPress={postReceita} />
       </View>
     </ScrollView>
@@ -107,13 +158,33 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
   },
+  inputPasso: {
+    height: 60,
+    width: "auto",
+    backgroundColor: "#FFF",
+    marginBottom: 10,
+    padding: 10,
+    borderRadius: 10,
+    marginTop: 8,
+    flex: 1,
+  },
   titulo: {
     fontFamily: "Poppins_900Black",
     fontSize: 25,
   },
   subtitulo: {
-    fontSize: 20
-  }
+    fontSize: 20,
+  },
+  passoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  passoNumero: {
+    width: 30,
+    marginRight: 10,
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 });
 
 export default Criar;
