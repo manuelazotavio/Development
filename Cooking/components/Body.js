@@ -30,6 +30,7 @@ const Body = () => {
           <View style={styles.listReceita}>
             <FlatList
               data={receitas}
+              horizontal={true}
               keyExtractor={(item) => item.id}
               renderItem={({item}) => <CardReceita receita={item} />} 
             />
