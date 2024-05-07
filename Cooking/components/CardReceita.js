@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons';
 const CardReceita = ({ receita }) => {
   return (
     <View style={styles.card}>
-      <Image source={"https://fakeimg.pl/600x400"} style={styles.fotoImg} />
+     <Image source={{uri: "https://fakeimg.pl/600x400"}} style={styles.fotoImg} />
       <Text style={styles.titulo}>{receita.name}</Text>
       <View style={styles.infoContainer}>
         <View style={styles.infoItem}>
@@ -33,10 +33,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginVertical: 30,
     marginHorizontal: 10,
-    padding: 10
+    padding: 10,
+    width: 300,
   },
   fotoImg: {
-    width: '100%'
+    width: '100%',
+    height: 200
   },
   infoContainer: {
     flexDirection: 'row',
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
   titulo: {
     fontFamily: 'Poppins_900Black',
     fontSize: 15,
-    marginTop: 40,
+    marginTop: 10,
     marginLeft: 20,
     alignSelf: 'flex-start'
 

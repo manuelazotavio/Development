@@ -3,9 +3,6 @@ import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { useFonts } from "@expo-google-fonts/poppins";
 import { ImageBackground } from "react-native";
 import Body from "../components/Body";
-const image = {
-  uri: "https://i.pinimg.com/564x/f8/31/20/f831208ac2e24b2cb706cd2d2e960fe6.jpg",
-};
 
 const Home = () => {
   let [fontsLoaded] = useFonts({
@@ -33,10 +30,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  image: {
-    flex: 1,
-    justifyContent: 'center',
   },
   titulo: {
     fontFamily: "Poppins_900Black",
