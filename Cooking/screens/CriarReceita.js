@@ -66,7 +66,7 @@ const CriarReceita = () => {
   };
 
   return (
-    <View style={{flex: 1}} >
+    <View style={styles.container} >
 
    
     <ScrollView>
@@ -145,6 +145,10 @@ tornar homogênea."
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
   form: {
     display: "flex",
     paddingHorizontal: 25,
@@ -153,7 +157,7 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
     width: "100%",
-    backgroundColor: "#FFF",
+    backgroundColor: "#ededed",
     marginBottom: 18,
     marginTop: 5,
     padding: 10,
