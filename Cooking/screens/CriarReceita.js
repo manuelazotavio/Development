@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, TextInput, StyleSheet, ScrollView, Text } from "react-native";
 import Button from "../components/Button";
 import AdicionarBtn from "../components/AdicionarBtn";
+import { useNavigation } from "@react-navigation/native";
 
 const CriarReceita = () => {
   const [txtName, setTxtName] = useState("");
@@ -11,6 +12,8 @@ const CriarReceita = () => {
   const [txtAvaliacao, setTxtAvaliacao] = useState("");
   const [ingredientes, setIngredientes] = useState([""]);
   const [passos, setPassos] = useState([""]);
+
+  const navigation = useNavigation()
 
   const postReceita = async () => {
     try {
@@ -32,7 +35,7 @@ const CriarReceita = () => {
       const data = await result.json();
       console.log(data);
       if (data?.success) {
-        console.log("sucesso");
+        navigation.navigate('Home')
       } else {
         console.log("erro");
       }
@@ -63,7 +66,7 @@ const CriarReceita = () => {
   };
 
   return (
-    <View >
+    <View style={{flex: 1}} >
 
    
     <ScrollView>

@@ -101,6 +101,7 @@ return (
       <View style={styles.descricao}>
         <Text style={styles.texto}>{receita.descricao}</Text>
       </View>
+      <Text style={styles.subtitulo}>Ingredientes</Text>
       <View style={styles.ingredientes}>
         <Text style={styles.texto}>{receita.ingredientes}</Text>
       </View>
@@ -121,9 +122,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     borderRadius: 20,
-    marginVertical: 0,
     marginHorizontal: 10,
-    padding: 0,
     marginLeft: 10,
     width: 300,
   },
@@ -143,7 +142,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_900Black',
     fontSize: 26,
     marginTop: 20,
-    marginLeft: 0,
     alignSelf: 'flex-start'
 },
   infoItem: {
@@ -157,6 +155,16 @@ const styles = StyleSheet.create({
   texto: {
     fontSize: 18,
     color: "#9EA69E"
+  },
+  subtitulo: {
+    fontSize: 18,
+    fontFamily: 'Poppins_900Black',
+    alignSelf: 'flex-start',
+    paddingVertical: 5,
+   
+  },
+  ingredientes: {
+     alignItems: 'flex-start'
   }
 });
 
