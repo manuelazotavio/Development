@@ -1,8 +1,11 @@
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const CardReceita = ({ receita }) => {
+  const navigation = useNavigation()
   return (
+    <Pressable onPress={() => navigation.navigate('Receita', {receita})}>
     <View style={styles.card}>
      <Image source={{uri: "https://fakeimg.pl/600x400"}} style={styles.fotoImg} />
       <Text style={styles.titulo}>{receita.name}</Text>
@@ -21,6 +24,7 @@ const CardReceita = ({ receita }) => {
         </View>
       </View>
     </View>
+    </Pressable>
   );
 };
 

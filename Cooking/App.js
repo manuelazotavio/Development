@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import CriarReceita from './screens/CriarReceita';
 import { Feather } from '@expo/vector-icons'
+import Receita from './screens/Receita';
 import Products from './screens/Conta';
 import Home from './screens/Home';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -18,6 +19,12 @@ const ReceitaNavigator = () => {
       <Stack.Screen
         name="Home"
         component={Home}
+        options={{
+          headerShown: false
+        }} />
+      <Stack.Screen
+        name="Receita"
+        component={Receita}
         options={{
           headerShown: false
         }} />

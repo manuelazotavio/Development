@@ -14,11 +14,7 @@ const Home = () => {
   }
   return (
     <View style={styles.container}>
-      <ImageBackground
-        source={require('../assets/background.png')}
-        resizeMode="cover"
-        style={styles.image}
-      ></ImageBackground>
+    
       <Text style={styles.titulo}>Suas receitas</Text>
       <Body />
     </View>
