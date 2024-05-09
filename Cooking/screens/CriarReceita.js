@@ -3,7 +3,7 @@ import { View, TextInput, StyleSheet, ScrollView, Text } from "react-native";
 import Button from "../components/Button";
 import AdicionarBtn from "../components/AdicionarBtn";
 
-const Criar = () => {
+const CriarReceita = () => {
   const [txtName, setTxtName] = useState("");
   const [txtDescricao, setTxtDescricao] = useState("");
   const [txtPorcao, setTxtPorcao] = useState("");
@@ -63,9 +63,13 @@ const Criar = () => {
   };
 
   return (
+    <View >
+
+   
     <ScrollView>
+      <Text style={styles.titulo}>Crie sua receita!</Text>
       <View style={styles.form}>
-        <Text style={styles.titulo}>Crie sua receita!</Text>
+        
         <TextInput
           style={styles.input}
           placeholder="Título da Receita"
@@ -132,21 +136,23 @@ tornar homogênea."
         
         <Button title="Publicar" onPress={postReceita} />
       </View>
-    </ScrollView>
+    </ScrollView> 
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   form: {
     display: "flex",
-    padding: 40,
+    paddingHorizontal: 25,
+    paddingVertical: 15
   },
   input: {
     height: 40,
     width: "100%",
     backgroundColor: "#FFF",
     marginBottom: 18,
-    marginTop: 8,
+    marginTop: 5,
     padding: 10,
     borderRadius: 10,
   },
@@ -170,7 +176,10 @@ const styles = StyleSheet.create({
   },
   titulo: {
     fontFamily: "Poppins_900Black",
-    fontSize: 25,
+    fontSize: 30,
+    marginTop: 40,
+    marginLeft: 20,
+    alignSelf: "flex-start",
   },
   subtitulo: {
     fontSize: 20,
@@ -187,4 +196,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Criar;
+export default CriarReceita;

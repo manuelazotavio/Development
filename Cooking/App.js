@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import Criar from './screens/Criar';
+import CriarReceita from './screens/CriarReceita';
 import { Feather } from '@expo/vector-icons'
 import Products from './screens/Conta';
 import Home from './screens/Home';
@@ -41,7 +41,7 @@ const MainNavigator = () => {
           )
         }}
       />
-      <Tab.Screen name="Criar" component={Criar} options={{
+      <Tab.Screen name="CriarReceita" component={CriarReceita} options={{
         tabBarIcon: () => (
           <Feather name="plus-square" size={24} color="black" />
         )

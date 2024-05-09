@@ -32,6 +32,7 @@ const Body = () => {
               data={receitas}
               horizontal={true}
               keyExtractor={(item) => item.id}
+              showsHorizontalScrollIndicator={false}
               renderItem={({item}) => <CardReceita receita={item} />} 
             />
           </View>

@@ -30,10 +30,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "white",
+    
   },
   titulo: {
     fontFamily: "Poppins_900Black",
-    fontSize: 25,
+    fontSize: 30,
     marginTop: 40,
     marginLeft: 20,
     alignSelf: "flex-start",

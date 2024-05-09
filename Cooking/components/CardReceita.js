@@ -8,15 +8,15 @@ const CardReceita = ({ receita }) => {
       <Text style={styles.titulo}>{receita.name}</Text>
       <View style={styles.infoContainer}>
         <View style={styles.infoItem}>
-          <Feather name="clock" size={15} color="#000" />
+          <Feather name="clock" size={20} color="#000" />
           <Text>{receita.tempo}</Text>
         </View>
         <View style={styles.infoItem}>
-          <Feather name="star" size={15} color="#000" />
+          <Feather name="star" size={20} color="#000" />
           <Text>{receita.avaliacao}</Text>
         </View>
         <View style={styles.infoItem}>
-          <Feather name="user" size={15} color="#000" />
+          <Feather name="user" size={20} color="#000" />
           <Text>{receita.porcoes}</Text>
         </View>
       </View>
@@ -29,28 +29,30 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: '#FFF',
     borderRadius: 20,
-    marginVertical: 30,
+    marginVertical: 20,
     marginHorizontal: 10,
     padding: 10,
+    marginLeft: 20,
     width: 300,
   },
   fotoImg: {
     width: '100%',
-    height: 200
+    height: 200,
+    borderRadius: 20,
   },
   infoContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     width: '100%',
-    paddingHorizontal: 10,
+    gap: 30,
+    paddingVertical: 10,
   },
   titulo: {
     fontFamily: 'Poppins_900Black',
-    fontSize: 15,
+    fontSize: 18,
     marginTop: 10,
-    marginLeft: 20,
+    marginLeft: 0,
     alignSelf: 'flex-start'
 
 },
