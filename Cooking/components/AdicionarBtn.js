@@ -1,8 +1,17 @@
 import React from 'react';
 import { Pressable, View, Text, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { Poppins_700Bold, useFonts } from "@expo-google-fonts/poppins";
 
 const AdicionarBtn = ({ title, onPress }) => {
+  let [fontsLoaded] = useFonts({
+    Poppins_700Bold,
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <Pressable style={styles.container} onPress={onPress}>
       <View style={styles.customButton}>
@@ -16,7 +25,7 @@ const AdicionarBtn = ({ title, onPress }) => {
 const styles = StyleSheet.create({
   customButton: {
     flexDirection: 'row', // Adicionando flexDirection para alinhar ícone e texto na mesma linha
-    backgroundColor: '#F7D342',
+    backgroundColor: '#f2c40e',
     borderRadius: 20,
     paddingVertical: 8,
     paddingHorizontal: 28,
@@ -33,7 +42,7 @@ const styles = StyleSheet.create({
   textButton: {
     color: '#FFF',
     textAlign: 'center',
-    fontFamily: 'Poppins_900Black',
+    fontFamily: 'Poppins_700Bold',
     marginLeft: 8, // Adicionando margem à esquerda para separar o ícone do texto
   },
   icon: {

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, TextInput, StyleSheet, ScrollView, Text } from "react-native";
+import { Poppins_500Black } from "@expo-google-fonts/poppins";
 import Button from "../components/Button";
 import AdicionarBtn from "../components/AdicionarBtn";
 import { useNavigation } from "@react-navigation/native";
