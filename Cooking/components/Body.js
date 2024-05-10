@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
       display: 'flex',
       width: '100%',
       alignItems: 'center',
-      marginBottom: 20,
       maxHeight: Platform.OS === 'web' ? '90vh' : null
     },
     flatListReceita: {

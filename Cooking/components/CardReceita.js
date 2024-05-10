@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     borderRadius: 20,
-    marginVertical: 20,
+    marginVertical: 10,
     marginHorizontal: 10,
     padding: 10,
     marginLeft: 20,
