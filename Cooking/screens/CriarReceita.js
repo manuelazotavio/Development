@@ -29,7 +29,7 @@ const CriarReceita = () => {
           tempo: txtTempo,
           avaliacao: txtAvaliacao,
           ingredientes: ingredientes.filter(ingrediente => ingrediente !== "").join("\n"),
-          instrucao: passos.filter(passo => passo !== "").join("\n"),
+          instrucao: passos.filter(passo => passo !== "").join(";"),
         }),
       });
       const data = await result.json();
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   inputDesc: {
     height: 90,
     width: "auto",
-    backgroundColor: "#FFF",
+    backgroundColor: "#ededed",
     marginBottom: 18,
     padding: 10,
     borderRadius: 10,
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   inputPasso: {
     height: 60,
     width: "auto",
-    backgroundColor: "#FFF",
+    backgroundColor: "#ededed",
     marginBottom: 10,
     padding: 10,
     borderRadius: 10,

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { useFonts } from "@expo-google-fonts/poppins";
 import { useRoute } from "@react-navigation/native";
@@ -81,35 +81,40 @@ const Receita = () => {
   };
   return (
     <View style={styles.container}>
-      {" "}
-      <Image
-        source={{ uri: "https://fakeimg.pl/600x400" }}
-        style={styles.fotoImg}
-      />
-      <View style={styles.card}>
-        <Text style={styles.titulo}>{receita.name}</Text>
-        <View style={styles.infoContainer}>
-          <View style={styles.infoItem}>
-            <Feather name="clock" size={20} color="#000" />
-            <Text>{receita.tempo}</Text>
+      <ScrollView contentContainerStyle={{ alignItems: "center" }}>
+        <Image
+          source={{ uri: "https://fakeimg.pl/600x400" }}
+          style={styles.fotoImg}
+        />
+        <View style={styles.card}>
+          <Text style={styles.titulo}>{receita.name}</Text>
+          <View style={styles.infoContainer}>
+            <View style={styles.infoItem}>
+              <Feather name="clock" size={20} color="#000" />
+              <Text>{receita.tempo}</Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Feather name="star" size={20} color="#000" />
+              <Text>{receita.avaliacao}</Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Feather name="user" size={20} color="#000" />
+              <Text>{receita.porcoes}</Text>
+            </View>
           </View>
-          <View style={styles.infoItem}>
-            <Feather name="star" size={20} color="#000" />
-            <Text>{receita.avaliacao}</Text>
+          <View style={styles.descricao}>
+            <Text style={styles.texto}>{receita.descricao}</Text>
           </View>
-          <View style={styles.infoItem}>
-            <Feather name="user" size={20} color="#000" />
-            <Text>{receita.porcoes}</Text>
+          <Text style={styles.subtitulo}>ingredientes</Text>
+          <View style={styles.ingredientes}>
+            <Text style={styles.textoIng}>{receita.ingredientes}</Text>
+          </View>
+          <Text style={styles.subtitulo}>passo a passo</Text>
+          <View style={styles.ingredientes}>
+            <Text style={styles.textoIng}>{receita.instrucao}</Text>
           </View>
         </View>
-        <View style={styles.descricao}>
-          <Text style={styles.texto}>{receita.descricao}</Text>
-        </View>
-        <Text style={styles.subtitulo}>ingredientes</Text>
-        <View style={styles.ingredientes}>
-          <Text style={styles.texto}>{receita.ingredientes}</Text>
-        </View>
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -118,11 +123,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    backgroundColor: "#FFF",
   },
   card: {
     flex: 1,
     flexDirection: "column",
-    alignItems: "flex-start",
+
     borderRadius: 20,
     marginHorizontal: 10,
     marginLeft: 10,
@@ -149,16 +155,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 10,
   },
-  descricao: {},
+  descricao: {
+    paddingVertical: 10,
+  },
   texto: {
     fontSize: 18,
     color: "#9EA69E",
+  },
+  textoIng: {
+    fontSize: 18,
+    color: "#000",
   },
   subtitulo: {
     fontSize: 18,
     fontFamily: "Poppins_900Black",
     alignSelf: "flex-start",
-    paddingVertical: 5,
+    paddingVertical: 10,
   },
   ingredientes: {},
 });
