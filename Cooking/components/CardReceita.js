@@ -1,5 +1,8 @@
 import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { faStar } from '@fortawesome/free-solid-svg-icons/faStar'
+import { faClock } from '@fortawesome/free-solid-svg-icons/faClock'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { useNavigation } from '@react-navigation/native';
 
 const CardReceita = ({ receita }) => {
@@ -11,11 +14,11 @@ const CardReceita = ({ receita }) => {
       <Text style={styles.titulo}>{receita.name}</Text>
       <View style={styles.infoContainer}>
         <View style={styles.infoItem}>
-          <Feather name="clock" size={20} color="#000" />
+        <FontAwesomeIcon icon={faClock} size={19} color='#FF421D'/>
           <Text>{receita.tempo}</Text>
         </View>
         <View style={styles.infoItem}>
-          <Feather name="star" size={20} color="#000" />
+          <FontAwesomeIcon icon={faStar} color="#F7D342" size={23} />
           <Text>{receita.avaliacao}</Text>
         </View>
         <View style={styles.infoItem}>
@@ -60,10 +63,12 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start'
 
 },
-  infoItem: {
-    alignItems: 'center',
-    marginRight: 10
-  },
+infoItem: {
+
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginRight: 10
+},
 });
 
 export default CardReceita;
