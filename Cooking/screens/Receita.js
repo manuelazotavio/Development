@@ -7,6 +7,10 @@ import {
   Button,
 } from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
+import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
+import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
+import { faClock } from "@fortawesome/free-solid-svg-icons/faClock";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useFonts } from "@expo-google-fonts/poppins";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
@@ -101,15 +105,15 @@ const Receita = () => {
           <Text style={styles.titulo}>{receita.name}</Text>
           <View style={styles.infoContainer}>
             <View style={styles.infoItem}>
-              <Feather name="clock" size={20} color="#000" />
+              <FontAwesomeIcon icon={faClock} size={19} color="#FF421D" />
               <Text>{receita.tempo}</Text>
             </View>
             <View style={styles.infoItem}>
-              <Feather name="star" size={20} color="#000" />
+              <FontAwesomeIcon icon={faStar} color="#F7D342" size={22} />
               <Text>{receita.avaliacao}</Text>
             </View>
             <View style={styles.infoItem}>
-              <Feather name="user" size={20} color="#000" />
+              <FontAwesomeIcon icon={faUser} color="#9EA69E" size={19} />
               <Text>{receita.porcoes}</Text>
             </View>
           </View>
@@ -130,7 +134,7 @@ const Receita = () => {
             ))}
           </View>
           {/* <AdicionarBtn title={"Remover"} onPress={removeReceita}/> */}
-          <View style={{height: 20}} />
+          <View style={{ height: 20 }} />
         </View>
       </ScrollView>
     </View>
@@ -170,7 +174,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   infoItem: {
+    flexDirection: "column", // Altere para 'column'
     alignItems: "center",
+    justifyContent: "center", // Adicione esta linha
     marginRight: 10,
   },
   descricao: {

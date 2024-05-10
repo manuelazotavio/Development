@@ -1,6 +1,7 @@
 import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+
 import { faStar } from '@fortawesome/free-solid-svg-icons/faStar'
+import { faUser } from '@fortawesome/free-solid-svg-icons/faUser'
 import { faClock } from '@fortawesome/free-solid-svg-icons/faClock'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { useNavigation } from '@react-navigation/native';
@@ -22,7 +23,7 @@ const CardReceita = ({ receita }) => {
           <Text>{receita.avaliacao}</Text>
         </View>
         <View style={styles.infoItem}>
-          <Feather name="user" size={20} color="#000" />
+        <FontAwesomeIcon icon={faUser} color='#9EA69E' size={19} />
           <Text>{receita.porcoes}</Text>
         </View>
       </View>
@@ -65,9 +66,10 @@ const styles = StyleSheet.create({
 },
 infoItem: {
 
-  alignItems: 'center',
-  justifyContent: 'center',
-  marginRight: 10
+    height: 40, // adjust this value as needed
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginRight: 10
 },
 });
 
