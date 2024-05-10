@@ -1,9 +1,17 @@
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Button,
+} from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { useFonts } from "@expo-google-fonts/poppins";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
+import AdicionarBtn from "../components/AdicionarBtn";
 
 const Receita = () => {
   let [fontsLoaded] = useFonts({
@@ -67,6 +75,9 @@ const Receita = () => {
           },
         }
       );
+      if (!result.ok) {
+        throw new Error(`HTTP error! status: ${result.status}`);
+      }
       const data = await result.json();
       console.log(data);
       if (data?.success) {
@@ -111,8 +122,15 @@ const Receita = () => {
           </View>
           <Text style={styles.subtitulo}>passo a passo</Text>
           <View style={styles.ingredientes}>
-            <Text style={styles.textoIng}>{receita.instrucao}</Text>
+            {receita.instrucao.split("\n").map((step, index) => (
+              <Text style={styles.textoIng} key={index}>
+                <Text style={{ fontWeight: "bold" }}>{`${index + 1}. `}</Text>
+                {step}
+              </Text>
+            ))}
           </View>
+          {/* <AdicionarBtn title={"Remover"} onPress={removeReceita}/> */}
+          <View style={{height: 20}} />
         </View>
       </ScrollView>
     </View>
