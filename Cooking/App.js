@@ -76,6 +76,20 @@ export default function App() {
             headerShown: false
           }}
         />
+        <Stack.Screen
+        name="Login"
+        component={Login}
+        options={{
+          headerShown: false
+        }}
+        />
+        <Stack.Screen
+          name="Cadastrar"
+          component={Cadastrar}
+          options={{
+            title: "Cadastrar User"
+          }}
+        />
     </Stack.Navigator>
       {/* <Drawer.Navigator>
         <Drawer.Screen name="Principal" component={ListUser} />
