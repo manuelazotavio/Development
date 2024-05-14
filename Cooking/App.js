@@ -4,8 +4,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import CriarReceita from './screens/CriarReceita';
 import { Feather } from '@expo/vector-icons'
 import Receita from './screens/Receita';
+import Cadastrar from './screens/Cadastrar';
 import Products from './screens/Conta';
 import Home from './screens/Home';
+import Login from './screens/Login';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 

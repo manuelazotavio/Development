@@ -1,12 +1,11 @@
 import {View, Text, StyleSheet, TextInput} from 'react-native'
 //import AsyncStorage from '@react-native-async-storage/async-storage';
-import Button from '../components/ui/Button'
+import Button from '../components/Button.js'
 import { useNavigation } from '@react-navigation/native'
-import H1 from '../components/ui/H1.js'
+
 import { useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import useUserLoggedStore from '../stores/useUserLoggedStore.js'
-
 
 const Login = () => {
 
