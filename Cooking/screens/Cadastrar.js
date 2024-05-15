@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import {View, TextInput, StyleSheet, ScrollView} from 'react-native'
+import {View, Text, TextInput, StyleSheet, ScrollView} from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import Button from '../components/Button'
+import CadastrarBtn from '../components/CadastrarBtn'
 
 
 const Cadastrar = () => {
@@ -14,7 +16,7 @@ const Cadastrar = () => {
     const postUser = async () =>{
         try{
           //const result = await fetch('https://backend-api-express-1sem2024-rbd1.onrender.com/user', {
-          const result = await fetch('https://backcooking.onrender.com/post', {
+          const result = await fetch('https://backcooking.onrender.com/user', {
             method: "POST",
             headers:{
               "Content-Type": "application/json"
@@ -35,7 +37,9 @@ const Cadastrar = () => {
       } 
 
     return (
-        <ScrollView>
+      <View style={{backgroundColor: "#fff", width: "100%", flex: 1}}>
+        <View style={styles.container}>
+          <Text style={styles.titulo}>Cadastrar</Text>
             <View style={styles.form}>
                 <TextInput 
                 style={styles.input}
@@ -61,28 +65,49 @@ const Cadastrar = () => {
                 onChangeText={setTxtAvatar}
                 value={txtAvatar}
                 />
-                <Button 
-                    title="Cadastrar Usuário"
+                <CadastrarBtn 
+                    title="Cadastrar"
                     onPress={postUser}
                 />
             </View>
-        </ScrollView>
+        </View>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    backgroundColor: "#fff"
+},
+input: {
+  height: 40,
+  width: "100%",
+  backgroundColor: "#ededed",
+  marginBottom: 10,
+  marginTop: 5,
+  padding: 10,
+  borderRadius: 10,
+
+},
     form: {
         display: 'flex',
-        padding: 40
+      width: "80%"
     },
-    input: {
-        height: 40,
-        width: '100%',
-        backgroundColor: '#FFF',
-        borderWidth: 1,
-        marginBottom: 18,
-        padding: 10,
-    }
+
+    titulo: {
+      fontFamily: "Poppins_900Black",
+      fontSize: 20,
+      marginTop: 40,
+      marginLeft: 5,
+      marginBottom: 10,
+      alignSelf: "flex-start",
+      justifyContent: 'flex-start'
+    },
+    
 })
 
 export default Cadastrar

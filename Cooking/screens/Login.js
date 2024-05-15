@@ -2,6 +2,8 @@ import {View, Text, StyleSheet, TextInput} from 'react-native'
 //import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '../components/Button.js'
 import { useNavigation } from '@react-navigation/native'
+import { Poppins_900Black } from "@expo-google-fonts/poppins";
+import { useFonts } from "@expo-google-fonts/poppins";
 
 import { useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -9,6 +11,8 @@ import useUserLoggedStore from '../stores/useUserLoggedStore.js'
 import CadastrarBtn from '../components/CadastrarBtn.js'
 
 const Login = () => {
+
+  
 
   const [txtEmail, setTxtEmail] = useState('')
   const [txtPass, setTxtPass] = useState('')
@@ -46,7 +50,13 @@ const Login = () => {
       console.log(error)
     }
   }
+let [fontsLoaded] = useFonts({
+    Poppins_900Black,
+  });
 
+  if (!fontsLoaded) {
+    return null;
+  }
   return (
     <View style={{backgroundColor: "#fff", width: "100%", flex: 1}}>
     <View style={styles.container}>
@@ -101,7 +111,7 @@ const styles = StyleSheet.create({
   },
   titulo: {
     fontFamily: "Poppins_900Black",
-    fontSize: 30,
+    fontSize: 20,
     marginTop: 40,
     marginLeft: 5,
     alignSelf: "flex-start",

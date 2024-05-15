@@ -90,7 +90,7 @@ export default function App() {
           name="Cadastrar"
           component={Cadastrar}
           options={{
-            title: "Cadastrar User"
+            headerShown: false
           }}
         />
         <Stack.Screen
