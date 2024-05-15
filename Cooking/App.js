@@ -6,6 +6,7 @@ import { Feather } from '@expo/vector-icons'
 import Receita from './screens/Receita';
 import Cadastrar from './screens/Cadastrar';
 import Products from './screens/Conta';
+import Splash from './screens/Splash';
 import Home from './screens/Home';
 import Login from './screens/Login';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -55,7 +56,7 @@ const MainNavigator = () => {
           <Feather name="plus-square" size={24} color="black" />
         )
       }}/>
-      <Tab.Screen name="Teste" component={Products} options={{
+      <Tab.Screen name="Login" component={Login} options={{
         tabBarIcon: () => (
           <Feather name="user" size={24} color="black" />
         )
@@ -71,12 +72,12 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Main"
-          component={MainNavigator}
-          options={{
-            headerShown: false
-          }}
+      <Stack.Screen
+        name="Splash"
+        component={Splash} 
+        options={{
+          headerShown: false
+        }}
         />
         <Stack.Screen
         name="Login"
@@ -92,6 +93,15 @@ export default function App() {
             title: "Cadastrar User"
           }}
         />
+        <Stack.Screen
+          name="Main"
+          component={MainNavigator}
+          options={{
+            headerShown: false
+          }}
+        />
+        
+        
     </Stack.Navigator>
       {/* <Drawer.Navigator>
         <Drawer.Screen name="Principal" component={ListUser} />

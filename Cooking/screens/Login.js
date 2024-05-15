@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import useUserLoggedStore from '../stores/useUserLoggedStore.js'
+import CadastrarBtn from '../components/CadastrarBtn.js'
 
 const Login = () => {
 
@@ -47,8 +48,9 @@ const Login = () => {
   }
 
   return (
+    <View style={{backgroundColor: "#fff", width: "100%", flex: 1}}>
     <View style={styles.container}>
-      <H1>Entrar</H1>
+    <Text style={styles.titulo}>Entrar</Text>
 
       <TextInput 
         style={styles.input}
@@ -65,13 +67,17 @@ const Login = () => {
       />
 
       <Button 
-        title="Login"
+        title="Entrar"
         onPress={handleLogin}
       />
-      <Button 
-        title="Cadastrar"
+       <View style={styles.descricao}>
+            <Text style={styles.texto}>Não possui um cadastro?</Text>
+          </View>
+      <CadastrarBtn
+        title="Cadastre-se"
         onPress={() => navigation.navigate('Cadastrar')}
       />
+    </View>
     </View>
   )
 }
@@ -84,13 +90,30 @@ const styles = StyleSheet.create({
         marginHorizontal: 20
     },
     input: {
-        height: 40,
-        width: '100%',
-        backgroundColor: '#FFF',
-        borderWidth: 1,
-        marginBottom: 18,
-        padding: 10,
-    }
+      height: 40,
+      width: "80%",
+      backgroundColor: "#ededed",
+      marginBottom: 10,
+      marginTop: 5,
+      padding: 10,
+      borderRadius: 10,
+
+  },
+  titulo: {
+    fontFamily: "Poppins_900Black",
+    fontSize: 30,
+    marginTop: 40,
+    marginLeft: 5,
+    alignSelf: "flex-start",
+    justifyContent: 'flex-start'
+  },
+  descricao: {
+    paddingVertical: 10,
+  },
+  texto: {
+    fontSize: 18,
+    color: "#9EA69E",
+  },
 })
 
 export default Login
