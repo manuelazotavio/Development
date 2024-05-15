@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {View, TextInput, StyleSheet, ScrollView} from 'react-native'
-import { useNavigation, useRoute } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 
 
 const Cadastrar = () => {
