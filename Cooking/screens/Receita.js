@@ -1,13 +1,15 @@
 import {
   View,
   Text,
-  StyleSheet,
   Image,
   ScrollView,
   Button,
+  Alert, Modal, StyleSheet, Pressable
 } from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
-import { Pressable } from "react-native";
+
+import React, { useState } from "react";
+
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faHeart } from "@fortawesome/free-solid-svg-icons/faHeart";
 import { faPencil } from "@fortawesome/free-solid-svg-icons/faPencil";
@@ -23,6 +25,8 @@ import { Feather } from "@expo/vector-icons";
 import AdicionarBtn from "../components/AdicionarBtn";
 
 const Receita = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+
   let [fontsLoaded] = useFonts({
     Poppins_900Black,
   });
@@ -34,6 +38,8 @@ const Receita = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { receita } = route.params;
+
+  
 
   //removerReceita
 
@@ -70,8 +76,9 @@ const Receita = () => {
           source={{ uri: "https://fakeimg.pl/600x400" }}
           style={styles.fotoImg}
         />
+        
         <View style={styles.iconContainer}>
-          <Pressable onPress={removeReceita}>
+          <Pressable onPress={() => setModalVisible(true)}>
             <FontAwesomeIcon icon={faTrashCan} size={19} />
           </Pressable>
           <FontAwesomeIcon icon={faHeart} size={19} color="#d31717" />
@@ -116,6 +123,36 @@ const Receita = () => {
           {/* <AdicionarBtn title={"Remover"} onPress={removeReceita}/> */}
           <View style={{ height: 20 }} />
         </View>
+        <View style={styles.centeredView}>
+          <Modal
+            animationType="fade"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>Tem certeza?</Text>
+                <Pressable
+                  style={[styles.button, styles.buttonRemove]}
+                  onPress={removeReceita}
+                >
+                  <Text style={styles.textStyle}>Sim, remover receita</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalVisible(!modalVisible)}
+                >
+                  <Text style={styles.textStyle}>Cancelar</Text>
+                </Pressable>
+                
+              </View>
+            </View>
+          </Modal>
+        </View>
       </ScrollView>
     </View>
   );
@@ -152,6 +189,66 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_900Black",
     fontSize: 26,
     marginTop: 20,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    marginVertical: 10,
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 5,
+    elevation: 2
+    
+  },
+  tHButton: {
+    borderRadius: 20,
+    marginVertical: 8,
+    width: 120,
+    alignSelf:  'center'
+  },
+  textButton: {
+    color: '#FFF',
+    textAlign: 'center',
+    fontFamily: "Poppins_900Black"
+  },
+
+  buttonClose: {
+    backgroundColor: '#FF421D',
+    paddingHorizontal: 30
+  },
+  buttonRemove: {
+    paddingHorizontal: 20,
+    backgroundColor: '#f2c40e'
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontFamily: "Poppins_900Black",
+    fontSize: 20
   },
   infoItem: {
     flexDirection: "column", // Altere para 'column'
