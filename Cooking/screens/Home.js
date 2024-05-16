@@ -1,7 +1,6 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { useFonts } from "@expo-google-fonts/poppins";
-import { ImageBackground } from "react-native";
 import Body from "../components/Body";
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -44,36 +43,41 @@ const Home = () => {
   if (receitas.length === 0) {
     return (
       <View style={styles.containerSplash}>
-        <Text style={styles.titulo}>Suas receitas</Text>
-        <View style={{ flex: 1, backgroundColor: "white" }}>
-          <Text style={styles.splash}>
-            Você ainda não criou nenhuma receita.
-          </Text>
-          <AdicionarBtn
-            title={"Criar"}
-            onPress={() => navigation.navigate("CriarReceita")}
-          />
-          <Text style={styles.tituloFav}>Receitas favoritas</Text>
-        </View>
+        <ScrollView contentContainerStyle={{ alignItems: "center" }}>
+          <Text style={styles.titulo}>Suas receitas</Text>
+          <View style={{ backgroundColor: "white" }}>
+            <Text style={styles.splash}>
+              Você ainda não criou nenhuma receita.
+            </Text>
+            <AdicionarBtn
+              title={"Criar"}
+              onPress={() => navigation.navigate("CriarReceita")}
+            />
+            <Text style={styles.tituloFav}>Receitas favoritas</Text>
+          </View>
+        </ScrollView>
       </View>
     );
   }
-
+  
   return (
-    <View style={{ flex: 1, backgroundColor: "white" }}>
-    <View style={styles.container}>
-      <Text style={styles.titulo}>Suas receitas</Text>
-      <View style={{ flex: 1, backgroundColor: "white" }}>
-        <Body />
-        <Text style={styles.tituloFav}>Receitas favoritas</Text>
+    // <View style={{ backgroundColor: "white" }}>
+      <View style={styles.container}>
+        <ScrollView contentContainerStyle={{ alignItems: 'flex-start' }}>
+          <Text style={styles.titulo}>Suas receitas</Text>
+          <View style={{ backgroundColor: "white" }}>
+            <Body />
+            <Text style={styles.tituloFav}>Receitas favoritas</Text>
+          </View>
+        </ScrollView>
       </View>
-    </View>
-  </View>
+    // </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     justifyContent: "flex-start",
     backgroundColor: "white",
   },

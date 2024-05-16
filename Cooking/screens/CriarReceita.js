@@ -28,7 +28,7 @@ const CriarReceita = () => {
           descricao: txtDescricao,
           porcoes: txtPorcao,
           tempo: txtTempo,
-          avaliacao: txtAvaliacao,
+          avaliacao: Number(txtAvaliacao),
           ingredientes: ingredientes.filter(ingrediente => ingrediente !== "").join(";"),
           instrucao: passos.filter(passo => passo !== "").join(";"),
         }),
