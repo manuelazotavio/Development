@@ -17,12 +17,10 @@ import { faTrashCan } from "@fortawesome/free-solid-svg-icons/faTrashCan";
 import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
 import { faClock } from "@fortawesome/free-solid-svg-icons/faClock";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { TouchableOpacity } from "react-native";
 import { useFonts } from "@expo-google-fonts/poppins";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
-import { Feather } from "@expo/vector-icons";
-import AdicionarBtn from "../components/AdicionarBtn";
+
 
 const Receita = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -39,14 +37,38 @@ const Receita = () => {
   const navigation = useNavigation();
   const { receita } = route.params;
 
-  
-
   //removerReceita
-
   const removeReceita = async () => {
     try {
       const result = await fetch(
         "https://backcooking.onrender.com/receita/" + receita.id,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (!result.ok) {
+        throw new Error(`HTTP error! status: ${result.status}`);
+      }
+      const data = await result.json();
+      console.log(data);
+      if (data?.success) {
+        navigation.goBack();
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.log("Error removeReceita " + error.message);
+      alert(error.message);
+    }
+  };
+
+  const favReceita = async () => {
+    try {
+      const result = await fetch(
+        "https://backcooking.onrender.com/favorito/" + receita.id,
         {
           method: "DELETE",
           headers: {
@@ -81,7 +103,9 @@ const Receita = () => {
           <Pressable onPress={() => setModalVisible(true)}>
             <FontAwesomeIcon icon={faTrashCan} size={19} />
           </Pressable>
+          <Pressable onPress={favReceita}>
           <FontAwesomeIcon icon={faHeart} size={19} color="#d31717" />
+          </Pressable>
           <Pressable onPress={() => navigation.navigate("Editar", { receita })}>
             <FontAwesomeIcon icon={faPencil} size={19} />
           </Pressable>

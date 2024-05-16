@@ -1,10 +1,8 @@
 import {View, Text, StyleSheet, TextInput} from 'react-native'
-//import AsyncStorage from '@react-native-async-storage/async-storage';
 import Button from '../components/Button.js'
 import { useNavigation } from '@react-navigation/native'
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { useFonts } from "@expo-google-fonts/poppins";
-
 import { useState } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import useUserLoggedStore from '../stores/useUserLoggedStore.js'
@@ -12,13 +10,10 @@ import CadastrarBtn from '../components/CadastrarBtn.js'
 
 const Login = () => {
 
-  
-
   const [txtEmail, setTxtEmail] = useState('')
   const [txtPass, setTxtPass] = useState('')
   const navigation = useNavigation()
   const login = useUserLoggedStore(state => state.login)
-
 
   const handleLogin = async () => {
     try{
@@ -35,8 +30,10 @@ const Login = () => {
         const data = await response.json()
         try {
           await AsyncStorage.setItem('userLogged', JSON.stringify({...data.user, token: data.token}))
+          await AsyncStorage.setItem('username', data.user.name);
           login(data.user, data.token)
-          navigation.navigate('Home')
+      
+          navigation.navigate('Main')
         } catch (error){
           console.log(error)
           alert('Erro ao gravar dados de login no dispositivo!')

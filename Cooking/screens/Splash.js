@@ -13,7 +13,7 @@ const Splash = () => {
   useEffect(() => {
     const checkUserLogged = async () => {
       try {
-        dataFound = await AsyncStorage.getItem('userLogged')
+        const dataFound = await AsyncStorage.getItem('userLogged')
         if(dataFound){
           const data = JSON.parse(dataFound)
           const { token } = data

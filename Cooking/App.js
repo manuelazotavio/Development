@@ -1,5 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+
 import { NavigationContainer } from '@react-navigation/native';
 import CriarReceita from './screens/CriarReceita';
 import { Feather } from '@expo/vector-icons'
@@ -7,6 +6,7 @@ import Receita from './screens/Receita';
 import Cadastrar from './screens/Cadastrar';
 import Editar from './screens/Editar';
 import Splash from './screens/Splash';
+import Conta from './screens/Conta';
 import Home from './screens/Home';
 import Login from './screens/Login';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -56,7 +56,7 @@ const MainNavigator = () => {
           <Feather name="plus-square" size={24} color="black" />
         )
       }}/>
-      <Tab.Screen name="Login" component={Login} options={{
+      <Tab.Screen name="Conta" component={Conta} options={{
         tabBarIcon: () => (
           <Feather name="user" size={24} color="black" />
         )
@@ -72,13 +72,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Main"
-          component={MainNavigator}
-          options={{
-            headerShown: false
-          }}
-        />
+       
       <Stack.Screen
         name="Splash"
         component={Splash} 
@@ -103,6 +97,13 @@ export default function App() {
         <Stack.Screen
           name="Editar"
           component={Editar}
+          options={{
+            headerShown: false
+          }}
+        /> 
+        <Stack.Screen
+          name="Main"
+          component={MainNavigator}
           options={{
             headerShown: false
           }}
