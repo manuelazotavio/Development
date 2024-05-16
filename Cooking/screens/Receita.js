@@ -7,10 +7,15 @@ import {
   Button,
 } from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
+import { Pressable } from "react-native";
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
+import { faHeart } from "@fortawesome/free-solid-svg-icons/faHeart";
+import { faPencil } from "@fortawesome/free-solid-svg-icons/faPencil";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons/faTrashCan";
 import { faUser } from "@fortawesome/free-solid-svg-icons/faUser";
 import { faClock } from "@fortawesome/free-solid-svg-icons/faClock";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { TouchableOpacity } from "react-native";
 import { useFonts } from "@expo-google-fonts/poppins";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
@@ -29,42 +34,6 @@ const Receita = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { receita } = route.params;
-
-  //editar a receita
-  const editReceita = async () => {
-    try {
-      const result = await fetch(
-        "https://backcooking.onrender.com/receita/" + receita.id,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: txtName,
-            descricao: txtDescricao,
-            porcoes: txtPorcao,
-            tempo: txtTempo,
-            avaliacao: txtAvaliacao,
-            ingredientes: ingredientes
-              .filter((ingrediente) => ingrediente !== "")
-              .join("\n"),
-            instrucao: passos.filter((passo) => passo !== "").join("\n"),
-          }),
-        }
-      );
-      const data = await result.json();
-      console.log(data);
-      if (data?.success) {
-        navigation.goBack();
-      } else {
-        alert(data.error);
-      }
-    } catch (error) {
-      console.log("Error postReceita " + error.message);
-      alert(error.message);
-    }
-  };
 
   //removerReceita
 
@@ -101,6 +70,15 @@ const Receita = () => {
           source={{ uri: "https://fakeimg.pl/600x400" }}
           style={styles.fotoImg}
         />
+        <View style={styles.iconContainer}>
+          <Pressable onPress={removeReceita}>
+            <FontAwesomeIcon icon={faTrashCan} size={19} />
+          </Pressable>
+          <FontAwesomeIcon icon={faHeart} size={19} color="#d31717" />
+          <Pressable onPress={() => navigation.navigate("Editar", { receita })}>
+            <FontAwesomeIcon icon={faPencil} size={19} />
+          </Pressable>
+        </View>
         <View style={styles.card}>
           <Text style={styles.titulo}>{receita.name}</Text>
           <View style={styles.infoContainer}>
@@ -122,11 +100,13 @@ const Receita = () => {
           </View>
           <Text style={styles.subtitulo}>ingredientes</Text>
           <View style={styles.ingredientes}>
-            <Text style={styles.textoIng}>{receita.ingredientes}</Text>
+            {receita.ingredientes.split(";").map((ingrediente, index) => (
+              <Text key={index}>{ingrediente} </Text>
+            ))}
           </View>
           <Text style={styles.subtitulo}>passo a passo</Text>
           <View style={styles.ingredientes}>
-            {receita.instrucao.split("\n").map((step, index) => (
+            {receita.instrucao.split(";").map((step, index) => (
               <Text style={styles.textoIng} key={index}>
                 <Text style={{ fontWeight: "bold" }}>{`${index + 1}. `}</Text>
                 {step}
@@ -181,6 +161,15 @@ const styles = StyleSheet.create({
   },
   descricao: {
     paddingVertical: 10,
+  },
+  iconContainer: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginRight: 40,
+    width: 100,
   },
   texto: {
     fontSize: 18,

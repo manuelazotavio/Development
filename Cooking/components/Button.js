@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FF421D",
         borderRadius: 20,
         paddingVertical: 8,
-        paddingHorizontal: 28,
+        paddingHorizontal: 5,
         
       },
       tHButton: {

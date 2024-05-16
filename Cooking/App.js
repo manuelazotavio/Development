@@ -5,7 +5,7 @@ import CriarReceita from './screens/CriarReceita';
 import { Feather } from '@expo/vector-icons'
 import Receita from './screens/Receita';
 import Cadastrar from './screens/Cadastrar';
-import Products from './screens/Conta';
+import Editar from './screens/Editar';
 import Splash from './screens/Splash';
 import Home from './screens/Home';
 import Login from './screens/Login';
@@ -72,6 +72,13 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen
+          name="Main"
+          component={MainNavigator}
+          options={{
+            headerShown: false
+          }}
+        />
       <Stack.Screen
         name="Splash"
         component={Splash} 
@@ -94,12 +101,13 @@ export default function App() {
           }}
         />
         <Stack.Screen
-          name="Main"
-          component={MainNavigator}
+          name="Editar"
+          component={Editar}
           options={{
             headerShown: false
           }}
         />
+        
         
         
     </Stack.Navigator>

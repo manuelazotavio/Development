@@ -1,50 +1,15 @@
-import React, { useState } from "react";
-import { View, TextInput, StyleSheet, ScrollView, Text } from "react-native";
-import { Poppins_500Black } from "@expo-google-fonts/poppins";
-import Button from "../components/Button";
-import AdicionarBtn from "../components/AdicionarBtn";
-import { useNavigation } from "@react-navigation/native";
+import { Text, View, StyleSheet, ScrollView, TextInput } from "react-native";
+import Button from "../components/Button.js";
+import { useState } from "react";
+import AdicionarBtn from "../components/AdicionarBtn.js";
+import { useRoute, useNavigation } from "@react-navigation/native";
 
-const CriarReceita = () => {
-  const [txtName, setTxtName] = useState("");
-  const [txtDescricao, setTxtDescricao] = useState("");
-  const [txtPorcao, setTxtPorcao] = useState("");
-  const [txtTempo, setTxtTempo] = useState("");
-  const [txtAvaliacao, setTxtAvaliacao] = useState("");
-  const [ingredientes, setIngredientes] = useState([""]);
-  const [passos, setPassos] = useState([""]);
+const Editar = () => {
+  const route = useRoute();
+  const navigation = useNavigation();
 
-  const navigation = useNavigation()
 
-  const postReceita = async () => {
-    try {
-      const result = await fetch("https://backcooking.onrender.com/receita", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: txtName,
-          descricao: txtDescricao,
-          porcoes: txtPorcao,
-          tempo: txtTempo,
-          avaliacao: txtAvaliacao,
-          ingredientes: ingredientes.filter(ingrediente => ingrediente !== "").join(";"),
-          instrucao: passos.filter(passo => passo !== "").join(";"),
-        }),
-      });
-      const data = await result.json();
-      console.log(data);
-      if (data?.success) {
-        navigation.navigate('Home')
-      } else {
-        console.log("erro");
-      }
-    } catch (error) {
-      console.log("Error postReceita " + error.message);
-      alert(error.message);
-    }
-  };
+  const {receita} = route.params;
 
   const addIngrediente = () => {
     setIngredientes([...ingredientes, ""]);
@@ -66,12 +31,96 @@ const CriarReceita = () => {
     setPassos(newPassos);
   };
 
+
+
+  const [txtName, setTxtName] = useState(receita.name);
+  const [txtDescricao, setTxtDescricao] = useState(receita.descricao);
+  const [txtPorcao, setTxtPorcao] = useState(receita.porcoes);
+  const [txtTempo, setTxtTempo] = useState(receita.tempo);
+  const [txtAvaliacao, setTxtAvaliacao] = useState(receita.avaliacao);
+  const [ingredientes, setIngredientes] = useState(
+    receita.ingredientes.split(";")
+  );
+  const [passos, setPassos] = useState(receita.instrucao.split(";"));
+
+  const editReceita = async () => {
+    try {
+      //const result = await authFetch('https://backend-api-express-1sem2024-rbd1.onrender.com/user/'+user.id, {
+      const result = await fetch(
+        "https://backcooking.onrender.com/receita/" + receita.id,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: txtName,
+            descricao: txtDescricao,
+            porcoes: txtPorcao,
+            tempo: txtTempo,
+            avaliacao: txtAvaliacao,
+            ingredientes: ingredientes
+              .filter((ingrediente) => ingrediente !== "")
+              .join(";"),
+            instrucao: passos.filter((passo) => passo !== "").join(";"),
+          }),
+        }
+      );
+      console.log(result);
+      const data = await result.json();
+      console.log(data);
+      if (data?.success) {
+        navigation.goBack();
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.log("Error edit " + error.message);
+      alert(error.message);
+    }
+  };
+
+  const removeUser = async () => {
+    try {
+      //const result = await authFetch('https://backend-api-express-1sem2024-rbd1.onrender.com/user/'+user.id, {
+      const result = await authFetch("http://localhost:3333/user/" + user.id, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!result.ok) {
+        const dataError = await result.json();
+        if (
+          dataError?.error &&
+          dataError?.code &&
+          dataError.code === "logout"
+        ) {
+          alert("Sessão expirada!");
+          navigation.navigate("Login");
+          return;
+        }
+      }
+      const data = await result.json();
+      console.log(data);
+      if (data?.success) {
+        removeUserStore(user.id);
+        navigation.goBack();
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.log("Error removeUser " + error.message);
+      alert(error.message);
+    }
+  };
+
   return (
     <View style={styles.container} >
 
    
     <ScrollView>
-      <Text style={styles.titulo}>Crie sua receita!</Text>
+      <Text style={styles.titulo}>Edite sua receita!</Text>
       <View style={styles.form}>
         
         <TextInput
@@ -138,7 +187,9 @@ tornar homogênea."
           value={txtAvaliacao}
         />
         
-        <Button title="Publicar" onPress={postReceita} />
+        
+        <Button title="Cancelar" onPress={() => navigation.goBack()} />
+        <Button title="Salvar" onPress={editReceita} />
       </View>
     </ScrollView> 
     </View>
@@ -204,4 +255,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CriarReceita;
+export default Editar;
