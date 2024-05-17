@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { useFonts } from "@expo-google-fonts/poppins";
 import Body from "../components/Body";
@@ -25,11 +25,13 @@ const Home = () => {
       const data = await response.json();
       console.log(data.favorito);
       setFavoritas(data.favorito);
-  
+
       // Fetch each favorite recipe
       data.favorito.forEach(async (favorita) => {
         try {
-          const response = await fetch(`https://backcooking.onrender.com/receita/${favorita.receitaId}`);
+          const response = await fetch(
+            `https://backcooking.onrender.com/receita/${favorita.receitaId}`
+          );
           const data = await response.json();
           setReceitas((prevReceitas) => [...prevReceitas, data.receita]);
         } catch (error) {
@@ -58,7 +60,11 @@ const Home = () => {
   }
 
   if (isLoading) {
-    return <Text>Carregando...</Text>;
+    return (
+      <View style={styles.containerLoading}>
+        <Image source={require("../assets/loading.gif")} />
+      </View>
+    );
   }
   const navigation = useNavigation();
 
@@ -82,7 +88,6 @@ const Home = () => {
   }
 
   return (
-    // <View style={{ backgroundColor: "white" }}>
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{ alignItems: "flex-start" }}>
         <Text style={styles.titulo}>Suas receitas</Text>
@@ -90,17 +95,16 @@ const Home = () => {
           <Body />
           <Text style={styles.tituloFav}>Receitas favoritas</Text>
           {favoritas.map((favorita, index) => {
-          const receitaFavorita = receitas.find(
-            (receita) => receita.id === favorita.receitaId
-          );
-          return receitaFavorita ? (
-            <Body key={index} receita={receitaFavorita} />
-          ) : null;
-})}
+            const receitaFavorita = receitas.find(
+              (receita) => receita.id === favorita.receitaId
+            );
+            return receitaFavorita ? (
+              <Body key={index} receita={receitaFavorita} />
+            ) : null;
+          })}
         </View>
       </ScrollView>
     </View>
-    // </View>
   );
 };
 
@@ -109,6 +113,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-start",
     backgroundColor: "white",
+  },
+  containerLoading: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff082"
+  },
+  image: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   containerSplash: {
     flex: 1,

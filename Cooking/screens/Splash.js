@@ -1,6 +1,7 @@
 import {View, Text, StyleSheet, TextInput} from 'react-native'
 //import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react'
+import { Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import useUserLoggedStore from '../stores/useUserLoggedStore.js'
@@ -37,7 +38,10 @@ const Splash = () => {
 
   return (
     <View style={styles.container}>
-      <Text>Splash - Carregando...</Text>
+      <Image
+      source={require('../assets/loading.gif')} 
+
+    />
     </View>
   )
 }
@@ -46,7 +50,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: "#fff082"
     }
 })
 

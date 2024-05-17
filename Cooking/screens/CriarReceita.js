@@ -4,6 +4,7 @@ import { Poppins_500Black } from "@expo-google-fonts/poppins";
 import Button from "../components/Button";
 import AdicionarBtn from "../components/AdicionarBtn";
 import { useNavigation } from "@react-navigation/native";
+import useUserLoggedStore from "../stores/useUserLoggedStore";
 
 const CriarReceita = () => {
   const [txtName, setTxtName] = useState("");
@@ -15,6 +16,8 @@ const CriarReceita = () => {
   const [passos, setPassos] = useState([""]);
 
   const navigation = useNavigation()
+  
+  const userId = useUserLoggedStore(state => state.id);
 
   const postReceita = async () => {
     try {
@@ -24,6 +27,7 @@ const CriarReceita = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          userId,
           name: txtName,
           descricao: txtDescricao,
           porcoes: txtPorcao,

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { useFonts } from "@expo-google-fonts/poppins";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -54,9 +54,17 @@ const Conta = () => {
         source={require("../assets/foodBackground.png")}
         style={styles.bg}
       >
-        <Text style={styles.titulo}>Sua conta</Text>
-        <Text>Nome salvo: {nameUser}</Text>
-        <Button title="Sair" onPress={handleLogout}></Button>
+          <View style={styles.centeredContainer}>
+        <Text style={styles.titulo}>Sua conta</Text> 
+      
+           <Image
+          style={styles.profileImage}
+          source={require("../assets/user.png")}
+        />
+        <Text style={styles.name}>{nameUser}</Text>
+        </View>
+        {/* <Button style={styles.button} title="Editar" onPress={handleEdit}></Button> */}
+        <Button style={styles.button} title="Sair" onPress={handleLogout}></Button>
       </ImageBackground>
     </View>
   );
@@ -68,6 +76,9 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
   },
+  centeredContainer: {
+    alignItems: 'center',
+  },
   bg: {
     flex: 1,
     justifyContent: "flex-start",
@@ -76,6 +87,14 @@ const styles = StyleSheet.create({
     height: "100%",
     padding: 40,
   },
+  button: {
+    alignSelf: 'flex-start'
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
   input: {
     height: 40,
     width: "100%",
@@ -83,6 +102,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 18,
     padding: 10,
+  },
+  name: {
+    fontWeight: 400
   },
   titulo: {
     fontFamily: "Poppins_900Black",

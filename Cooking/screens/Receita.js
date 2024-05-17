@@ -3,15 +3,15 @@ import {
   Text,
   Image,
   ScrollView,
-  Button,
   Alert,
   Modal,
   StyleSheet,
   Pressable,
 } from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import useUserLoggedStore from "../stores/useUserLoggedStore";
+import React, { useState, useEffect } from "react";
 
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faHeart } from "@fortawesome/free-solid-svg-icons/faHeart";
@@ -27,18 +27,45 @@ import { useNavigation } from "@react-navigation/native";
 const Receita = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
+  const userId = useUserLoggedStore(state => state.id);
+
 
   let [fontsLoaded] = useFonts({
     Poppins_900Black,
   });
 
+ const route = useRoute();
+  const navigation = useNavigation();
+  const { receita } = route.params;
+const getFavoritoById = async (userId, receitaId) => {
+    try {
+      const response = await fetch(
+        `https://backcooking.onrender.com/favorito/${userId}/${receitaId}`
+      );
+      if (!response.ok) {
+        const data = response.json()
+        console.log(data.error)
+        return;
+      }
+      setIsFavorited(true)
+    } catch (error) {
+      console.error(`Error in getFavoritoById: ${error.message}`);
+    }
+  };
+
+
+
+
+  useEffect( () => {
+    getFavoritoById(userId, receita.id)
+  }, [])
+
   if (!fontsLoaded) {
     return null;
   }
 
-  const route = useRoute();
-  const navigation = useNavigation();
-  const { receita } = route.params;
+ 
+  
 
   //removerReceita
   const removeReceita = async () => {
@@ -70,8 +97,8 @@ const Receita = () => {
 
   const getUserId = async () => {
     try {
-      const userId = await AsyncStorage.getItem('userId');
-      console.log(userId)
+      const userId = await AsyncStorage.getItem("userId");
+      console.log(userId);
       return userId;
     } catch (error) {
       // Error retrieving data
@@ -79,21 +106,19 @@ const Receita = () => {
     }
   };
 
-  const favReceita = async (userId) => {
+  const favReceita = async () => {
+    console.log("entrei favreceita")
     try {
-      const result = await fetch(
-        "https://backcooking.onrender.com/favorito/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: Number(userId), // substitua por seu userId
-            receitaId: receita.id, // assumindo que receita.id é o id da receita
-          }),
-        }
-      );
+      const result = await fetch("https://backcooking.onrender.com/favorito/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: Number(userId), // substitua por seu userId
+          receitaId: receita.id, // assumindo que receita.id é o id da receita
+        }),
+      });
       if (!result.ok) {
         throw new Error(`HTTP error! status: ${result.status}`);
       }
@@ -101,7 +126,7 @@ const Receita = () => {
       console.log(data);
       if (data?.success) {
         setIsFavorited(true);
-        navigation.goBack();
+    
       } else {
         alert(data.error);
       }
@@ -111,15 +136,21 @@ const Receita = () => {
     }
   };
 
+  
+
+  
+
   const favReceitaRemove = async (userId) => {
     try {
+    
       const result = await fetch(
         "https://backcooking.onrender.com/favorito/",
+        +receita.id,
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-          }
+          },
         }
       );
       if (!result.ok) {
@@ -128,8 +159,8 @@ const Receita = () => {
       const data = await result.json();
       console.log(data);
       if (data?.success) {
-        setIsFavorited(true);
-        navigation.goBack();
+        setIsFavorited(false);
+    
       } else {
         alert(data.error);
       }
@@ -138,10 +169,7 @@ const Receita = () => {
       alert(error.message);
     }
   };
-  const onFavReceita = async () => {
-    const userId = await getUserId();
-    favReceita(userId, receita.id);
-  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{ alignItems: "center" }}>
@@ -154,9 +182,19 @@ const Receita = () => {
           <Pressable onPress={() => setModalVisible(true)}>
             <FontAwesomeIcon icon={faTrashCan} size={19} />
           </Pressable>
-          <Pressable onPress={onFavReceita}>
-            <FontAwesomeIcon icon={faHeart} size={19} color="#d31717" />
-          </Pressable>
+
+          {isFavorited ? (
+          <Pressable onPress={favReceitaRemove}>
+               <FontAwesomeIcon icon={faHeart} size={19} color="#d31717" />
+            </Pressable>
+            
+          ) : (<Pressable onPress={favReceita}>
+             <FontAwesomeIcon icon={faHeart} size={19} color="#fff" />{" "}
+            
+            </Pressable>
+            
+          )}
+
           <Pressable onPress={() => navigation.navigate("Editar", { receita })}>
             <FontAwesomeIcon icon={faPencil} size={19} />
           </Pressable>
