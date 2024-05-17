@@ -4,10 +4,13 @@ import {
   Image,
   ScrollView,
   Button,
-  Alert, Modal, StyleSheet, Pressable
+  Alert,
+  Modal,
+  StyleSheet,
+  Pressable,
 } from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from "react";
 
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
@@ -20,7 +23,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useFonts } from "@expo-google-fonts/poppins";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
-
 
 const Receita = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -65,15 +67,30 @@ const Receita = () => {
     }
   };
 
-  const favReceita = async () => {
+  const getUserId = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      console.log(userId)
+      return userId;
+    } catch (error) {
+      // Error retrieving data
+      console.error(error);
+    }
+  };
+
+  const favReceita = async (userId) => {
     try {
       const result = await fetch(
-        "https://backcooking.onrender.com/favorito/" + receita.id,
+        "https://backcooking.onrender.com/favorito/",
         {
-          method: "DELETE",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            userId: Number(userId), // substitua por seu userId
+            receitaId: receita.id, // assumindo que receita.id é o id da receita
+          }),
         }
       );
       if (!result.ok) {
@@ -87,9 +104,14 @@ const Receita = () => {
         alert(data.error);
       }
     } catch (error) {
-      console.log("Error removeReceita " + error.message);
+      console.log("Error favReceita " + error.message);
       alert(error.message);
     }
+  };
+
+  const onFavReceita = async () => {
+    const userId = await getUserId();
+    favReceita(userId, receita.id);
   };
   return (
     <View style={styles.container}>
@@ -98,13 +120,13 @@ const Receita = () => {
           source={{ uri: "https://fakeimg.pl/600x400" }}
           style={styles.fotoImg}
         />
-        
+
         <View style={styles.iconContainer}>
           <Pressable onPress={() => setModalVisible(true)}>
             <FontAwesomeIcon icon={faTrashCan} size={19} />
           </Pressable>
-          <Pressable onPress={favReceita}>
-          <FontAwesomeIcon icon={faHeart} size={19} color="#d31717" />
+          <Pressable onPress={onFavReceita}>
+            <FontAwesomeIcon icon={faHeart} size={19} color="#d31717" />
           </Pressable>
           <Pressable onPress={() => navigation.navigate("Editar", { receita })}>
             <FontAwesomeIcon icon={faPencil} size={19} />
@@ -172,7 +194,6 @@ const Receita = () => {
                 >
                   <Text style={styles.textStyle}>Cancelar</Text>
                 </Pressable>
-                
               </View>
             </View>
           </Modal>
@@ -216,17 +237,17 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 22,
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -240,39 +261,38 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingVertical: 8,
     paddingHorizontal: 5,
-    elevation: 2
-    
+    elevation: 2,
   },
   tHButton: {
     borderRadius: 20,
     marginVertical: 8,
     width: 120,
-    alignSelf:  'center'
+    alignSelf: "center",
   },
   textButton: {
-    color: '#FFF',
-    textAlign: 'center',
-    fontFamily: "Poppins_900Black"
+    color: "#FFF",
+    textAlign: "center",
+    fontFamily: "Poppins_900Black",
   },
 
   buttonClose: {
-    backgroundColor: '#FF421D',
-    paddingHorizontal: 30
+    backgroundColor: "#FF421D",
+    paddingHorizontal: 30,
   },
   buttonRemove: {
     paddingHorizontal: 20,
-    backgroundColor: '#f2c40e'
+    backgroundColor: "#f2c40e",
   },
   textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
   modalText: {
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
     fontFamily: "Poppins_900Black",
-    fontSize: 20
+    fontSize: 20,
   },
   infoItem: {
     flexDirection: "column", // Altere para 'column'

@@ -31,6 +31,7 @@ const Login = () => {
         try {
           await AsyncStorage.setItem('userLogged', JSON.stringify({...data.user, token: data.token}))
           await AsyncStorage.setItem('username', data.user.name);
+          await AsyncStorage.setItem('userId', data.user.id);
           login(data.user, data.token)
       
           navigation.navigate('Main')

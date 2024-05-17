@@ -68,6 +68,7 @@ const Home = () => {
           <View style={{ backgroundColor: "white" }}>
             <Body />
             <Text style={styles.tituloFav}>Receitas favoritas</Text>
+            
           </View>
         </ScrollView>
       </View>
