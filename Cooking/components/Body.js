@@ -2,7 +2,7 @@ import {View, StyleSheet, FlatList, Text, Platform} from 'react-native'
 import { useEffect, useState } from 'react'
 import CardReceita from './CardReceita.js'
 
-const Body = () => {
+const Body = (receita) => {
 
   const [receitas, setReceitas] = useState([])
 

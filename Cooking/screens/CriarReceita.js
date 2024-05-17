@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_900Black",
     fontSize: 30,
     marginTop: 40,
-    marginLeft: 20,
+    marginLeft: 30,
     alignSelf: "flex-start",
   },
   subtitulo: {

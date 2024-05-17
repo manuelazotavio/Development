@@ -26,6 +26,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const Receita = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [isFavorited, setIsFavorited] = useState(false);
 
   let [fontsLoaded] = useFonts({
     Poppins_900Black,
@@ -99,6 +100,7 @@ const Receita = () => {
       const data = await result.json();
       console.log(data);
       if (data?.success) {
+        setIsFavorited(true);
         navigation.goBack();
       } else {
         alert(data.error);
@@ -109,6 +111,33 @@ const Receita = () => {
     }
   };
 
+  const favReceitaRemove = async (userId) => {
+    try {
+      const result = await fetch(
+        "https://backcooking.onrender.com/favorito/",
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          }
+        }
+      );
+      if (!result.ok) {
+        throw new Error(`HTTP error! status: ${result.status}`);
+      }
+      const data = await result.json();
+      console.log(data);
+      if (data?.success) {
+        setIsFavorited(true);
+        navigation.goBack();
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.log("Error favReceita " + error.message);
+      alert(error.message);
+    }
+  };
   const onFavReceita = async () => {
     const userId = await getUserId();
     favReceita(userId, receita.id);

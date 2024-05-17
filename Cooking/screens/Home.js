@@ -13,11 +13,33 @@ const Home = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [receitas, setReceitas] = useState([]);
+  const [favoritas, setFavoritas] = useState([]);
 
   useEffect(() => {
     fetchReceitas();
+    fetchFavoritas();
   }, []);
-
+  const fetchFavoritas = async () => {
+    try {
+      const response = await fetch("https://backcooking.onrender.com/favorito");
+      const data = await response.json();
+      console.log(data.favorito);
+      setFavoritas(data.favorito);
+  
+      // Fetch each favorite recipe
+      data.favorito.forEach(async (favorita) => {
+        try {
+          const response = await fetch(`https://backcooking.onrender.com/receita/${favorita.receitaId}`);
+          const data = await response.json();
+          setReceitas((prevReceitas) => [...prevReceitas, data.receita]);
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const fetchReceitas = async () => {
     try {
       const response = await fetch("https://backcooking.onrender.com/receita");
@@ -53,25 +75,31 @@ const Home = () => {
               title={"Criar"}
               onPress={() => navigation.navigate("CriarReceita")}
             />
-            <Text style={styles.tituloFav}>Receitas favoritas</Text>
           </View>
         </ScrollView>
       </View>
     );
   }
-  
+
   return (
     // <View style={{ backgroundColor: "white" }}>
-      <View style={styles.container}>
-        <ScrollView contentContainerStyle={{ alignItems: 'flex-start' }}>
-          <Text style={styles.titulo}>Suas receitas</Text>
-          <View style={{ backgroundColor: "white" }}>
-            <Body />
-            <Text style={styles.tituloFav}>Receitas favoritas</Text>
-            
-          </View>
-        </ScrollView>
-      </View>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={{ alignItems: "flex-start" }}>
+        <Text style={styles.titulo}>Suas receitas</Text>
+        <View style={{ backgroundColor: "white" }}>
+          <Body />
+          <Text style={styles.tituloFav}>Receitas favoritas</Text>
+          {favoritas.map((favorita, index) => {
+          const receitaFavorita = receitas.find(
+            (receita) => receita.id === favorita.receitaId
+          );
+          return receitaFavorita ? (
+            <Body key={index} receita={receitaFavorita} />
+          ) : null;
+})}
+        </View>
+      </ScrollView>
+    </View>
     // </View>
   );
 };
