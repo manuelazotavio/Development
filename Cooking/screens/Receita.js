@@ -12,6 +12,7 @@ import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useUserLoggedStore from "../stores/useUserLoggedStore";
 import React, { useState, useEffect } from "react";
+import authFetch from "../helpers/authFetch";
 
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
 import { faHeart } from "@fortawesome/free-solid-svg-icons/faHeart";
@@ -27,50 +28,51 @@ import { useNavigation } from "@react-navigation/native";
 const Receita = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
-  const userId = useUserLoggedStore(state => state.id);
-
+  const userId = useUserLoggedStore((state) => state.id);
 
   let [fontsLoaded] = useFonts({
     Poppins_900Black,
   });
 
- const route = useRoute();
+  const route = useRoute();
   const navigation = useNavigation();
   const { receita } = route.params;
-const getFavoritoById = async (userId, receitaId) => {
+  const token = useUserLoggedStore((state) => state.token);
+
+  const getFavoritoById = async (userId, receitaId) => {
     try {
-      const response = await fetch(
-        `https://backcooking.onrender.com/favorito/${userId}/${receitaId}`
+      console.log(token)
+      const response = await authFetch(
+        `https://backcooking.onrender.com/favorito/${userId}/${receitaId}`,
+        {
+          headers: {
+          "Content-Type": "application/json",
+          }
+        },
       );
       if (!response.ok) {
-        const data = response.json()
-        console.log(data.error)
+        const data = response.json();
+        console.log(data.error);
         return;
       }
-      setIsFavorited(true)
+      setIsFavorited(true);
     } catch (error) {
       console.error(`Error in getFavoritoById: ${error.message}`);
     }
   };
 
-
-
-
-  useEffect( () => {
-    getFavoritoById(userId, receita.id)
-  }, [])
+  useEffect(() => {
+    getFavoritoById(userId, receita.id);
+  }, []);
 
   if (!fontsLoaded) {
     return null;
   }
 
- 
-  
-
   //removerReceita
   const removeReceita = async () => {
     try {
-      const result = await fetch(
+      const result = await authFetch(
         "https://backcooking.onrender.com/receita/" + receita.id,
         {
           method: "DELETE",
@@ -95,28 +97,20 @@ const getFavoritoById = async (userId, receitaId) => {
     }
   };
 
-  const getUserId = async () => {
-    try {
-      const userId = await AsyncStorage.getItem("userId");
-      console.log(userId);
-      return userId;
-    } catch (error) {
-      // Error retrieving data
-      console.error(error);
-    }
-  };
+  
 
   const favReceita = async () => {
-    console.log("entrei favreceita")
+    console.log("entrei favreceita");
     try {
-      const result = await fetch("https://backcooking.onrender.com/favorito/", {
+      console.log(token)
+      const result = await authFetch("https://backcooking.onrender.com/favorito/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: Number(userId), // substitua por seu userId
-          receitaId: receita.id, // assumindo que receita.id é o id da receita
+          userId: Number(userId), 
+          receitaId: receita.id,
         }),
       });
       if (!result.ok) {
@@ -126,7 +120,6 @@ const getFavoritoById = async (userId, receitaId) => {
       console.log(data);
       if (data?.success) {
         setIsFavorited(true);
-    
       } else {
         alert(data.error);
       }
@@ -136,14 +129,10 @@ const getFavoritoById = async (userId, receitaId) => {
     }
   };
 
-  
-
-  
-
   const favReceitaRemove = async (userId) => {
+    console.log("entrei favreceitremove")
     try {
-    
-      const result = await fetch(
+      const result = await authFetch(
         "https://backcooking.onrender.com/favorito/",
         +receita.id,
         {
@@ -160,7 +149,6 @@ const getFavoritoById = async (userId, receitaId) => {
       console.log(data);
       if (data?.success) {
         setIsFavorited(false);
-    
       } else {
         alert(data.error);
       }
@@ -184,15 +172,13 @@ const getFavoritoById = async (userId, receitaId) => {
           </Pressable>
 
           {isFavorited ? (
-          <Pressable onPress={favReceitaRemove}>
-               <FontAwesomeIcon icon={faHeart} size={19} color="#d31717" />
+            <Pressable onPress={favReceitaRemove}>
+              <FontAwesomeIcon icon={faHeart} size={19} color="#d31717" />
             </Pressable>
-            
-          ) : (<Pressable onPress={favReceita}>
-             <FontAwesomeIcon icon={faHeart} size={19} color="#fff" />{" "}
-            
+          ) : (
+            <Pressable onPress={favReceita}>
+              <FontAwesomeIcon icon={faHeart} size={19} color="#fff" />{" "}
             </Pressable>
-            
           )}
 
           <Pressable onPress={() => navigation.navigate("Editar", { receita })}>

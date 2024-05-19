@@ -3,11 +3,13 @@ import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { useFonts } from "@expo-google-fonts/poppins";
 import Body from "../components/Body";
 import React, { useState, useEffect } from "react";
+
 import { useNavigation } from "@react-navigation/native";
 import AdicionarBtn from "../components/AdicionarBtn";
+import authFetch from "../helpers/authFetch";
 
 const Home = () => {
-  let [fontsLoaded] = useFonts({
+  useFonts({
     Poppins_900Black,
   });
 
@@ -15,13 +17,23 @@ const Home = () => {
   const [receitas, setReceitas] = useState([]);
   const [favoritas, setFavoritas] = useState([]);
 
+  const navigation = useNavigation();
+
   useEffect(() => {
     fetchReceitas();
     fetchFavoritas();
   }, []);
+
   const fetchFavoritas = async () => {
     try {
-      const response = await fetch("https://backcooking.onrender.com/favorito");
+      const response = await authFetch(
+        "https://backcooking.onrender.com/favorito",
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const data = await response.json();
       console.log(data.favorito);
       setFavoritas(data.favorito);
@@ -29,7 +41,7 @@ const Home = () => {
       // Fetch each favorite recipe
       data.favorito.forEach(async (favorita) => {
         try {
-          const response = await fetch(
+          const response = await authFetch(
             `https://backcooking.onrender.com/receita/${favorita.receitaId}`
           );
           const data = await response.json();
@@ -42,22 +54,18 @@ const Home = () => {
       console.error(error);
     }
   };
+
   const fetchReceitas = async () => {
     try {
       const response = await fetch("https://backcooking.onrender.com/receita");
       const data = await response.json();
       setReceitas(data.receita);
-      console.log(data.receita);
       setIsLoading(false);
     } catch (error) {
       console.error(error);
       setIsLoading(false);
     }
   };
-
-  if (!fontsLoaded) {
-    return null;
-  }
 
   if (isLoading) {
     return (
@@ -66,7 +74,6 @@ const Home = () => {
       </View>
     );
   }
-  const navigation = useNavigation();
 
   if (receitas.length === 0) {
     return (
@@ -118,7 +125,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#fff082"
+    backgroundColor: "#fff082",
   },
   image: {
     alignItems: "center",
