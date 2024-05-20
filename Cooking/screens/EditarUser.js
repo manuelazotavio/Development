@@ -2,6 +2,7 @@ import { View, StyleSheet, ScrollView, TextInput, Text } from "react-native";
 import Button from "../components/Button.js";
 import { useState } from "react";
 import { useRoute, useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import useUserStore from "../stores/userStore.js";
 import useUserLoggedStore from "../stores/useUserLoggedStore.js";
 import authFetch from "../helpers/authFetch.js";
@@ -14,28 +15,32 @@ const EditarUser = () => {
 
   const removeUserStore = useUserStore((state) => state.removeUser);
   const updateUser = useUserStore((state) => state.updateUser);
-  const token = useUserLoggedStore((state) => state.token);
 
-  const { user } = route.params;
+  
+  const { userLogado } = route.params;
+  const userId = userLogado.id
 
-  const [txtName, setTxtName] = useState(user.name);
-  const [txtEmail, setTxtEmail] = useState(user.email);
-  const [txtAvatar, setTxtAvatar] = useState(user.avatar);
+  const [txtName, setTxtName] = useState(userLogado.name);
+  const [txtEmail, setTxtEmail] = useState(userLogado.email);
+  const [txtAvatar, setTxtAvatar] = useState(userLogado.avatar);
 
   const editUser = async () => {
     try {
       //const result = await authFetch('https://backend-api-express-1sem2024-rbd1.onrender.com/user/'+user.id, {
-      const result = await authFetch("http://localhost:3333/user/" + user.id, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: txtName,
-          email: txtEmail,
-          avatar: txtAvatar,
-        }),
-      });
+      const result = await authFetch(
+        "https://backcooking.onrender.com/user/" + userId,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: txtName,
+            email: txtEmail,
+            avatar: txtAvatar,
+          }),
+        }
+      );
       if (!result.ok) {
         const dataError = await result.json();
         if (
@@ -52,6 +57,7 @@ const EditarUser = () => {
       console.log(data);
       if (data?.success) {
         //update do user na store com o data.user
+        await AsyncStorage.setItem('userLogged', JSON.stringify(data.user));
         updateUser(data.user);
         navigation.goBack();
       } else {
@@ -65,33 +71,36 @@ const EditarUser = () => {
 
   const removeUser = async () => {
     try {
-      //const result = await authFetch('https://backend-api-express-1sem2024-rbd1.onrender.com/user/'+user.id, {
-      const result = await authFetch("http://localhost:3333/user/" + user.id, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!result.ok) {
-        const dataError = await result.json();
-        if (
-          dataError?.error &&
-          dataError?.code &&
-          dataError.code === "logout"
-        ) {
-          alert("Sessão expirada!");
-          navigation.navigate("Login");
-          return;
-        }
-      }
-      const data = await result.json();
-      console.log(data);
-      if (data?.success) {
-        removeUserStore(user.id);
-        navigation.goBack();
-      } else {
-        alert(data.error);
-      }
+        const { response, data } = await authFetch(
+            "https://backcooking.onrender.com/user/" + userId,
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          
+          if (!response.ok) {
+            // Use data directly instead of calling response.json()
+            if (
+              data?.error &&
+              data?.code &&
+              data.code === "logout"
+            ) {
+              alert("Sessão expirada!");
+              navigation.navigate("Login");
+              return;
+            }
+          }
+          
+          console.log(data);
+          if (data?.success) {
+            removeUserStore(userId);
+            navigation.goBack();
+          } else {
+            alert(data.error);
+          }
     } catch (error) {
       console.log("Error removeUser " + error.message);
       alert(error.message);
@@ -100,7 +109,7 @@ const EditarUser = () => {
 
   return (
     <View style={{ backgroundColor: "#fff", width: "100%", flex: 1 }}>
-      <View >
+      <View>
         <View style={styles.container}>
           <Text style={styles.titulo}>Editar</Text>
           <View style={styles.form}>
@@ -125,8 +134,8 @@ const EditarUser = () => {
           </View>
         </View>
       </View>
-      <Button title="Cancelar" color="#f2c40e" onPress={() => navigation.navigate('Conta')} />
-      <CadastrarBtn title="Salvar" onPress={editUser} />
+      <Button title="Cancelar" onPress={() => navigation.navigate("Conta")} />
+      <Button title="Salvar" onPress={editUser} />
 
       <Button title="Apagar conta" onPress={removeUser} />
     </View>

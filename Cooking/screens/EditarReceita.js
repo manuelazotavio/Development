@@ -188,8 +188,8 @@ tornar homogênea."
         />
         
         
-        <Button title="Cancelar" color="#FF421D" onPress={() => navigation.goBack()} />
-        <Button title="Salvar" color="#FF421D" onPress={editReceita} />
+        <Button title="Cancelar"  onPress={() => navigation.goBack()} />
+        <Button title="Salvar" onPress={editReceita} />
       </View>
     </ScrollView> 
     </View>

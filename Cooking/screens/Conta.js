@@ -9,34 +9,21 @@ import Button from "../components/Button";
 import { useNavigation } from "@react-navigation/native";
 
 const Conta = () => {
-  const [nameUser, setNameUser] = useState("");
-  const [user, setUser] = useState(null)
-  const navigation = useNavigation()
- 
-  const getAS = async (data) => {
-    let dataFound = null;
-    try {
-      dataFound = await AsyncStorage.getItem(data);
-    } catch (error) {
-      console.log("Erro ao ler dado");
-    }
-    return dataFound;
-  };
+  const navigation = useNavigation();
+
+  const [userLogado, setUserLogado] = useState(null);
 
   useEffect(() => {
-    const getNome = async () => {
-      const nome = await getAS("username");
-      setNameUser(nome);
+    const fetchUser = async () => {
+      const userString = await AsyncStorage.getItem("userLogged");
+      const user = JSON.parse(userString);
+      setUserLogado(user);
     };
 
-    const getUser = async () => {
-      const userLogged = await getAS("userLogged");
-      setUser(userLogged);
-    };
-    getUser()
-    getNome();
+    fetchUser();
   }, []);
 
+  console.log(userLogado)
   const logout = useUserLoggedStore((state) => state.logout);
 
   const handleLogout = async () => {
@@ -69,11 +56,11 @@ const Conta = () => {
           style={styles.profileImage}
           source={require("../assets/user.png")}
         />
-        <Text style={styles.name}>{nameUser}</Text>
+        <Text style={styles.name}>{userLogado.name}</Text>
         </View>
-        <Button style={styles.button} color="#FF421D" title="Editar" onPress={() => navigation.navigate('EditarUser', {user})}></Button>
+        <Button style={styles.button} title="Editar" onPress={() => navigation.navigate('EditarUser', {userLogado})}></Button>
         
-        <Button color="#FF421D" style={styles.button} title="Sair" onPress={handleLogout}></Button>
+        <Button  style={styles.button} title="Sair" onPress={handleLogout}></Button>
       </ImageBackground>
     </View>
   );
