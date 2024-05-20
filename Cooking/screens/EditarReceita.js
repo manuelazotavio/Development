@@ -4,7 +4,7 @@ import { useState } from "react";
 import AdicionarBtn from "../components/AdicionarBtn.js";
 import { useRoute, useNavigation } from "@react-navigation/native";
 
-const Editar = () => {
+const EditarReceita = () => {
   const route = useRoute();
   const navigation = useNavigation();
 
@@ -188,8 +188,8 @@ tornar homogênea."
         />
         
         
-        <Button title="Cancelar" onPress={() => navigation.goBack()} />
-        <Button title="Salvar" onPress={editReceita} />
+        <Button title="Cancelar" color="#FF421D" onPress={() => navigation.goBack()} />
+        <Button title="Salvar" color="#FF421D" onPress={editReceita} />
       </View>
     </ScrollView> 
     </View>
@@ -255,4 +255,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Editar;
+export default EditarReceita;

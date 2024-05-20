@@ -6,10 +6,13 @@ import { useEffect, useState } from "react";
 import { ImageBackground } from "react-native";
 import useUserLoggedStore from "../stores/useUserLoggedStore";
 import Button from "../components/Button";
+import { useNavigation } from "@react-navigation/native";
 
 const Conta = () => {
   const [nameUser, setNameUser] = useState("");
-
+  const [user, setUser] = useState(null)
+  const navigation = useNavigation()
+ 
   const getAS = async (data) => {
     let dataFound = null;
     try {
@@ -26,6 +29,11 @@ const Conta = () => {
       setNameUser(nome);
     };
 
+    const getUser = async () => {
+      const userLogged = await getAS("userLogged");
+      setUser(userLogged);
+    };
+    getUser()
     getNome();
   }, []);
 
@@ -63,8 +71,9 @@ const Conta = () => {
         />
         <Text style={styles.name}>{nameUser}</Text>
         </View>
-        {/* <Button style={styles.button} title="Editar" onPress={handleEdit}></Button> */}
-        <Button style={styles.button} title="Sair" onPress={handleLogout}></Button>
+        <Button style={styles.button} color="#FF421D" title="Editar" onPress={() => navigation.navigate('EditarUser', {user})}></Button>
+        
+        <Button color="#FF421D" style={styles.button} title="Sair" onPress={handleLogout}></Button>
       </ImageBackground>
     </View>
   );

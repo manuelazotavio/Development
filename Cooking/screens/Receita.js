@@ -28,7 +28,6 @@ import { useNavigation } from "@react-navigation/native";
 const Receita = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
-  const userId = useUserLoggedStore((state) => state.id);
 
   let [fontsLoaded] = useFonts({
     Poppins_900Black,
@@ -38,17 +37,17 @@ const Receita = () => {
   const navigation = useNavigation();
   const { receita } = route.params;
   const token = useUserLoggedStore((state) => state.token);
-
+  const userId = useUserLoggedStore((state) => state.id);
   const getFavoritoById = async (userId, receitaId) => {
     try {
-      console.log(token)
+      console.log(token);
       const response = await authFetch(
         `https://backcooking.onrender.com/favorito/${userId}/${receitaId}`,
         {
           headers: {
-          "Content-Type": "application/json",
-          }
-        },
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (!response.ok) {
         const data = response.json();
@@ -97,22 +96,23 @@ const Receita = () => {
     }
   };
 
-  
-
   const favReceita = async () => {
     console.log("entrei favreceita");
     try {
-      console.log(token)
-      const result = await authFetch("https://backcooking.onrender.com/favorito/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: Number(userId), 
-          receitaId: receita.id,
-        }),
-      });
+      console.log(token);
+      const result = await authFetch(
+        "https://backcooking.onrender.com/favorito/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: Number(userId),
+            receitaId: receita.id,
+          }),
+        }
+      );
       if (!result.ok) {
         throw new Error(`HTTP error! status: ${result.status}`);
       }
@@ -129,17 +129,23 @@ const Receita = () => {
     }
   };
 
-  const favReceitaRemove = async (userId) => {
-    console.log("entrei favreceitremove")
+  const favReceitaRemove = async () => {
+    console.log("entrei favreceitremove");
     try {
+      const receitaId = receita.id;
+      console.log(userId);
+      console.log(receitaId);
       const result = await authFetch(
         "https://backcooking.onrender.com/favorito/",
-        +receita.id,
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({
+            userId: Number(userId),
+            receitaId: Number(receitaId),
+          }),
         }
       );
       if (!result.ok) {
@@ -181,7 +187,9 @@ const Receita = () => {
             </Pressable>
           )}
 
-          <Pressable onPress={() => navigation.navigate("Editar", { receita })}>
+          <Pressable
+            onPress={() => navigation.navigate("EditarReceita", { receita })}
+          >
             <FontAwesomeIcon icon={faPencil} size={19} />
           </Pressable>
         </View>

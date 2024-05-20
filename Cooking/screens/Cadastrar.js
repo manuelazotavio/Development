@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import {View, Text, TextInput, StyleSheet, ScrollView} from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import Button from '../components/Button'
+
 import CadastrarBtn from '../components/CadastrarBtn'
 
 

@@ -4,9 +4,10 @@ import CriarReceita from './screens/CriarReceita';
 import { Feather } from '@expo/vector-icons'
 import Receita from './screens/Receita';
 import Cadastrar from './screens/Cadastrar';
-import Editar from './screens/Editar';
+import EditarReceita from './screens/EditarReceita';
 import Splash from './screens/Splash';
 import Conta from './screens/Conta';
+import EditarUser from './screens/EditarUser';
 import Home from './screens/Home';
 import Login from './screens/Login';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -93,14 +94,21 @@ export default function App() {
           options={{
             headerShown: false
           }}
-        />
-        <Stack.Screen
-          name="Editar"
-          component={Editar}
+        /><Stack.Screen
+          name="EditarUser"
+          component={EditarUser}
           options={{
             headerShown: false
           }}
         /> 
+        <Stack.Screen
+          name="EditarReceita"
+          component={EditarReceita}
+          options={{
+            headerShown: false
+          }}
+        /> 
+        
         <Stack.Screen
           name="Main"
           component={MainNavigator}
