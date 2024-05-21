@@ -56,7 +56,8 @@ const Conta = () => {
           style={styles.profileImage}
           source={require("../assets/user.png")}
         />
-        <Text style={styles.name}>{userLogado.name}</Text>
+        <Text style={styles.name}><b>Nome de usuário:</b> {userLogado.name}</Text>
+        <Text style={styles.name}><b>E-mail:</b> {userLogado.email}</Text>
         </View>
         <Button style={styles.button} title="Editar" onPress={() => navigation.navigate('EditarUser', {userLogado})}></Button>
         
@@ -69,22 +70,22 @@ const Conta = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
+    justifyContent: "flex-start", // changed from "center"
+    alignItems: "center", 
   },
   centeredContainer: {
     alignItems: 'center',
   },
   bg: {
     flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
+    justifyContent: "flex-start", // changed from "center"
+    alignItems: "center", 
     width: "100%",
     height: "100%",
     padding: 40,
   },
   button: {
-    alignSelf: 'flex-start'
+    alignSelf: 'center' 
   },
   profileImage: {
     width: 100,

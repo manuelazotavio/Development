@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import {View, Text, TextInput, StyleSheet, ScrollView} from 'react-native'
+import {View, Text, TextInput, StyleSheet, Modal} from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import CadastrarBtn from '../components/CadastrarBtn'
@@ -8,6 +8,8 @@ import CadastrarBtn from '../components/CadastrarBtn'
 const Cadastrar = () => {
     const navigation = useNavigation()
 
+    const [modalMessage, setModalMessage] = useState("");
+    const [modalVisible, setModalVisible] = useState(false);
     const [txtName, setTxtName] = useState('')
     const [txtEmail, setTxtEmail] = useState('')
     const [txtAvatar, setTxtAvatar] = useState('')
@@ -28,7 +30,10 @@ const Cadastrar = () => {
           if(data?.success){
             navigation.goBack()
           } else {
-            alert(data.error)
+            if (result.status === 400) {
+              setModalMessage("Os campos são inválidos ou vazios.");
+              setModalVisible(true);
+            }
           }
         } catch (error){
           console.log('Error postUser ' + error.message)
@@ -68,6 +73,10 @@ const Cadastrar = () => {
                 <CadastrarBtn 
                     title="Cadastrar"
                     onPress={postUser}
+                />
+                <CadastrarBtn 
+                    title="Voltar"
+                    onPress={() => navigation.navigate('Login')}
                 />
             </View>
         </View>

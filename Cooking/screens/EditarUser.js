@@ -88,7 +88,7 @@ const EditarUser = () => {
       console.log(data)
       if(data?.success){
         removeUserStore(userId)
-        navigation.goBack()
+        navigation.navigate('Splash')
       } else {
         alert(data.error)
       }
