@@ -61,7 +61,11 @@ const Login = () => {
           setModalVisible(true);
         }
         if (response.status === 400) {
-          setModalMessage("Insira um e-mail e senha.");
+          let errorMessage = '';
+          for (let field in data.fields) {
+            errorMessage += data.fields[field].messages[0] + ' ';
+          }
+          setModalMessage(errorMessage.trim());
           setModalVisible(true);
         }
       }
@@ -104,7 +108,11 @@ const Login = () => {
           onPress={() => navigation.navigate("Cadastrar")}
         />
       </View>
-      <View style={styles.centeredView}>
+      <View
+        style={[
+          styles.centeredView
+        ]}
+      >
         <Modal
           animationType="fade"
           transparent={true}
@@ -137,6 +145,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 20,
+    marginTop: 250,
   },
   input: {
     height: 40,
@@ -174,11 +183,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 22,
-    position: 'absolute', 
-    top: 0, 
-    left: 0, 
-    width: '100%', 
-    height: '100%', 
   },
   tHButton: {
     borderRadius: 20,
@@ -216,8 +220,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 40,
     marginLeft: 5,
-    alignSelf: "flex-start",
-    justifyContent: "flex-start",
   },
   descricao: {
     paddingVertical: 10,
