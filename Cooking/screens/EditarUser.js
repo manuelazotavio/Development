@@ -4,10 +4,8 @@ import { useState } from "react";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useUserStore from "../stores/userStore.js";
-import useUserLoggedStore from "../stores/useUserLoggedStore.js";
 import authFetch from "../helpers/authFetch.js";
-import AdicionarBtn from "../components/AdicionarBtn.js";
-import CadastrarBtn from "../components/CadastrarBtn.js";
+
 
 const EditarUser = () => {
   const route = useRoute();
@@ -69,43 +67,36 @@ const EditarUser = () => {
     }
   };
 
-  const removeUser = async () => {
-    try {
-        const { response, data } = await authFetch(
-            "https://backcooking.onrender.com/user/" + userId,
-            {
-              method: "DELETE",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          
-          if (!response.ok) {
-            // Use data directly instead of calling response.json()
-            if (
-              data?.error &&
-              data?.code &&
-              data.code === "logout"
-            ) {
-              alert("Sessão expirada!");
-              navigation.navigate("Login");
-              return;
-            }
-          }
-          
-          console.log(data);
-          if (data?.success) {
-            removeUserStore(userId);
-            navigation.goBack();
-          } else {
-            alert(data.error);
-          }
-    } catch (error) {
-      console.log("Error removeUser " + error.message);
-      alert(error.message);
+  const removeUser = async () =>{
+    try{
+      //const result = await authFetch('https://backend-api-express-1sem2024-rbd1.onrender.com/user/'+user.id, {
+      const result = await authFetch('https://backcooking.onrender.com/user/'+ userId, {
+        method: "DELETE",
+        headers:{
+          "Content-Type": "application/json"
+        }
+      })
+      if(!result.ok){
+        const dataError = await result.json()
+        if(dataError?.error && dataError?.code && dataError.code === "logout"){
+          alert('Sessão expirada!')
+          navigation.navigate('Login')
+          return
+        }
+      }
+      const data = await result.json()
+      console.log(data)
+      if(data?.success){
+        removeUserStore(userId)
+        navigation.goBack()
+      } else {
+        alert(data.error)
+      }
+    } catch (error){
+      console.log('Error removeUser ' + error.message)
+      alert(error.message)
     }
-  };
+  } 
 
   return (
     <View style={{ backgroundColor: "#fff", width: "100%", flex: 1 }}>
