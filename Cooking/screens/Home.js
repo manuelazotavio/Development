@@ -16,6 +16,7 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [receitas, setReceitas] = useState([]);
   const [favoritas, setFavoritas] = useState([]);
+  console.log("favoritas:", favoritas);
 
   const navigation = useNavigation();
 
@@ -45,7 +46,7 @@ const Home = () => {
             `https://backcooking.onrender.com/receita/${favorita.receitaId}`
           );
           const data = await response.json();
-          setReceitas((prevReceitas) => [...prevReceitas, data.receita]);
+          setFavoritas((prevFavoritas) => [...prevFavoritas, data.receita]);
         } catch (error) {
           console.error(error);
         }
@@ -102,13 +103,12 @@ const Home = () => {
           <Body />
           <Text style={styles.tituloFav}>Receitas favoritas</Text>
           {favoritas.map((favorita, index) => {
-            const receitaFavorita = receitas.find(
-              (receita) => receita.id === favorita.receitaId
-            );
-            return receitaFavorita ? (
-              <Body key={index} receita={receitaFavorita} />
-            ) : null;
-          })}
+  const isFavorite = receitas.some(receita => receita.id === favorita.id);
+  if (isFavorite) {
+    return <Body key={index} receita={favorita} />;
+  }
+  return null;
+})}
         </View>
       </ScrollView>
     </View>

@@ -3,6 +3,7 @@ import Button from "../components/Button.js";
 import { useState } from "react";
 import AdicionarBtn from "../components/AdicionarBtn.js";
 import { useRoute, useNavigation } from "@react-navigation/native";
+import authFetch from "../helpers/authFetch.js";
 
 const EditarReceita = () => {
   const route = useRoute();
@@ -46,7 +47,7 @@ const EditarReceita = () => {
   const editReceita = async () => {
     try {
       //const result = await authFetch('https://backend-api-express-1sem2024-rbd1.onrender.com/user/'+user.id, {
-      const result = await fetch(
+      const result = await authFetch(
         "https://backcooking.onrender.com/receita/" + receita.id,
         {
           method: "PUT",
@@ -80,45 +81,10 @@ const EditarReceita = () => {
     }
   };
 
-  const removeUser = async () => {
-    try {
-      //const result = await authFetch('https://backend-api-express-1sem2024-rbd1.onrender.com/user/'+user.id, {
-      const result = await authFetch("http://localhost:3333/user/" + user.id, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!result.ok) {
-        const dataError = await result.json();
-        if (
-          dataError?.error &&
-          dataError?.code &&
-          dataError.code === "logout"
-        ) {
-          alert("Sessão expirada!");
-          navigation.navigate("Login");
-          return;
-        }
-      }
-      const data = await result.json();
-      console.log(data);
-      if (data?.success) {
-        removeUserStore(user.id);
-        navigation.goBack();
-      } else {
-        alert(data.error);
-      }
-    } catch (error) {
-      console.log("Error removeUser " + error.message);
-      alert(error.message);
-    }
-  };
 
   return (
     <View style={styles.container} >
 
-   
     <ScrollView>
       <Text style={styles.titulo}>Edite sua receita!</Text>
       <View style={styles.form}>

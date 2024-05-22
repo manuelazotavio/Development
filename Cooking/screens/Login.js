@@ -5,6 +5,7 @@ import {
   TextInput,
   Modal,
   Pressable,
+  ScrollView
 } from "react-native";
 import Button from "../components/Button.js";
 import { useNavigation } from "@react-navigation/native";
@@ -81,7 +82,8 @@ const Login = () => {
     return null;
   }
   return (
-    <View style={{ backgroundColor: "#fff", width: "100%", flex: 1 }}>
+   
+    <View style={{ backgroundColor: "#fff", width: "100%", flex:1 }}>
       <View style={styles.container}>
         <Text style={styles.titulo}>Entrar</Text>
 
@@ -108,34 +110,33 @@ const Login = () => {
           onPress={() => navigation.navigate("Cadastrar")}
         />
       </View>
-      <View
-        style={[
-          styles.centeredView
-        ]}
-      >
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>{modalMessage}</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={styles.textStyle}>Tentar novamente</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
+      {modalVisible && (
+  <View style={[styles.centeredView]}>
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        Alert.alert("Modal has been closed.");
+        setModalVisible(!modalVisible);
+      }}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>{modalMessage}</Text>
+          <Pressable
+            style={[styles.button, styles.buttonClose]}
+            onPress={() => setModalVisible(!modalVisible)}
+          >
+            <Text style={styles.textStyle}>Tentar novamente</Text>
+          </Pressable>
+        </View>
       </View>
+    </Modal>
+  </View>
+)}
     </View>
+   
   );
 };
 
@@ -145,7 +146,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 20,
-    marginTop: 250,
+
   },
   input: {
     height: 40,

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, TextInput, StyleSheet, ScrollView, Text } from "react-native";
-import { Poppins_500Black } from "@expo-google-fonts/poppins";
+import authFetch from "../helpers/authFetch";
 import Button from "../components/Button";
 import AdicionarBtn from "../components/AdicionarBtn";
 import { useNavigation } from "@react-navigation/native";
@@ -21,7 +21,8 @@ const CriarReceita = () => {
 
   const postReceita = async () => {
     try {
-      const result = await fetch("https://backcooking.onrender.com/receita", {
+      console.log(userId)
+      const result = await authFetch("https://backcooking.onrender.com/receita", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

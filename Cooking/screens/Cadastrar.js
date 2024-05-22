@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, TextInput, StyleSheet, Modal, Pressable } from "react-native";
+import { View, Text, TextInput, StyleSheet, Modal, Pressable, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import CadastrarBtn from "../components/CadastrarBtn";
@@ -46,6 +46,7 @@ const Cadastrar = () => {
   };
 
   return (
+ 
     <View style={{ backgroundColor: "#fff", width: "100%", flex: 1 }}>
       <View style={styles.container}>
         <Text style={styles.titulo}>Cadastrar</Text>
@@ -81,29 +82,31 @@ const Cadastrar = () => {
           />
         </View>
       </View>
-      <View style={[styles.centeredView]}>
-        <Modal
-          animationType="fade"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>{modalMessage}</Text>
-              <Pressable
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}
-              >
-                <Text style={styles.textStyle}>Tentar novamente</Text>
-              </Pressable>
-            </View>
-          </View>
-        </Modal>
+      {modalVisible && (
+  <View style={[styles.centeredView]}>
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        Alert.alert("Modal has been closed.");
+        setModalVisible(!modalVisible);
+      }}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>{modalMessage}</Text>
+          <Pressable
+            style={[styles.button, styles.buttonClose]}
+            onPress={() => setModalVisible(!modalVisible)}
+          >
+            <Text style={styles.textStyle}>Tentar novamente</Text>
+          </Pressable>
+        </View>
       </View>
+    </Modal>
+  </View>
+)}
     </View>
   );
 };
@@ -115,7 +118,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 20,
     backgroundColor: "#fff",
-    marginTop: 200
   },
   input: {
     height: 40,

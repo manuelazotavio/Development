@@ -15,12 +15,13 @@ const Splash = () => {
     const checkUserLogged = async () => {
       try {
         const dataFound = await AsyncStorage.getItem('userLogged')
+        console.log('dataFound:', dataFound)
         if(dataFound){
           const data = JSON.parse(dataFound)
+          console.log('data:', data)
           const { token } = data
-          const user = data
-          delete user.token
-          login(user, token)
+          delete data.token
+          login(data, token)
           setTimeout(() => {
             navigation.navigate('Main')
           }, 2000)
