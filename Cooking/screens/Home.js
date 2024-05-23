@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { useFonts } from "@expo-google-fonts/poppins";
-import Body from "../components/Body";
+import ListaReceitas from "../components/ListaReceitas";
 import React, { useState, useEffect } from "react";
 
 import { useNavigation } from "@react-navigation/native";
@@ -15,6 +15,7 @@ const Home = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [receitas, setReceitas] = useState([]);
+  const [receitasFavoritas, setReceitasFavoritas] = useState([]);
   const [favoritas, setFavoritas] = useState([]);
   console.log("favoritas:", favoritas);
 
@@ -27,7 +28,7 @@ const Home = () => {
 
   const fetchFavoritas = async () => {
     try {
-      const response = await authFetch(
+      const result = await authFetch(
         "https://backcooking.onrender.com/favorito",
         {
           headers: {
@@ -35,18 +36,18 @@ const Home = () => {
           },
         }
       );
-      const data = await response.json();
+      const data = await result.json();
       console.log(data.favorito);
       setFavoritas(data.favorito);
 
       // Fetch each favorite recipe
       data.favorito.forEach(async (favorita) => {
         try {
-          const response = await authFetch(
+          const result = await authFetch(
             `https://backcooking.onrender.com/receita/${favorita.receitaId}`
           );
-          const data = await response.json();
-          setFavoritas((prevFavoritas) => [...prevFavoritas, data.receita]);
+          const data = await result.json();
+          setReceitasFavoritas((prevFavoritas) => [...prevFavoritas, data.receita]);
         } catch (error) {
           console.error(error);
         }
@@ -58,8 +59,15 @@ const Home = () => {
 
   const fetchReceitas = async () => {
     try {
-      const response = await fetch("https://backcooking.onrender.com/receita");
-      const data = await response.json();
+      const result = await authFetch(
+        "https://backcooking.onrender.com/receita",
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await result.json();
       setReceitas(data.receita);
       setIsLoading(false);
     } catch (error) {
@@ -100,15 +108,9 @@ const Home = () => {
       <ScrollView contentContainerStyle={{ alignItems: "flex-start" }}>
         <Text style={styles.titulo}>Suas receitas</Text>
         <View style={{ backgroundColor: "white" }}>
-          <Body />
+          <ListaReceitas receitas={receitas} />
           <Text style={styles.tituloFav}>Receitas favoritas</Text>
-          {favoritas.map((favorita, index) => {
-  const isFavorite = receitas.some(receita => receita.id === favorita.id);
-  if (isFavorite) {
-    return <Body key={index} receita={favorita} />;
-  }
-  return null;
-})}
+          <ListaReceitas receitas={receitasFavoritas} />
         </View>
       </ScrollView>
     </View>

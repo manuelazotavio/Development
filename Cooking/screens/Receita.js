@@ -11,7 +11,7 @@ import {
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useUserLoggedStore from "../stores/useUserLoggedStore";
-import React, { useState, useEffect } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import authFetch from "../helpers/authFetch";
 
 import { faStar } from "@fortawesome/free-solid-svg-icons/faStar";
@@ -38,9 +38,9 @@ const Receita = () => {
   const { receita } = route.params;
   const token = useUserLoggedStore((state) => state.token);
   const userId = useUserLoggedStore((state) => state.id);
+
   const getFavoritoById = async (userId, receitaId) => {
     try {
-      console.log(token);
       const response = await authFetch(
         `https://backcooking.onrender.com/favorito/${userId}/${receitaId}`,
         {
@@ -49,8 +49,9 @@ const Receita = () => {
           },
         }
       );
-      if (!response.ok) {
-        const data = response.json();
+      const data = await response.json()
+      console.log(data)
+      if (data.error) {
         console.log(data.error);
         return;
       }
@@ -60,7 +61,7 @@ const Receita = () => {
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     getFavoritoById(userId, receita.id);
   }, []);
 
