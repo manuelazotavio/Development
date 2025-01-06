@@ -44,11 +44,7 @@ const Conta = () => {
   }
   return (
     <View style={styles.container}>
-      <ImageBackground
-        resizeMode="cover"
-        source={require("../assets/foodBackground.png")}
-        style={styles.bg}
-      >
+     
           <View style={styles.centeredContainer}>
         <Text style={styles.titulo}>Sua conta</Text> 
       
@@ -56,13 +52,13 @@ const Conta = () => {
           style={styles.profileImage}
           source={require("../assets/user.png")}
         />
-        <Text style={styles.name}><b>Nome de usuário:</b> {userLogado.name}</Text>
-        <Text style={styles.name}><b>E-mail:</b> {userLogado.email}</Text>
+        <Text style={styles.name}>Nome de usuário: {userLogado.name}</Text>
+        <Text style={styles.name}>E-mail: {userLogado.email}</Text>
         </View>
         <Button style={styles.button} title="Editar" onPress={() => navigation.navigate('EditarUser', {userLogado})}></Button>
         
         <Button  style={styles.button} title="Sair" onPress={handleLogout}></Button>
-      </ImageBackground>
+     
     </View>
   );
 };
@@ -70,20 +66,13 @@ const Conta = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-start", // changed from "center"
+    justifyContent: "center", 
     alignItems: "center", 
   },
   centeredContainer: {
     alignItems: 'center',
   },
-  bg: {
-    flex: 1,
-    justifyContent: "flex-start", // changed from "center"
-    alignItems: "center", 
-    width: "100%",
-    height: "100%",
-    padding: 40,
-  },
+ 
   button: {
     alignSelf: 'center' 
   },

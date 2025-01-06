@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "Cooking",
+    "newArchEnabled":true,
     "slug": "Cooking",
     "version": "1.0.0",
     "orientation": "portrait",
