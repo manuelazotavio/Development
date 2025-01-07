@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const CardReceita = ({ receita }) => {
   const navigation = useNavigation()
-  console.log(receita.imagem)
+  
   return (
     <Pressable onPress={() => navigation.navigate('Receita', {receita})}>
     <View style={styles.card}>

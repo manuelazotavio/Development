@@ -5,7 +5,8 @@ import {
   TextInput,
   Modal,
   Pressable,
-  ScrollView
+  TouchableWithoutFeedback,
+  Keyboard
 } from "react-native";
 import Button from "../components/Button.js";
 import { useNavigation } from "@react-navigation/native";
@@ -49,7 +50,7 @@ const Login = () => {
           await AsyncStorage.setItem("userId", data.user.id);
           login(data.user, data.token);
 
-          navigation.navigate("Main");
+          navigation.navigate("Home");
         } catch (error) {
           console.log(error);
           alert("Erro ao gravar dados de login no dispositivo!");
@@ -82,10 +83,10 @@ const Login = () => {
     return null;
   }
   return (
-   
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> 
     <View style={{ backgroundColor: "#fff", width: "100%", flex:1 }}>
       <View style={styles.container}>
-        <Text style={styles.titulo}>Entrar</Text>
+        <Text style={styles.titulo}>Login</Text>
 
         <TextInput
           style={styles.input}
@@ -136,6 +137,7 @@ const Login = () => {
   </View>
 )}
     </View>
+    </TouchableWithoutFeedback>
    
   );
 };
@@ -218,7 +220,7 @@ const styles = StyleSheet.create({
   },
   titulo: {
     fontFamily: "Poppins_900Black",
-    fontSize: 20,
+    fontSize: 30,
     marginTop: 40,
     marginLeft: 5,
   },

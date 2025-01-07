@@ -3,12 +3,14 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   Image,
   Alert,
   TouchableOpacity,
   StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard
 } from "react-native";
+import Button from "../components/Button";
 import * as ImagePicker from "expo-image-picker"; // Usando Expo Image Picker
 import { useNavigation } from "@react-navigation/native";
 
@@ -74,8 +76,9 @@ const Cadastrar = () => {
   };
 
   return (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> 
     <View style={styles.container}>
-      <Text style={styles.title}>Cadastrar</Text>
+      <Text style={styles.titulo}>Cadastrar</Text>
       <TextInput
         style={styles.input}
         placeholder="Nome..."
@@ -105,6 +108,7 @@ const Cadastrar = () => {
       <Button title="Cadastrar" onPress={postUser} />
       <Button title="Voltar" onPress={() => navigation.goBack()} />
     </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -113,19 +117,23 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white"
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
+  titulo: {
+    fontFamily: "Poppins_900Black",
+    fontSize: 30,
+    marginTop: 40,
+    marginLeft: 5,
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
+    height: 40,
+    width: "80%",
+    backgroundColor: "#ededed",
+    marginBottom: 10,
+    marginTop: 5,
     padding: 10,
-    marginBottom: 15,
+    borderRadius: 10,
   },
   avatarPicker: {
     alignItems: "center",

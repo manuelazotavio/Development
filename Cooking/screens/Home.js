@@ -3,8 +3,7 @@ import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { useFonts } from "@expo-google-fonts/poppins";
 import ListaReceitas from "../components/ListaReceitas";
 import React, { useState, useEffect } from "react";
-
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native"; // Mantendo o useFocusEffect
 import AdicionarBtn from "../components/AdicionarBtn";
 import authFetch from "../helpers/authFetch";
 
@@ -16,46 +15,15 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [receitas, setReceitas] = useState([]);
   const [receitasFavoritas, setReceitasFavoritas] = useState([]);
-  const [favoritas, setFavoritas] = useState([]);
-  console.log("favoritas:", favoritas);
-
   const navigation = useNavigation();
 
-  useEffect(() => {
-    fetchReceitas();
-    fetchFavoritas();
-  }, []);
-
-  const fetchFavoritas = async () => {
-    try {
-      const result = await authFetch(
-        "https://backcooking.onrender.com/favorito",
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await result.json();
-      console.log(data.favorito);
-      setFavoritas(data.favorito);
-
-      // Fetch each favorite recipe
-      data.favorito.forEach(async (favorita) => {
-        try {
-          const result = await authFetch(
-            `https://backcooking.onrender.com/receita/${favorita.receitaId}`
-          );
-          const data = await result.json();
-          setReceitasFavoritas((prevFavoritas) => [...prevFavoritas, data.receita]);
-        } catch (error) {
-          console.error(error);
-        }
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  useFocusEffect(
+    React.useCallback(() => {
+      // Recarregar as receitas e as favoritas toda vez que a tela for focada
+      fetchReceitas();
+      fetchFavoritas();
+    }, [])
+  );
 
   const fetchReceitas = async () => {
     try {
@@ -76,6 +44,34 @@ const Home = () => {
     }
   };
 
+  const fetchFavoritas = async () => {
+    try {
+      const result = await authFetch(
+        "https://backcooking.onrender.com/favorito",
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await result.json();
+
+      // Coletando IDs das receitas favoritas
+      const favoritosIds = data.favorito.map(fav => fav.receitaId);
+
+      // Agora, busque todas as receitas favoritas com um único fetch usando Promise.all
+      const receitasFavoritasPromises = favoritosIds.map(id => 
+        authFetch(`https://backcooking.onrender.com/receita/${id}`).then(res => res.json())
+      );
+
+      // Aguarde todas as requisições e armazene as receitas favoritas
+      const receitasData = await Promise.all(receitasFavoritasPromises);
+      setReceitasFavoritas(receitasData.map(data => data.receita));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   if (isLoading) {
     return (
       <View style={styles.containerLoading}>
@@ -89,9 +85,7 @@ const Home = () => {
       <View style={styles.containerSplash}>
         <ScrollView contentContainerStyle={{ alignItems: "center" }}>
           <View> 
-            
             <Text style={styles.titulo}>Suas receitas</Text>
-         
             <Text style={styles.splash}>
               Você ainda não criou nenhuma receita.
             </Text>

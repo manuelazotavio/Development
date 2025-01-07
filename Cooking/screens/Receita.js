@@ -68,6 +68,8 @@ const Receita = () => {
     getFavoritoById(userId, receita.id);
   }, []);
 
+   
+
   if (!fontsLoaded) {
     return null;
   }

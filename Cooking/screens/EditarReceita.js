@@ -8,7 +8,7 @@ import authFetch from "../helpers/authFetch.js";
 const EditarReceita = () => {
   const route = useRoute();
   const navigation = useNavigation();
-
+  
 
   const {receita} = route.params;
 
@@ -43,7 +43,7 @@ const EditarReceita = () => {
     receita.ingredientes.split(";")
   );
   const [passos, setPassos] = useState(receita.instrucao.split(";"));
-
+ 
   const editReceita = async () => {
     try {
       //const result = await authFetch('https://backend-api-express-1sem2024-rbd1.onrender.com/user/'+user.id, {
@@ -59,7 +59,7 @@ const EditarReceita = () => {
             descricao: txtDescricao,
             porcoes: txtPorcao,
             tempo: txtTempo,
-            avaliacao: txtAvaliacao,
+            avaliacao: parseInt(txtAvaliacao),
             ingredientes: ingredientes
               .filter((ingrediente) => ingrediente !== "")
               .join(";"),
@@ -71,7 +71,7 @@ const EditarReceita = () => {
       const data = await result.json();
       console.log(data);
       if (data?.success) {
-        navigation.goBack();
+        navigation.navigate('Home');
       } else {
         alert(data.error);
       }
@@ -150,7 +150,7 @@ tornar homogênea."
           style={styles.input}
           placeholder="4.5"
           onChangeText={setTxtAvaliacao}
-          value={txtAvaliacao}
+          value={String(txtAvaliacao)}
         />
         
         
@@ -166,6 +166,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+    paddingTop: '40',
+    paddingBottom: '30'
   },
   form: {
     display: "flex",
