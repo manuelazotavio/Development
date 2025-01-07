@@ -24,11 +24,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useFonts } from "@expo-google-fonts/poppins";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
+import loading from '../assets/loading.gif'
 
 const Receita = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
 
+  
   let [fontsLoaded] = useFonts({
     Poppins_900Black,
   });
@@ -36,6 +38,7 @@ const Receita = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { receita } = route.params;
+
   const token = useUserLoggedStore((state) => state.token);
   const userId = useUserLoggedStore((state) => state.id);
 
@@ -49,8 +52,8 @@ const Receita = () => {
           },
         }
       );
-      const data = await response.json()
-      console.log(data)
+      const data = await response.json();
+      console.log(data);
       if (data.error) {
         console.log(data.error);
         return;
@@ -168,10 +171,7 @@ const Receita = () => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{ alignItems: "center" }}>
-        <Image
-          source={{ uri: "https://fakeimg.pl/600x400" }}
-          style={styles.fotoImg}
-        />
+        <Image source={{ uri: receita?.imagem }} style={styles.fotoImg} />
 
         <View style={styles.iconContainer}>
           <Pressable onPress={() => setModalVisible(true)}>
@@ -228,7 +228,6 @@ const Receita = () => {
               </Text>
             ))}
           </View>
-          {/* <AdicionarBtn title={"Remover"} onPress={removeReceita}/> */}
           <View style={{ height: 20 }} />
         </View>
         <View style={styles.centeredView}>
@@ -268,8 +267,8 @@ const Receita = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
     backgroundColor: "#FFF",
+    justifyContent: "center",
   },
   card: {
     flex: 1,
@@ -367,8 +366,11 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     position: "absolute",
-    top: 10,
-    right: 10,
+    top: 50,
+    right: -20,
+    borderRadius: 20,
+    padding: 10,
+    backgroundColor: "#9EA69E",
     flexDirection: "row",
     justifyContent: "space-between",
     marginRight: 40,

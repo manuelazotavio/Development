@@ -88,8 +88,10 @@ const Home = () => {
     return (
       <View style={styles.containerSplash}>
         <ScrollView contentContainerStyle={{ alignItems: "center" }}>
-          <Text style={styles.titulo}>Suas receitas</Text>
-          <View style={{ backgroundColor: "white" }}>
+          <View> 
+            
+            <Text style={styles.titulo}>Suas receitas</Text>
+         
             <Text style={styles.splash}>
               Você ainda não criou nenhuma receita.
             </Text>
@@ -105,9 +107,9 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={{ alignItems: "flex-start" }}>
+      <ScrollView >
         <Text style={styles.titulo}>Suas receitas</Text>
-        <View style={{ backgroundColor: "white" }}>
+        <View >
           <ListaReceitas receitas={receitas} />
           <Text style={styles.tituloFav}>Receitas favoritas</Text>
           <ListaReceitas receitas={receitasFavoritas} />
@@ -120,8 +122,7 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-start",
-    backgroundColor: "white",
+    marginTop: "30"
   },
   containerLoading: {
     flex: 1,
@@ -135,9 +136,8 @@ const styles = StyleSheet.create({
   },
   containerSplash: {
     flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
   },
   splash: {
     fontSize: 18,

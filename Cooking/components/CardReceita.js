@@ -8,10 +8,11 @@ import { useNavigation } from '@react-navigation/native';
 
 const CardReceita = ({ receita }) => {
   const navigation = useNavigation()
+  console.log(receita.imagem)
   return (
     <Pressable onPress={() => navigation.navigate('Receita', {receita})}>
     <View style={styles.card}>
-     <Image source={{uri: "https://fakeimg.pl/600x400"}} style={styles.fotoImg} />
+     <Image source={{uri: receita.imagem}} style={styles.fotoImg} />
       <Text style={styles.titulo}>{receita.name}</Text>
       <View style={styles.infoContainer}>
         <View style={styles.infoItem}>

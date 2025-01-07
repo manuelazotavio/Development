@@ -1,7 +1,17 @@
 import React, { useState } from "react";
-import { View, TextInput, StyleSheet, ScrollView, Text } from "react-native";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  Alert,
+  Image,
+} from "react-native";
 import authFetch from "../helpers/authFetch";
 import Button from "../components/Button";
+import * as ImagePicker from "expo-image-picker"; // Usando Expo Image Picker
 import AdicionarBtn from "../components/AdicionarBtn";
 import { useNavigation } from "@react-navigation/native";
 import useUserLoggedStore from "../stores/useUserLoggedStore";
@@ -14,37 +24,78 @@ const CriarReceita = () => {
   const [txtAvaliacao, setTxtAvaliacao] = useState("");
   const [ingredientes, setIngredientes] = useState([""]);
   const [passos, setPassos] = useState([""]);
+  const [imagem, setImagem] = useState(null);
 
-  const navigation = useNavigation()
-  
-  const userId = useUserLoggedStore(state => state.id);
+  const navigation = useNavigation();
+  const userId = useUserLoggedStore((state) => state.id);
+
+  const handleImagemChange = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Permissão necessária",
+        "Precisamos de acesso à sua galeria."
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true, // Permite edição básica da imagem
+      aspect: [1, 1], // Define a proporção (ex.: quadrado)
+      quality: 1, // Qualidade máxima da imagem
+    });
+
+    if (!result.canceled) {
+      setImagem(result.assets[0].uri);
+    }
+  };
 
   const postReceita = async () => {
     try {
-      console.log(userId)
-      const result = await authFetch("https://backcooking.onrender.com/receita", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId,
-          name: txtName,
-          descricao: txtDescricao,
-          porcoes: txtPorcao,
-          tempo: txtTempo,
-          avaliacao: Number(txtAvaliacao),
-          ingredientes: ingredientes.filter(ingrediente => ingrediente !== "").join(";"),
-          instrucao: passos.filter(passo => passo !== "").join(";"),
-        }),
+      console.log(userId);
+
+      // Criação do FormData
+      const formData = new FormData();
+
+      // Adiciona os campos ao FormData
+      formData.append("userId", userId);
+      formData.append("name", txtName);
+      formData.append("descricao", txtDescricao);
+      formData.append("porcoes", txtPorcao);
+      formData.append("tempo", txtTempo);
+      formData.append("avaliacao", Number(txtAvaliacao));
+      formData.append(
+        "ingredientes",
+        ingredientes.filter((ingrediente) => ingrediente !== "").join(";")
+      );
+      formData.append(
+        "instrucao",
+        passos.filter((passo) => passo !== "").join(";")
+      );
+
+      formData.append("imagem", {
+        uri: imagem,
+        name: `imagem_${Date.now()}.jpg`,
+        type: "image/jpeg",
       });
+
+      const result = await authFetch(
+        "https://backcooking.onrender.com/receita",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
       const data = await result.json();
       console.log(data);
+
       if (data?.success) {
-        navigation.navigate('Home')
+        navigation.navigate("Home");
       } else {
-        console.log("erro");
+        console.log("Erro ao salvar receita");
       }
+
     } catch (error) {
       console.log("Error postReceita " + error.message);
       alert(error.message);
@@ -72,80 +123,89 @@ const CriarReceita = () => {
   };
 
   return (
-    <View style={styles.container} >
-
-   
-    <ScrollView>
-      <Text style={styles.titulo}>Crie sua receita!</Text>
-      <View style={styles.form}>
-        
-        <TextInput
-          style={styles.input}
-          placeholder="Título da Receita"
-          onChangeText={setTxtName}
-          value={txtName}
-        />
-        <TextInput
-          style={styles.inputDesc}
-          placeholder="Compartilhe um pouco mais sobre o seu prato. O que você gosta nele?"
-          onChangeText={setTxtDescricao}
-          value={txtDescricao}
-          multiline
-        />
-
-        <Text style={styles.subtitulo}>Ingredientes</Text>
-        {ingredientes.map((ingrediente, index) => (
+    <View style={styles.container}>
+      <ScrollView>
+        <Text style={styles.titulo}>Crie sua receita!</Text>
+        <View style={styles.form}>
           <TextInput
-            key={index}
             style={styles.input}
-            placeholder="250g de açúcar"
-            onChangeText={(text) => handleIngredienteChange(text, index)}
-            value={ingrediente}
+            placeholder="Título da Receita"
+            onChangeText={setTxtName}
+            value={txtName}
           />
-        ))}
-        <AdicionarBtn title="Ingrediente" onPress={addIngrediente} />
+          <TextInput
+            style={styles.inputDesc}
+            placeholder="Compartilhe um pouco mais sobre o seu prato. O que você gosta nele?"
+            onChangeText={setTxtDescricao}
+            value={txtDescricao}
+            multiline
+          />
 
-        <Text style={styles.subtitulo}>Passo a passo</Text>
-        {passos.map((passo, index) => (
-          <View key={index} style={styles.passoContainer}>
-            <Text style={styles.passoNumero}>{index + 1}.</Text>
+          <Text style={styles.subtitulo}>Ingredientes</Text>
+          {ingredientes.map((ingrediente, index) => (
             <TextInput
-              style={styles.inputPasso}
-              placeholder="Misture a massa até se 
-tornar homogênea."
-              onChangeText={(text) => handlePassoChange(text, index)}
-              value={passo}
+              key={index}
+              style={styles.input}
+              placeholder="250g de açúcar"
+              onChangeText={(text) => handleIngredienteChange(text, index)}
+              value={ingrediente}
             />
-          </View>
-        ))}
-        <AdicionarBtn title="Passo" onPress={addPasso} />
+          ))}
+          <AdicionarBtn title="Ingrediente" onPress={addIngrediente} />
 
-        <Text>Porções</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="2 pessoas"
-          onChangeText={setTxtPorcao}
-          value={txtPorcao}
-        />
-        <Text>Tempo de preparo</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="1h e 30min"
-          onChangeText={setTxtTempo}
-          value={txtTempo}
-        />
-        
-        <Text>Avaliação</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="4.5"
-          onChangeText={setTxtAvaliacao}
-          value={txtAvaliacao}
-        />
-        
-        <Button title="Publicar" onPress={postReceita} />
-      </View>
-    </ScrollView> 
+          <Text style={styles.subtitulo}>Passo a passo</Text>
+          {passos.map((passo, index) => (
+            <View key={index} style={styles.passoContainer}>
+              <Text style={styles.passoNumero}>{index + 1}.</Text>
+              <TextInput
+                style={styles.inputPasso}
+                placeholder="Misture a massa até se tornar homogênea."
+                onChangeText={(text) => handlePassoChange(text, index)}
+                value={passo}
+              />
+            </View>
+          ))}
+          <AdicionarBtn title="Passo" onPress={addPasso} />
+
+          <Text>Porções</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="2 pessoas"
+            onChangeText={setTxtPorcao}
+            value={txtPorcao}
+          />
+          <Text>Tempo de preparo</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="1h e 30min"
+            onChangeText={setTxtTempo}
+            value={txtTempo}
+          />
+
+          <Text>Avaliação</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="4.5"
+            onChangeText={setTxtAvaliacao}
+            value={txtAvaliacao}
+          />
+
+          <TouchableOpacity
+            style={styles.avatarPicker}
+            onPress={handleImagemChange}
+          >
+            {imagem ? (
+              <Image source={{ uri: imagem }} style={styles.avatar} />
+            ) : (
+              <Text style={styles.avatarText}>
+                Escolha uma imagem para a sua receita!
+              </Text>
+            )}
+          </TouchableOpacity>
+
+          <Button title="Publicar" onPress={postReceita} />
+        </View>
+      </ScrollView>
     </View>
   );
 };
@@ -158,7 +218,7 @@ const styles = StyleSheet.create({
   form: {
     display: "flex",
     paddingHorizontal: 25,
-    paddingVertical: 15
+    paddingVertical: 15,
   },
   input: {
     height: 40,
@@ -198,13 +258,26 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   passoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center'
+    flexDirection: "row",
+    alignItems: "center",
   },
   passoNumero: {
     width: 30,
     marginRight: 10,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  avatarPicker: {
+    marginVertical: 20,
+    alignItems: "center",
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+  avatarText: {
+    color: "#007BFF",
     fontSize: 16,
   },
 });

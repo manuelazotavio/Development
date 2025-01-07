@@ -50,7 +50,7 @@ const Conta = () => {
       
            <Image
           style={styles.profileImage}
-          source={require("../assets/user.png")}
+          source={{uri: userLogado?.avatar}}
         />
         <Text style={styles.name}>Nome de usuário: {userLogado.name}</Text>
         <Text style={styles.name}>E-mail: {userLogado.email}</Text>
