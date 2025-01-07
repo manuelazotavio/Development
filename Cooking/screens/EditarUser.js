@@ -1,7 +1,17 @@
-import { View, StyleSheet, TouchableWithoutFeedback, Keyboard, TextInput, Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Image,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  Keyboard,
+  TextInput,
+  Text,
+} from "react-native";
 import Button from "../components/Button.js";
 import { useState } from "react";
 import { useRoute, useNavigation } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useUserStore from "../stores/userStore.js";
 import authFetch from "../helpers/authFetch.js";
@@ -18,23 +28,47 @@ const EditarUser = () => {
 
   const [txtName, setTxtName] = useState(userLogado.name);
   const [txtEmail, setTxtEmail] = useState(userLogado.email);
-  const [txtAvatar, setTxtAvatar] = useState(userLogado.avatar);
+  const [avatar, setAvatar] = useState(userLogado.avatar);
+
+  const handleAvatarChange = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Permissão necessária",
+        "Precisamos de acesso à sua galeria."
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true, // Permite edição básica da imagem
+      aspect: [1, 1], // Define a proporção (ex.: quadrado)
+      quality: 1, // Qualidade máxima da imagem
+    });
+
+    if (!result.canceled) {
+      setAvatar(result.assets[0].uri);
+    }
+  };
 
   const editUser = async () => {
     try {
       //const result = await authFetch('https://backend-api-express-1sem2024-rbd1.onrender.com/user/'+user.id, {
+
+      const formData = new FormData();
+      formData.append("name", txtName);
+      formData.append("email", txtEmail);
+      formData.append("avatar", {
+        uri: avatar,
+        name: `avatar_${Date.now()}_${userId}.jpg`,
+        type: "image/jpeg",
+      });
+
       const result = await authFetch(
         "https://backcooking.onrender.com/user/" + userId,
         {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: txtName,
-            email: txtEmail,
-            avatar: txtAvatar,
-          }),
+          body: formData,
         }
       );
       if (!result.ok) {
@@ -104,35 +138,36 @@ const EditarUser = () => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> 
-    <View style={styles.container}>
-      <Text style={styles.titulo}>Editar</Text>
-      <View style={styles.form}>
-        <TextInput
-          style={styles.input}
-          placeholder="Nome..."
-          onChangeText={setTxtName}
-          value={txtName}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Email..."
-          onChangeText={setTxtEmail}
-          value={txtEmail}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Avatar..."
-          onChangeText={setTxtAvatar}
-          value={txtAvatar}
-        />
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+        <Text style={styles.titulo}>Editar</Text>
+        <View style={styles.form}>
+          <TextInput
+            style={styles.input}
+            placeholder="Nome..."
+            onChangeText={setTxtName}
+            value={txtName}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Email..."
+            onChangeText={setTxtEmail}
+            value={txtEmail}
+          />
+          <TouchableOpacity
+            style={styles.avatarPicker}
+            onPress={handleAvatarChange}
+          >
+            <Image source={{ uri: avatar }} style={styles.avatar} />
+          </TouchableOpacity>
+          <Text style={styles.avatarText}>Clique na imagem para alterá-la</Text>
+        </View>
+
+        <Button title="Cancelar" onPress={() => navigation.navigate("Conta")} />
+        <Button title="Salvar" onPress={editUser} />
+
+        <Button title="Apagar conta" onPress={removeUser} />
       </View>
-
-      <Button title="Cancelar" onPress={() => navigation.navigate("Conta")} />
-      <Button title="Salvar" onPress={editUser} />
-
-      <Button title="Apagar conta" onPress={removeUser} />
-    </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -141,7 +176,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     justifyContent: "center",
-    
   },
   input: {
     height: 40,
@@ -153,7 +187,20 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
   },
-
+  avatarPicker: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+    marginBottom: 20,
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+  avatarText: {
+    color: "#777",
+  },
 
   titulo: {
     fontFamily: "Poppins_900Black",

@@ -75,7 +75,7 @@ const CriarReceita = () => {
 
       formData.append("imagem", {
         uri: imagem,
-        name: `imagem_${Date.now()}.jpg`,
+        name: `imagem_${Date.now()}_${userId}.jpg`,
         type: "image/jpeg",
       });
 

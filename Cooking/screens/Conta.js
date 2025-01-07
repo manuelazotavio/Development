@@ -23,7 +23,7 @@ const Conta = () => {
     fetchUser();
   }, []);
 
-  console.log(userLogado)
+  console.log(userLogado);
   const logout = useUserLoggedStore((state) => state.logout);
 
   const handleLogout = async () => {
@@ -44,21 +44,23 @@ const Conta = () => {
   }
   return (
     <View style={styles.container}>
-     
-          <View style={styles.centeredContainer}>
-        <Text style={styles.titulo}>Sua conta</Text> 
-      
-           <Image
-          style={styles.profileImage}
-          source={{uri: userLogado?.avatar}}
-        />
-        <Text style={styles.name}>Nome de usuário: {userLogado.name}</Text>
-        <Text style={styles.name}>E-mail: {userLogado.email}</Text>
-        </View>
-        <Button style={styles.button} title="Editar" onPress={() => navigation.navigate('EditarUser', {userLogado})}></Button>
-        
-        <Button  style={styles.button} title="Sair" onPress={handleLogout}></Button>
-     
+      <Text style={styles.titulo}>Sua conta</Text>
+
+      <Image style={styles.profileImage} source={{ uri: userLogado?.avatar }} />
+      <Text style={styles.name}>Nome de usuário: {userLogado.name}</Text>
+      <Text style={styles.name}>E-mail: {userLogado.email}</Text>
+
+      <Button
+        style={styles.button}
+        title="Editar"
+        onPress={() => navigation.navigate("EditarUser", { userLogado })}
+      ></Button>
+
+      <Button
+        style={styles.button}
+        title="Sair"
+        onPress={handleLogout}
+      ></Button>
     </View>
   );
 };
@@ -66,36 +68,26 @@ const Conta = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center", 
-    alignItems: "center", 
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: '50'
   },
-  centeredContainer: {
-    alignItems: 'center',
-  },
- 
+
   button: {
-    alignSelf: 'center' 
+    alignSelf: "center",
   },
   profileImage: {
     width: 100,
     height: 100,
     borderRadius: 50,
   },
-  input: {
-    height: 40,
-    width: "100%",
-    backgroundColor: "#FFF",
-    borderWidth: 1,
-    marginBottom: 18,
-    padding: 10,
-  },
   name: {
-    fontWeight: 400
+    fontWeight: 400,
   },
   titulo: {
     fontFamily: "Poppins_900Black",
     fontSize: 25,
-    textAlign: "left",
+   
   },
 });
 
