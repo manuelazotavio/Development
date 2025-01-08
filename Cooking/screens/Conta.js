@@ -2,29 +2,33 @@ import { View, Text, StyleSheet, Image } from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { useFonts } from "@expo-google-fonts/poppins";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ImageBackground } from "react-native";
 import useUserLoggedStore from "../stores/useUserLoggedStore";
 import Button from "../components/Button";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 const Conta = () => {
   const navigation = useNavigation();
 
   const [userLogado, setUserLogado] = useState(null);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userString = await AsyncStorage.getItem("userLogged");
-      const user = JSON.parse(userString);
-      setUserLogado(user);
-    };
+  useFocusEffect(
+    React.useCallback(() => {
+     
+      const fetchUser = async () => {
+        const userString = await AsyncStorage.getItem("userLogged");
+        const user = JSON.parse(userString);
+        setUserLogado(user);
+      };
+      fetchUser()
+    }, [])
+  );
 
-    fetchUser();
-  }, []);
+  
 
-  console.log(userLogado);
   const logout = useUserLoggedStore((state) => state.logout);
+ 
 
   const handleLogout = async () => {
     try {
@@ -47,6 +51,7 @@ const Conta = () => {
       <Text style={styles.titulo}>Sua conta</Text>
 
       <Image style={styles.profileImage} source={{ uri: userLogado?.avatar }} />
+
       <Text style={styles.name}>Nome de usuário: {userLogado.name}</Text>
       <Text style={styles.name}>E-mail: {userLogado.email}</Text>
 
@@ -70,7 +75,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingTop: '50'
+    paddingTop: "50",
   },
 
   button: {
@@ -87,7 +92,6 @@ const styles = StyleSheet.create({
   titulo: {
     fontFamily: "Poppins_900Black",
     fontSize: 25,
-   
   },
 });
 

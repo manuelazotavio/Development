@@ -7,12 +7,17 @@ import {
   Keyboard,
   TextInput,
   Text,
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import Button from "../components/Button.js";
 import { useState } from "react";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import * as ImagePicker from "expo-image-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { faPencil } from "@fortawesome/free-solid-svg-icons/faPencil";
+
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import useUserStore from "../stores/userStore.js";
 import authFetch from "../helpers/authFetch.js";
 
@@ -25,7 +30,7 @@ const EditarUser = () => {
 
   const { userLogado } = route.params;
   const userId = userLogado.id;
-
+  const [isLoading, setIsLoading] = useState(false);
   const [txtName, setTxtName] = useState(userLogado.name);
   const [txtEmail, setTxtEmail] = useState(userLogado.email);
   const [avatar, setAvatar] = useState(userLogado.avatar);
@@ -54,7 +59,7 @@ const EditarUser = () => {
   const editUser = async () => {
     try {
       //const result = await authFetch('https://backend-api-express-1sem2024-rbd1.onrender.com/user/'+user.id, {
-
+      setIsLoading(true)
       const formData = new FormData();
       formData.append("name", txtName);
       formData.append("email", txtEmail);
@@ -89,13 +94,16 @@ const EditarUser = () => {
         //update do user na store com o data.user
         await AsyncStorage.setItem("userLogged", JSON.stringify(data.user));
         updateUser(data.user);
-        navigation.goBack();
+        Alert.alert("Sucesso", "Usuário editado com sucesso!");
+        navigation.navigate("Conta")
       } else {
         alert(data.error);
       }
     } catch (error) {
       console.log("Error edit " + error.message);
       alert(error.message);
+    }  finally {
+      setIsLoading(false); // Parar o carregamento
     }
   };
 
@@ -158,15 +166,25 @@ const EditarUser = () => {
             style={styles.avatarPicker}
             onPress={handleAvatarChange}
           >
-            <Image source={{ uri: avatar }} style={styles.avatar} />
+            <Image source={{ uri: avatar }} style={styles.avatar} /> 
+            <FontAwesomeIcon style={styles.pencil} icon={faPencil} size={22} />
           </TouchableOpacity>
-          <Text style={styles.avatarText}>Clique na imagem para alterá-la</Text>
+          {/* <Text style={styles.avatarText}>Clique na imagem para alterá-la</Text> */}
+           
+                     
+                   
         </View>
 
-        <Button title="Cancelar" onPress={() => navigation.navigate("Conta")} />
-        <Button title="Salvar" onPress={editUser} />
+        {isLoading ? (
+          <ActivityIndicator size="large" color="black" />
+        ) : (
+          <>
+            <Button title="Cancelar" onPress={() => navigation.navigate("Conta")} />
+            <Button title="Salvar" onPress={editUser} />
+          </>
+        )}
 
-        <Button title="Apagar conta" onPress={removeUser} />
+        <Button title="Apagar conta" onPress={() => removeUser()} />
       </View>
     </TouchableWithoutFeedback>
   );
@@ -176,6 +194,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     justifyContent: "center",
+  },
+  pencil: {
+    position: "absolute",
+    top: 100,
+    right: 140,
+    borderRadius: 17,
+    padding: 10,
+    backgroundColor: "white",
+    flexDirection: "row",
   },
   input: {
     height: 40,

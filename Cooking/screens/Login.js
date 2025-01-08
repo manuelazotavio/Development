@@ -46,14 +46,16 @@ const Login = () => {
             "userLogged",
             JSON.stringify({ ...data.user, token: data.token })
           );
+          
           await AsyncStorage.setItem("username", data.user.name);
-          await AsyncStorage.setItem("userId", data.user.id);
+          await AsyncStorage.setItem("userId", String(data.user.id));
           login(data.user, data.token);
 
-          navigation.navigate("Home");
+          navigation.navigate("Splash");
         } catch (error) {
           console.log(error);
           alert("Erro ao gravar dados de login no dispositivo!");
+          navigation.navigate("Login")
         }
       } else {
         const data = await response.json();

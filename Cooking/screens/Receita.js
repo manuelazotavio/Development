@@ -7,7 +7,9 @@ import {
   Modal,
   StyleSheet,
   Pressable,
+ 
 } from "react-native";
+import FastImage from 'react-native-fast-image'
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useUserLoggedStore from "../stores/useUserLoggedStore";
@@ -27,6 +29,7 @@ import { useNavigation } from "@react-navigation/native";
 import loading from '../assets/loading.gif'
 
 const Receita = () => {
+  const [loadingImage, setLoadingImage] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
 
@@ -173,7 +176,7 @@ const Receita = () => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{ alignItems: "center" }}>
-        <Image source={{ uri: receita?.imagem }} style={styles.fotoImg} />
+        <Image  source={{ uri: receita?.imagem }} style={styles.fotoImg} />
 
         <View style={styles.iconContainer}>
           <Pressable onPress={() => setModalVisible(true)}>

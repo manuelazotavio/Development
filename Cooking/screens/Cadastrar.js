@@ -54,7 +54,7 @@ const Cadastrar = () => {
       formData.append("pass", txtPass);
       formData.append("avatar", {
         uri: avatar,
-        name: `avatar_${Date.now()}_${userId}.jpg`,
+        name: `avatar_${Date.now()}_${txtName}.jpg`,
         type: "image/jpeg",
       });
 

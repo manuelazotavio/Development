@@ -38,7 +38,10 @@ const Home = () => {
       const data = await result.json();
       setReceitas(data.receita);
       setIsLoading(false);
+
+      
     } catch (error) {
+      navigation.navigate("Login")
       console.error(error);
       setIsLoading(false);
     }
@@ -83,7 +86,7 @@ const Home = () => {
   if (receitas.length === 0) {
     return (
       <View style={styles.containerSplash}>
-        <ScrollView contentContainerStyle={{ alignItems: "center" }}>
+        
           <View> 
             <Text style={styles.titulo}>Suas receitas</Text>
             <Text style={styles.splash}>
@@ -94,7 +97,7 @@ const Home = () => {
               onPress={() => navigation.navigate("CriarReceita")}
             />
           </View>
-        </ScrollView>
+       
       </View>
     );
   }

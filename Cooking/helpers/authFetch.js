@@ -16,7 +16,7 @@ const authFetch = async (url, options) => {
 
     const responseClone = response.clone()
 
-    if(!response.ok){
+    if(!response.ok || token === undefined){
         const data = await response.json()
         if(data?.error && data?.code && data.code === "expired-token"){
             console.log('Token Expirado...')

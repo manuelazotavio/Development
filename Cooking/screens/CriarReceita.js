@@ -191,7 +191,7 @@ const CriarReceita = () => {
           />
 
           <TouchableOpacity
-            style={styles.avatarPicker}
+            style={styles.imagemPicker}
             onPress={handleImagemChange}
           >
             {imagem ? (
@@ -213,6 +213,7 @@ const CriarReceita = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: '30',
     backgroundColor: "white",
   },
   form: {
@@ -236,6 +237,15 @@ const styles = StyleSheet.create({
     marginBottom: 18,
     padding: 10,
     borderRadius: 10,
+  },
+  imagemPicker: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 20,
+    marginBottom: 20,
   },
   inputPasso: {
     height: 60,
@@ -267,18 +277,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
-  avatarPicker: {
-    marginVertical: 20,
-    alignItems: "center",
-  },
   avatar: {
     width: 100,
     height: 100,
     borderRadius: 50,
   },
   avatarText: {
-    color: "#007BFF",
+    color: "black",
     fontSize: 16,
+    textAlign: "center"
   },
 });
 
