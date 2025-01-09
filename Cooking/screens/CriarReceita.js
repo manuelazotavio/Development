@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
   Image,
 } from "react-native";
 import authFetch from "../helpers/authFetch";
@@ -17,6 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 import useUserLoggedStore from "../stores/useUserLoggedStore";
 
 const CriarReceita = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [txtName, setTxtName] = useState("");
   const [txtDescricao, setTxtDescricao] = useState("");
   const [txtPorcao, setTxtPorcao] = useState("");
@@ -53,6 +55,7 @@ const CriarReceita = () => {
   const postReceita = async () => {
     try {
       console.log(userId);
+      setIsLoading(true)
 
       // Criação do FormData
       const formData = new FormData();
@@ -91,14 +94,16 @@ const CriarReceita = () => {
       console.log(data);
 
       if (data?.success) {
+        Alert.alert("Sucesso", "Receita criada com sucesso!");
         navigation.navigate("Home");
       } else {
         console.log("Erro ao salvar receita");
       }
-
     } catch (error) {
       console.log("Error postReceita " + error.message);
       alert(error.message);
+    } finally {
+      setIsLoading(false); // Parar o carregamento
     }
   };
 
@@ -202,8 +207,11 @@ const CriarReceita = () => {
               </Text>
             )}
           </TouchableOpacity>
-
-          <Button title="Publicar" onPress={postReceita} />
+          {isLoading ? (
+            <ActivityIndicator size="large" color="black" />
+          ) : (
+            <Button title="Publicar" onPress={postReceita} />
+          )}
         </View>
       </ScrollView>
     </View>
@@ -213,7 +221,7 @@ const CriarReceita = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: '30',
+    paddingTop: "30",
     backgroundColor: "white",
   },
   form: {
@@ -285,7 +293,7 @@ const styles = StyleSheet.create({
   avatarText: {
     color: "black",
     fontSize: 16,
-    textAlign: "center"
+    textAlign: "center",
   },
 });
 
