@@ -1,9 +1,11 @@
 import {
   Text,
   View,
+  ActivityIndicator,
   StyleSheet,
   ScrollView,
   TextInput,
+  Alert,
   Image,
   TouchableOpacity,
 } from "react-native";
@@ -44,7 +46,7 @@ const EditarReceita = () => {
     newPassos[index] = text;
     setPassos(newPassos);
   };
-
+  const [loadingImage, setLoadingImage] = useState(true);
   const [txtName, setTxtName] = useState(receita.name);
   const [txtDescricao, setTxtDescricao] = useState(receita.descricao);
   const [imagem, setImagem] = useState(receita.imagem);
@@ -198,8 +200,20 @@ tornar homogênea."
             style={styles.avatarPicker}
             onPress={handleImagemChange}
           >
-            <Image source={{ uri: imagem }} style={styles.avatar} />
-              <FontAwesomeIcon style={styles.pencil} icon={faPencil} size={22} />
+            {loadingImage && (
+              <ActivityIndicator
+                size="small"
+                color="#FF421D"
+                style={styles.fotoImgLoading}
+              />
+            )}
+            <Image
+              onLoad={() => setLoadingImage(false)}
+              onError={() => setLoadingImage(false)}
+              source={{ uri: imagem }}
+              style={styles.avatar}
+            />
+            <FontAwesomeIcon style={styles.pencil} icon={faPencil} size={22} />
           </TouchableOpacity>
 
           <Button title="Cancelar" onPress={() => navigation.goBack()} />
@@ -258,6 +272,15 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 16,
     textAlign: "center",
+  },
+  fotoImgLoading: {
+    position: "absolute",
+    top: 70,
+    right: 143,
+    borderRadius: 20,
+    padding: 12,
+    backgroundColor: "white",
+    flexDirection: "row",
   },
   pencil: {
     position: "absolute",

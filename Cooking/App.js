@@ -43,7 +43,7 @@ const MainNavigator = () => {
       tabBarShowLabel: false
     }}>
       <Tab.Screen
-        name="Receita"
+        name="Receitas"
         component={ReceitaNavigator}
         options={{
           headerShown: false,

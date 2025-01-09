@@ -18,7 +18,8 @@ const authFetch = async (url, options) => {
 
     if(!response.ok || token === undefined){
         const data = await response.json()
-        if(data?.error && data?.code && data.code === "expired-token"){
+        console.log(data)
+        if(data?.error && data?.code && data.code === "expired-token" || data?.error && data?.code && data.code === "invalid-token" ){
             console.log('Token Expirado...')
             const resRefreshToken = await fetch('https://backcooking.onrender.com/auth/refresh-token', {
                 method: "POST",

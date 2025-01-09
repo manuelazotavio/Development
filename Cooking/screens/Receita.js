@@ -7,9 +7,9 @@ import {
   Modal,
   StyleSheet,
   Pressable,
- 
+  ActivityIndicator,
 } from "react-native";
-import FastImage from 'react-native-fast-image'
+import FastImage from "react-native-fast-image";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useUserLoggedStore from "../stores/useUserLoggedStore";
@@ -26,14 +26,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useFonts } from "@expo-google-fonts/poppins";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
-import loading from '../assets/loading.gif'
+import loading from "../assets/loading.gif";
 
 const Receita = () => {
   const [loadingImage, setLoadingImage] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
 
-  
   let [fontsLoaded] = useFonts({
     Poppins_900Black,
   });
@@ -70,8 +69,6 @@ const Receita = () => {
   useLayoutEffect(() => {
     getFavoritoById(userId, receita.id);
   }, []);
-
-   
 
   if (!fontsLoaded) {
     return null;
@@ -176,7 +173,19 @@ const Receita = () => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={{ alignItems: "center" }}>
-        <Image  source={{ uri: receita?.imagem }} style={styles.fotoImg} />
+        {loadingImage && (
+          <ActivityIndicator
+            size="large"
+            color="#FF421D"
+            style={styles.fotoImgLoading}
+          />
+        )}
+        <Image
+          source={{ uri: receita?.imagem }}
+          onLoad={() => setLoadingImage(false)}
+          onError={() => setLoadingImage(false)}
+          style={styles.fotoImg}
+        />
 
         <View style={styles.iconContainer}>
           <Pressable onPress={() => setModalVisible(true)}>
@@ -288,6 +297,9 @@ const styles = StyleSheet.create({
     width: 500,
     height: 400,
     borderRadius: 20,
+  },
+  fotoImgLoading: {
+    marginTop: 400
   },
   infoContainer: {
     flexDirection: "row",
