@@ -123,11 +123,11 @@ const EditarReceita = () => {
         Alert.alert("Sucesso", "Receita editada com sucesso!");
         navigation.navigate("Main");
       } else {
-        alert(data.error);
+        Alert.alert(data.error);
       }
     } catch (error) {
       console.log("Error edit " + error.message);
-      alert(error.message);
+      Alert.alert(error.message);
     } finally {
       setIsLoading(false); // Parar o carregamento
     }

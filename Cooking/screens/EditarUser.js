@@ -100,11 +100,11 @@ const EditarUser = () => {
         Alert.alert("Sucesso", "Usuário editado com sucesso!");
         navigation.navigate("Conta")
       } else {
-        alert(data.error);
+        Alert.alert(data.error);
       }
     } catch (error) {
       console.log("Error edit " + error.message);
-      alert(error.message);
+      Alert.alert(error.message);
     }  finally {
       setIsLoading(false); // Parar o carregamento
     }

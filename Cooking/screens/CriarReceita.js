@@ -98,11 +98,11 @@ const CriarReceita = () => {
         Alert.alert("Sucesso", "Receita criada com sucesso!");
        
       } else {
+        Alert.alert("Erro!", "Não foi possível salvar a receita!");
         console.log("Erro ao salvar receita");
       }
     } catch (error) {
       console.log("Error postReceita " + error.message);
-      alert(error.message);
     } finally {
       setIsLoading(false); // Parar o carregamento
     }

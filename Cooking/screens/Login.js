@@ -54,7 +54,7 @@ const Login = () => {
           navigation.navigate("Main");
         } catch (error) {
           console.log(error);
-          alert("Erro ao gravar dados de login no dispositivo!");
+          Alert.alert("Erro ao gravar dados de login no dispositivo!");
           navigation.navigate("Login")
         }
       } else {
