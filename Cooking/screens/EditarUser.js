@@ -19,6 +19,7 @@ import { faPencil } from "@fortawesome/free-solid-svg-icons/faPencil";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import useUserStore from "../stores/userStore.js";
+import useUserLoggedStore from "../stores/useUserLoggedStore.js";
 import authFetch from "../helpers/authFetch.js";
 
 const EditarUser = () => {
@@ -26,8 +27,10 @@ const EditarUser = () => {
   const navigation = useNavigation();
 
   const removeUserStore = useUserStore((state) => state.removeUser);
+  const logout = useUserLoggedStore((state) => state.logout);
   const updateUser = useUserStore((state) => state.updateUser);
 
+    const [loadingImage, setLoadingImage] = useState(true);
   const { userLogado } = route.params;
   const userId = userLogado.id;
   const [isLoading, setIsLoading] = useState(false);
@@ -135,7 +138,9 @@ const EditarUser = () => {
       console.log(data);
       if (data?.success) {
         removeUserStore(userId);
-        navigation.navigate("Splash");
+        await AsyncStorage.removeItem("userLogged");
+        logout()
+        navigation.navigate("Login");
       } else {
         alert(data.error);
       }
@@ -166,7 +171,14 @@ const EditarUser = () => {
             style={styles.avatarPicker}
             onPress={handleAvatarChange}
           >
-            <Image source={{ uri: avatar }} style={styles.avatar} /> 
+            {loadingImage && (
+                      <ActivityIndicator
+                        size="large"
+                        color="#FF421D"
+                        style={styles.activityIndicator}
+                      />
+                    )}
+            <Image source={{ uri: avatar }} style={styles.avatar}  onLoadEnd={() => setLoadingImage(false)}  /> 
             <FontAwesomeIcon style={styles.pencil} icon={faPencil} size={22} />
           </TouchableOpacity>
           {/* <Text style={styles.avatarText}>Clique na imagem para alterá-la</Text> */}
@@ -203,6 +215,21 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "white",
     flexDirection: "row",
+  },
+  imageContainer: {
+    position: "relative", // Permite a sobreposição
+    width: 100,
+    height: 100,
+    marginBottom: '10'
+  },
+  activityIndicator: {
+    position: "absolute", // Sobrepõe a imagem
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
   },
   input: {
     height: 40,

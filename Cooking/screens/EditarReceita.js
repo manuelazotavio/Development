@@ -24,6 +24,7 @@ const EditarReceita = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const userId = useUserLoggedStore((state) => state.id);
+    const [isLoading, setIsLoading] = useState(false);
 
   const { receita } = route.params;
 
@@ -85,6 +86,8 @@ const EditarReceita = () => {
 
       const formData = new FormData();
 
+      setIsLoading(true)
+
       // Adiciona os campos ao FormData
 
       formData.append("name", txtName);
@@ -118,13 +121,15 @@ const EditarReceita = () => {
       console.log(data);
       if (data?.success) {
         Alert.alert("Sucesso", "Receita editada com sucesso!");
-        navigation.navigate("Home");
+        navigation.navigate("Main");
       } else {
         alert(data.error);
       }
     } catch (error) {
       console.log("Error edit " + error.message);
       alert(error.message);
+    } finally {
+      setIsLoading(false); // Parar o carregamento
     }
   };
 
@@ -215,9 +220,13 @@ tornar homogênea."
             />
             <FontAwesomeIcon style={styles.pencil} icon={faPencil} size={22} />
           </TouchableOpacity>
-
+             {isLoading ? (
+                        <ActivityIndicator size="large" color="black" />
+                      ) : (
+                        <>
           <Button title="Cancelar" onPress={() => navigation.goBack()} />
-          <Button title="Salvar" onPress={editReceita} />
+          <Button title="Salvar" onPress={editReceita} /></>
+                      )}
         </View>
       </ScrollView>
     </View>

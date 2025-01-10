@@ -41,6 +41,7 @@ const authFetch = async (url, options) => {
                 )
                 try {
                     await AsyncStorage.removeItem('userLogged')
+                    
                 } catch (error){
                     console.log(error)
                     alert('Erro ao limpar async storage!')

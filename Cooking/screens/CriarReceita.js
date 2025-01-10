@@ -93,9 +93,10 @@ const CriarReceita = () => {
       const data = await result.json();
       console.log(data);
 
-      if (data?.success) {
-        Alert.alert("Sucesso", "Receita criada com sucesso!");
+      if (data?.success) { 
         navigation.navigate("Home");
+        Alert.alert("Sucesso", "Receita criada com sucesso!");
+       
       } else {
         console.log("Erro ao salvar receita");
       }

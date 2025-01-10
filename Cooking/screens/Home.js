@@ -12,7 +12,7 @@ const Home = () => {
     Poppins_900Black,
   });
 
-  const [isLoading, setIsLoading] = useState(true);
+  
   const [receitas, setReceitas] = useState([]);
   const [receitasFavoritas, setReceitasFavoritas] = useState([]);
   const navigation = useNavigation();
@@ -37,13 +37,10 @@ const Home = () => {
       );
       const data = await result.json();
       setReceitas(data.receita);
-      setIsLoading(false);
-
-      
     } catch (error) {
       navigation.navigate("Login")
       console.error(error);
-      setIsLoading(false);
+   
     }
   };
 
@@ -75,13 +72,6 @@ const Home = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <View style={styles.containerLoading}>
-        <Image source={require("../assets/loading.gif")} />
-      </View>
-    );
-  }
 
   if (receitas.length === 0) {
     return (

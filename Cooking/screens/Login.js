@@ -51,7 +51,7 @@ const Login = () => {
           await AsyncStorage.setItem("userId", String(data.user.id));
           login(data.user, data.token);
 
-          navigation.navigate("Splash");
+          navigation.navigate("Main");
         } catch (error) {
           console.log(error);
           alert("Erro ao gravar dados de login no dispositivo!");

@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   TouchableWithoutFeedback,
+  ActivityIndicator,
   Keyboard
 } from "react-native";
 import Button from "../components/Button";
@@ -16,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const Cadastrar = () => {
   const [avatar, setAvatar] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [txtName, setTxtName] = useState("");
   const [txtEmail, setTxtEmail] = useState("");
   const [txtPass, setTxtPass] = useState("");
@@ -42,8 +44,10 @@ const Cadastrar = () => {
 
   // Função para enviar os dados
   const postUser = async () => {
+    setIsLoading(true)
     if (!txtName || !txtEmail || !txtPass || !avatar) {
       Alert.alert("Erro", "Por favor, preencha todos os campos e selecione um avatar.");
+      setIsLoading(false)
       return;
     }
 
@@ -72,6 +76,8 @@ const Cadastrar = () => {
       }
     } catch (error) {
       Alert.alert("Erro", error.message, error.name, error.data);
+    }  finally {
+      setIsLoading(false); // Parar o carregamento
     }
   };
 
@@ -105,8 +111,15 @@ const Cadastrar = () => {
           <Text style={styles.avatarText}>Escolha um avatar para seu perfil</Text>
         )}
       </TouchableOpacity>
+      
+              {isLoading ? (
+                <ActivityIndicator size="large" color="black" />
+              ) : (
+                <>
       <Button title="Cadastrar" onPress={postUser} />
       <Button title="Voltar" onPress={() => navigation.goBack()} />
+        </>
+              )}
     </View>
     </TouchableWithoutFeedback>
   );

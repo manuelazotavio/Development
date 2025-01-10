@@ -26,7 +26,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useFonts } from "@expo-google-fonts/poppins";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
-import loading from "../assets/loading.gif";
+import loading from "../assets/carregando.gif";
 
 const Receita = () => {
   const [loadingImage, setLoadingImage] = useState(true);
