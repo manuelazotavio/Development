@@ -140,13 +140,15 @@ const EditarUser = () => {
         removeUserStore(userId);
         await AsyncStorage.removeItem("userLogged");
         logout()
+        Alert.alert("Sucesso", "Usuário removido com sucesso!");
         navigation.navigate("Login");
       } else {
-        alert(data.error);
+        
+        Alert.alert(data.error);
       }
     } catch (error) {
       console.log("Error removeUser " + error.message);
-      alert(error.message);
+      Alert.alert(error.message);
     }
   };
 
