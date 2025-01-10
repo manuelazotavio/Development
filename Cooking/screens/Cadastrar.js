@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Keyboard
 } from "react-native";
+import logo from '../assets/logo.png'
 import Button from "../components/Button";
 import * as ImagePicker from "expo-image-picker"; // Usando Expo Image Picker
 import { useNavigation } from "@react-navigation/native";
@@ -84,6 +85,7 @@ const Cadastrar = () => {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> 
     <View style={styles.container}>
+       <Image style={styles.logo} source={logo}></Image>
       <Text style={styles.titulo}>Cadastrar</Text>
       <TextInput
         style={styles.input}
@@ -147,6 +149,12 @@ const styles = StyleSheet.create({
     marginTop: 5,
     padding: 10,
     borderRadius: 10,
+  },
+  logo:{
+    width: 100,
+    height: 100,
+    margin: 0,
+    padding: 0,
   },
   avatarPicker: {
     alignItems: "center",

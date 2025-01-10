@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TextInput,
   Modal,
+  Image,
   Pressable,
   TouchableWithoutFeedback,
   Keyboard
@@ -11,6 +12,7 @@ import {
 import Button from "../components/Button.js";
 import { useNavigation } from "@react-navigation/native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
+import logo from '../assets/logo.png'
 import { useFonts } from "@expo-google-fonts/poppins";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -87,7 +89,9 @@ const Login = () => {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> 
     <View style={{ backgroundColor: "#fff", width: "100%", flex:1 }}>
-      <View style={styles.container}>
+
+      <View style={styles.container}>      
+        <Image style={styles.logo} source={logo}></Image>
         <Text style={styles.titulo}>Login</Text>
 
         <TextInput
@@ -167,6 +171,12 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 5,
     elevation: 2,
+  },
+  logo:{
+    width: 100,
+    height: 100,
+    marginBottom: 30,
+    padding: 0
   },
   modalView: {
     margin: 20,

@@ -4,6 +4,7 @@ import { Feather } from "@expo/vector-icons";
 import Receita from "./screens/Receita";
 import Cadastrar from "./screens/Cadastrar";
 import EditarReceita from "./screens/EditarReceita";
+import { StatusBar } from "react-native";
 import Splash from "./screens/Splash";
 import Conta from "./screens/Conta";
 import EditarUser from "./screens/EditarUser";
@@ -18,7 +19,6 @@ const Tab = createBottomTabNavigator();
 const ReceitaNavigator = () => {
   return (
     <Stack.Navigator>
-      {/* <Stack.Screen name="Principal" component={ListUser} /> */}
       <Stack.Screen
         name="Home"
         component={Home}
@@ -49,9 +49,8 @@ const MainNavigator = () => {
         name="Receitas"
         component={ReceitaNavigator}
         options={{
-          headerShown: false,
           tabBarIcon: () => (
-            <Feather name="home" color={{ color: "#000" }} size={25} />
+            <Feather name="home" color="#000" size={25} />
           ),
         }}
       />
@@ -78,6 +77,9 @@ const MainNavigator = () => {
 export default function App() {
   return (
     <NavigationContainer>
+      {/* Configuração global da StatusBar */}
+      <StatusBar barStyle="dark-content" backgroundColor="white" />
+
       <Stack.Navigator>
         <Stack.Screen
           name="Splash"
@@ -93,7 +95,6 @@ export default function App() {
             headerShown: false,
           }}
         />
-
         <Stack.Screen
           name="Cadastrar"
           component={Cadastrar}
@@ -101,7 +102,7 @@ export default function App() {
             headerShown: false,
           }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="Home"
           component={Home}
           options={{
@@ -122,7 +123,6 @@ export default function App() {
             headerShown: false,
           }}
         />
-
         <Stack.Screen
           name="Main"
           component={MainNavigator}
@@ -131,10 +131,6 @@ export default function App() {
           }}
         />
       </Stack.Navigator>
-      {/* <Drawer.Navigator>
-        <Drawer.Screen name="Principal" component={ListUser} />
-        <Drawer.Screen name="Cadastrar" component={Cadastrar} />
-      </Drawer.Navigator> */}
     </NavigationContainer>
   );
 }
