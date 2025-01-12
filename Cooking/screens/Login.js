@@ -7,12 +7,13 @@ import {
   Image,
   Pressable,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
+  ActivityIndicator,
 } from "react-native";
 import Button from "../components/Button.js";
 import { useNavigation } from "@react-navigation/native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
-import logo from '../assets/logo.png'
+import logo from "../assets/logo.png";
 import { useFonts } from "@expo-google-fonts/poppins";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -20,6 +21,7 @@ import useUserLoggedStore from "../stores/useUserLoggedStore.js";
 import CadastrarBtn from "../components/CadastrarBtn.js";
 
 const Login = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [txtEmail, setTxtEmail] = useState("");
@@ -29,7 +31,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      //const response = await fetch('https://backend-api-express-1sem2024-rbd1.onrender.com/auth/login', {
+      setIsLoading(true);
       const response = await fetch(
         "https://backcooking.onrender.com/auth/login",
         {
@@ -48,7 +50,7 @@ const Login = () => {
             "userLogged",
             JSON.stringify({ ...data.user, token: data.token })
           );
-          
+
           await AsyncStorage.setItem("username", data.user.name);
           await AsyncStorage.setItem("userId", String(data.user.id));
           login(data.user, data.token);
@@ -57,19 +59,18 @@ const Login = () => {
         } catch (error) {
           console.log(error);
           Alert.alert("Erro ao gravar dados de login no dispositivo!");
-          navigation.navigate("Login")
+          navigation.navigate("Login");
         }
       } else {
         const data = await response.json();
-        console.log(data);
         if (response.status === 401) {
           setModalMessage("Usuário não encontrado.");
           setModalVisible(true);
         }
         if (response.status === 400) {
-          let errorMessage = '';
+          let errorMessage = "";
           for (let field in data.fields) {
-            errorMessage += data.fields[field].messages[0] + ' ';
+            errorMessage += data.fields[field].messages[0] + " ";
           }
           setModalMessage(errorMessage.trim());
           setModalVisible(true);
@@ -77,8 +78,11 @@ const Login = () => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
+
   let [fontsLoaded] = useFonts({
     Poppins_900Black,
   });
@@ -86,65 +90,70 @@ const Login = () => {
   if (!fontsLoaded) {
     return null;
   }
+
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> 
-    <View style={{ backgroundColor: "#fff", width: "100%", flex:1 }}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={{ backgroundColor: "#fff", width: "100%", flex: 1 }}>
+        <View style={styles.container}>
+          <Image style={styles.logo} source={logo}></Image>
+          <Text style={styles.titulo}>Login</Text>
 
-      <View style={styles.container}>      
-        <Image style={styles.logo} source={logo}></Image>
-        <Text style={styles.titulo}>Login</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Email..."
+            onChangeText={setTxtEmail}
+            value={txtEmail}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Senha..."
+            onChangeText={setTxtPass}
+            value={txtPass}
+            secureTextEntry={true}
+          />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Email..."
-          onChangeText={setTxtEmail}
-          value={txtEmail}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Senha..."
-          onChangeText={setTxtPass}
-          value={txtPass}
-          secureTextEntry={true}
-        />
+          {isLoading ? (
+            <ActivityIndicator size="large" color="black" />
+          ) : (
+            <>
+              <Button title="Entrar" onPress={handleLogin} />
+            </>
+          )}
 
-        <Button title="Entrar" onPress={handleLogin} />
-        <View style={styles.descricao}>
-          <Text style={styles.texto}>Não possui um cadastro?</Text>
+          <View style={styles.descricao}>
+            <Text style={styles.texto}>Não possui um cadastro?</Text>
+          </View>
+          <CadastrarBtn
+            title="Cadastre-se"
+            onPress={() => navigation.navigate("Cadastrar")}
+          />
         </View>
-        <CadastrarBtn
-          title="Cadastre-se"
-          onPress={() => navigation.navigate("Cadastrar")}
-        />
+        {modalVisible && (
+          <View style={styles.centeredView}>
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>{modalMessage}</Text>
+                  <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() => setModalVisible(!modalVisible)}
+                  >
+                    <Text style={styles.textStyle}>Tentar novamente</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </Modal>
+          </View>
+        )}
       </View>
-      {modalVisible && (
-  <View style={[styles.centeredView]}>
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => {
-        Alert.alert("Modal has been closed.");
-        setModalVisible(!modalVisible);
-      }}
-    >
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>{modalMessage}</Text>
-          <Pressable
-            style={[styles.button, styles.buttonClose]}
-            onPress={() => setModalVisible(!modalVisible)}
-          >
-            <Text style={styles.textStyle}>Tentar novamente</Text>
-          </Pressable>
-        </View>
-      </View>
-    </Modal>
-  </View>
-)}
-    </View>
     </TouchableWithoutFeedback>
-   
   );
 };
 
@@ -154,7 +163,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 20,
-
   },
   input: {
     height: 40,
@@ -172,11 +180,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     elevation: 2,
   },
-  logo:{
+  logo: {
     width: 100,
     height: 100,
     marginBottom: 30,
-    padding: 0
+    padding: 0,
   },
   modalView: {
     margin: 20,
@@ -197,27 +205,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
+    width: "100%",
+    height: "100%",
   },
-  tHButton: {
-    borderRadius: 20,
-    marginVertical: 8,
-    width: 120,
-    alignSelf: "center",
-  },
-  textButton: {
-    color: "#FFF",
-    textAlign: "center",
-    fontFamily: "Poppins_900Black",
-  },
-
   buttonClose: {
     backgroundColor: "#FF421D",
     paddingHorizontal: 30,
-  },
-  buttonRemove: {
-    paddingHorizontal: 20,
-    backgroundColor: "#f2c40e",
   },
   textStyle: {
     color: "white",
