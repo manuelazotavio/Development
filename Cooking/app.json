@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Cooking",
-    "newArchEnabled":true,
+    "newArchEnabled": true,
     "slug": "Cooking",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,19 +16,26 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.manuelaotavio.Cooking"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.manuelaotavio.Cooking"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "d756bb37-9018-4d4f-9ce3-9ba8f832b3ec"
+      }
+    }
   }
 }

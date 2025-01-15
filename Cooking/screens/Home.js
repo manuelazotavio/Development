@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TextInput } from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { useFonts } from "@expo-google-fonts/poppins";
 import ListaReceitas from "../components/ListaReceitas";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigation, useFocusEffect } from "@react-navigation/native"; // Mantendo o useFocusEffect
 import AdicionarBtn from "../components/AdicionarBtn";
 import authFetch from "../helpers/authFetch";
@@ -12,8 +12,9 @@ const Home = () => {
     Poppins_900Black,
   });
 
-  
   const [receitas, setReceitas] = useState([]);
+  const [receitasFiltradas, setReceitasFiltradas] = useState([]); // Para receitas filtradas
+  const [searchText, setSearchText] = useState(""); // Texto de pesquisa
   const [receitasFavoritas, setReceitasFavoritas] = useState([]);
   const navigation = useNavigation();
 
@@ -37,10 +38,10 @@ const Home = () => {
       );
       const data = await result.json();
       setReceitas(data.receita);
+      setReceitasFiltradas(data.receita); // Inicialmente exibe todas as receitas
     } catch (error) {
-      navigation.navigate("Login")
+      navigation.navigate("Login");
       console.error(error);
-   
     }
   };
 
@@ -56,48 +57,70 @@ const Home = () => {
       );
       const data = await result.json();
 
-      // Coletando IDs das receitas favoritas
-      const favoritosIds = data.favorito.map(fav => fav.receitaId);
+      const favoritosIds = data.favorito.map((fav) => fav.receitaId);
 
-      // Agora, busque todas as receitas favoritas com um único fetch usando Promise.all
-      const receitasFavoritasPromises = favoritosIds.map(id => 
-        authFetch(`https://backcooking.onrender.com/receita/${id}`).then(res => res.json())
+      const receitasFavoritasPromises = favoritosIds.map((id) =>
+        authFetch(`https://backcooking.onrender.com/receita/${id}`).then((res) =>
+          res.json()
+        )
       );
 
-      // Aguarde todas as requisições e armazene as receitas favoritas
       const receitasData = await Promise.all(receitasFavoritasPromises);
-      setReceitasFavoritas(receitasData.map(data => data.receita));
+      setReceitasFavoritas(receitasData.map((data) => data.receita));
     } catch (error) {
       console.error(error);
     }
   };
 
+  // Função para atualizar a lista de receitas filtradas com base no texto de pesquisa
+  const handleSearch = (text) => {
+    setSearchText(text);
+    if (text === "") {
+      setReceitasFiltradas(receitas); // Exibe todas se o campo de pesquisa estiver vazio
+    } else {
+
+      const filtradas = receitas.filter((receita) =>
+        
+        receita.name.toLowerCase().includes(text.toLowerCase())
+      );
+      setReceitasFiltradas(filtradas);
+    }
+  };
 
   if (receitas.length === 0) {
     return (
       <View style={styles.containerSplash}>
-        
-          <View> 
-            <Text style={styles.titulo}>Suas receitas</Text>
-            <Text style={styles.splash}>
-              Você ainda não criou nenhuma receita.
-            </Text>
-            <AdicionarBtn
-              title={"Criar"}
-              onPress={() => navigation.navigate("CriarReceita")}
-            />
-          </View>
-       
+        <View>
+          <Text style={styles.titulo}>Suas receitas</Text>
+          <Text style={styles.splash}>
+            Você ainda não criou nenhuma receita.
+          </Text>
+          <AdicionarBtn
+            title={"Criar"}
+            onPress={() => navigation.navigate("CriarReceita")}
+          />
+        </View>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <ScrollView >
+      <ScrollView>
         <Text style={styles.titulo}>Suas receitas</Text>
-        <View >
-          <ListaReceitas receitas={receitas} />
+
+        {/* Campo de Pesquisa */}
+        <TextInput
+          style={styles.input}
+          placeholder="Pesquisar receitas..."
+          value={searchText}
+          onChangeText={handleSearch}
+        />
+
+        <View>
+          {/* Lista de Receitas Filtradas */}
+          <ListaReceitas receitas={receitasFiltradas} />
+
           <Text style={styles.tituloFav}>Receitas favoritas</Text>
           <ListaReceitas receitas={receitasFavoritas} />
         </View>
@@ -109,7 +132,7 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: "30"
+    marginTop: 30,
   },
   containerLoading: {
     flex: 1,
@@ -144,6 +167,16 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginLeft: 30,
     alignSelf: "flex-start",
+  },
+  input: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    marginBottom: 20,
+    marginTop: 20,
+    paddingHorizontal: 10,
+    marginHorizontal: 30,
   },
 });
 

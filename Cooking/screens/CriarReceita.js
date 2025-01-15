@@ -98,8 +98,22 @@ const CriarReceita = () => {
         Alert.alert("Sucesso", "Receita criada com sucesso!");
        
       } else {
-        Alert.alert("Erro!", "Não foi possível salvar a receita!");
-        console.log("Erro ao salvar receita");
+        
+        if (data.fields) {
+          Object.keys(data.fields).forEach((field) => {
+            const mensagens = data.fields[field].messages;
+        
+            mensagens.forEach((mensagem) => { 
+              
+              Alert.alert("Erro!", `${mensagem}`);
+              console.log(`${field}: ${mensagem}`); // Exibe o campo e a mensagem
+            });
+          });
+        } else {
+          Alert.alert("Erro!", `Não foi possível salvar a receita.`);
+        }
+       
+        
       }
     } catch (error) {
       console.log("Error postReceita " + error.message);

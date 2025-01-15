@@ -73,9 +73,12 @@ const Cadastrar = () => {
         Alert.alert("Sucesso", "Usuário cadastrado!");
         navigation.goBack(); // Volta para a tela anterior
       } else {
-        Alert.alert("Erro", data.message || "Ocorreu um erro no cadastro.");
+        
+        
+        Alert.alert("Erro", data.error || "Ocorreu um erro no cadastro.");
       }
     } catch (error) {
+      
       Alert.alert("Erro", error.message, error.name, error.data);
     }  finally {
       setIsLoading(false); // Parar o carregamento
