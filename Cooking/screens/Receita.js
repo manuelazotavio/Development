@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
     color: "#9EA69E",
   },
   textoIng: {
-    fontSize: 18,
+    fontSize: 16,
     color: "#000",
   },
   subtitulo: {
