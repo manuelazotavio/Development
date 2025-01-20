@@ -1,7 +1,9 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import CriarReceita from "./screens/CriarReceita";
 import { Feather } from "@expo/vector-icons";
 import Receita from "./screens/Receita";
+import React, { useEffect } from "react";
+import { Linking } from "react-native";
 import Cadastrar from "./screens/Cadastrar";
 import EditarReceita from "./screens/EditarReceita";
 import { StatusBar } from "react-native";
@@ -12,6 +14,7 @@ import Home from "./screens/Home";
 import Login from "./screens/Login";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import EsqueciSenha from "./screens/EsqueciSenha";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -74,12 +77,11 @@ const MainNavigator = () => {
   );
 };
 
-export default function App() {
+const App = () => {
   return (
     <NavigationContainer>
-      {/* Configuração global da StatusBar */}
       <StatusBar barStyle="dark-content" backgroundColor="white" />
-
+      <DeepLinkHandler />
       <Stack.Navigator>
         <Stack.Screen
           name="Splash"
@@ -98,6 +100,13 @@ export default function App() {
         <Stack.Screen
           name="Cadastrar"
           component={Cadastrar}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="EsqueciSenha"
+          component={EsqueciSenha}
           options={{
             headerShown: false,
           }}
@@ -133,4 +142,38 @@ export default function App() {
       </Stack.Navigator>
     </NavigationContainer>
   );
-}
+};
+
+// Componente separado para lidar com deep links
+const DeepLinkHandler = () => {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const handleDeepLink = (event) => {
+      const url = event.url;
+      const route = url.split("?")[0];
+      const params = new URLSearchParams(url.split("?")[1]);
+
+      if (route === "myapp://reset-password") {
+        const token = params.get("token");
+        navigation.navigate("ResetPassword", { token });
+      }
+    };
+
+    // Listener para deep links
+    Linking.addEventListener("url", handleDeepLink);
+
+    // Listener para links ao abrir o app pela primeira vez
+    Linking.getInitialURL().then((url) => {
+      if (url) handleDeepLink({ url });
+    });
+
+    return () => {
+      Linking.removeEventListener("url", handleDeepLink);
+    };
+  }, [navigation]);
+
+  return null;
+};
+
+export default App;
