@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   Image,
+  Alert,
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
@@ -38,7 +39,7 @@ const ValidToken = ({ route }) => {
 
       const data = await response.json();
       if (response.ok) {
-        alert("Senha redefinida com sucesso!");
+        Alert.alert("Senha redefinida com sucesso!");
       } else {
         alert(data.error);
       }
