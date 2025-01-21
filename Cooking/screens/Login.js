@@ -116,6 +116,7 @@ const Login = () => {
             <ActivityIndicator size="large" color="black" />
           ) : (
             <>
+               <Button title="Esqueceu a senha?" onPress={() => navigation.navigate("EsqueciSenha")} />
               <Button title="Entrar" onPress={handleLogin} />
             </>
           )}

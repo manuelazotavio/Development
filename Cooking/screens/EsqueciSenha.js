@@ -1,5 +1,5 @@
 
-import { View, Text, StyleSheet, Image, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, StyleSheet, Image, ActivityIndicator } from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { useFonts } from "@expo-google-fonts/poppins";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,10 +17,11 @@ const EsqueciSenha = () => {
 
     const handleEnviarEmail = async () => {
       try {
+        const email = txtEmail; // Obtém o e-mail digitado pelo usuário
         const response = await fetch("https://backcooking.onrender.com/auth/redefinir-senha", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: txtEmail }),
+          body: JSON.stringify({ email }), // Envia como JSON
         });
   
         const data = await response.json();
@@ -35,7 +36,7 @@ const EsqueciSenha = () => {
     };
   
     return (
-      <View>
+      <View style={{marginTop: 400}}>
         <TextInput
           placeholder="E-mail"
           value={txtEmail}
