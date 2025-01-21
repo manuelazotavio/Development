@@ -21,7 +21,7 @@ const Tab = createBottomTabNavigator();
 
 // Configuração de deep linking
 const linking = {
-  prefixes: ["myapp://"],
+  prefixes: ["exp://192.168.0.125:8081"],
   config: {
     screens: {
       Splash: "splash",
@@ -99,7 +99,7 @@ const DeepLinkHandler = () => {
       const route = url.split("?")[0];
       const params = new URLSearchParams(url.split("?")[1]);
 
-      if (route === "myapp://reset-password") {
+      if (route.includes("reset-password")) {
         const token = params.get("token");
         navigation.navigate("EsqueciSenha", { token });
       }

@@ -12,11 +12,13 @@ import Button from "../components/Button";
 const EsqueciSenha = () => {
 
   const [txtEmail, setTxtEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false)
 
   const navigation = useNavigation();
 
     const handleEnviarEmail = async () => {
       try {
+        setIsLoading(true)
         const email = txtEmail; // Obtém o e-mail digitado pelo usuário
         const response = await fetch("https://backcooking.onrender.com/auth/redefinir-senha", {
           method: "POST",
@@ -32,6 +34,8 @@ const EsqueciSenha = () => {
         }
       } catch (error) {
         alert("Erro ao redefinir a senha.");
+      } finally {
+        setIsLoading(false)
       }
     };
   
@@ -43,8 +47,14 @@ const EsqueciSenha = () => {
           onChangeText={setTxtEmail}
         />
         <Text>Um e-mail será enviado para sua caixa de entrada. Verifique os spams.</Text>
+        {isLoading ? (
+            <ActivityIndicator size="large" color="black" />
+          ) : (
+            <>
         <Button title="Enviar" onPress={handleEnviarEmail} />
         <Button title="Voltar" onPress={() => navigation.navigate("Login")} />
+          </>
+          )}
       </View>
     );
   };
