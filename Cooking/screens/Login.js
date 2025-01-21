@@ -100,13 +100,13 @@ const Login = () => {
 
           <TextInput
             style={styles.input}
-            placeholder="Email..."
+            placeholder="E-mail"
             onChangeText={setTxtEmail}
             value={txtEmail}
           />
           <TextInput
             style={styles.input}
-            placeholder="Senha..."
+            placeholder="Senha   "
             onChangeText={setTxtPass}
             value={txtPass}
             secureTextEntry={true}
@@ -116,8 +116,8 @@ const Login = () => {
             <ActivityIndicator size="large" color="black" />
           ) : (
             <>
-               <Button title="Esqueceu a senha?" onPress={() => navigation.navigate("EsqueciSenha")} />
-              <Button title="Entrar" onPress={handleLogin} />
+              <Button title="Entrar" onPress={handleLogin} />    
+              <CadastrarBtn title="Esqueceu a senha?" onPress={() => navigation.navigate("EsqueciSenha")} />
             </>
           )}
 

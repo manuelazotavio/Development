@@ -15,6 +15,7 @@ import EditarUser from "./screens/EditarUser";
 import Home from "./screens/Home";
 import Login from "./screens/Login";
 import EsqueciSenha from "./screens/EsqueciSenha";
+import ValidToken from "./screens/ValidarToken";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -77,7 +78,9 @@ const MainNavigator = () => (
       name="CriarReceita"
       component={CriarReceita}
       options={{
-        tabBarIcon: () => <Feather name="plus-square" size={24} color="black" />,
+        tabBarIcon: () => (
+          <Feather name="plus-square" size={24} color="black" />
+        ),
       }}
     />
     <Tab.Screen
@@ -90,7 +93,6 @@ const MainNavigator = () => (
   </Tab.Navigator>
 );
 
-// Componente para lidar com deep links
 const DeepLinkHandler = () => {
   const navigation = useNavigation();
 
@@ -106,19 +108,20 @@ const DeepLinkHandler = () => {
       }
     };
 
-    Linking.addEventListener("url", handleDeepLink);
+    const subscription = Linking.addListener("url", handleDeepLink);
 
     Linking.getInitialURL().then((url) => {
       if (url) handleDeepLink({ url });
     });
 
     return () => {
-      Linking.removeEventListener("url", handleDeepLink);
+      subscription.remove(); // Remove a assinatura ao desmontar o componente
     };
   }, [navigation]);
 
   return null;
 };
+
 
 // App principal
 const App = () => {
@@ -140,6 +143,11 @@ const App = () => {
         <Stack.Screen
           name="Cadastrar"
           component={Cadastrar}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ValidToken"
+          component={ValidToken}
           options={{ headerShown: false }}
         />
         <Stack.Screen
