@@ -9,13 +9,13 @@ import useUserLoggedStore from "../stores/useUserLoggedStore";
 import Button from "../components/Button";
 
 
-const ResetPassword = ({ route }) => {
+const ValidToken = ({ route }) => {
     const { token } = route.params;
     const [newPassword, setNewPassword] = useState("");
   
-    const handleResetPassword = async () => {
+    const handleValidToken = async () => {
       try {
-        const response = await fetch("https://backcooking.onrender.com/auth/redefinir-senha", {
+        const response = await fetch("https://backcooking.onrender.com/auth/verify-token", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token, newPassword }),
@@ -45,4 +45,4 @@ const ResetPassword = ({ route }) => {
     );
   };
   
-  export default ResetPassword
+  export default ValidToken

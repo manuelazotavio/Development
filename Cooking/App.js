@@ -28,6 +28,7 @@ const linking = {
       Login: "login",
       Cadastrar: "register",
       EsqueciSenha: "reset-password",
+      ValidToken: "valid-token",
       Main: {
         screens: {
           Home: "home",
@@ -99,9 +100,9 @@ const DeepLinkHandler = () => {
       const route = url.split("?")[0];
       const params = new URLSearchParams(url.split("?")[1]);
 
-      if (route.includes("reset-password")) {
+      if (route.includes("valid-token")) {
         const token = params.get("token");
-        navigation.navigate("EsqueciSenha", { token });
+        navigation.navigate("ValidToken", { token });
       }
     };
 
