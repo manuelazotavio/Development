@@ -9,6 +9,7 @@ import Button from "../components/Button";
 
 const Conta = () => {
   const navigation = useNavigation();
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [loadingImage, setLoadingImage] = useState(true);
   const [userLogado, setUserLogado] = useState(null);
 
@@ -18,9 +19,20 @@ const Conta = () => {
     setUserLogado(user);
   };
 
+  const loadThemePreference = async () => {
+    try {
+      const storedTheme = await AsyncStorage.getItem("isDarkMode");
+      setIsDarkMode(storedTheme === "true");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
   useFocusEffect(
     React.useCallback(() => {
       fetchUser();
+      loadThemePreference();
     }, [])
   );
 
@@ -45,16 +57,18 @@ const Conta = () => {
     return null;
   }
 
+  const themeStyles = isDarkMode ? styles.darkTheme : styles.lightTheme;
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.titulo}>Sua conta</Text>
+    <View style={[styles.container, themeStyles]}>
+      <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>Sua conta</Text>
 
       {/* Container da imagem e do ActivityIndicator */}
       <View style={styles.imageContainer}>
         {loadingImage && (
           <ActivityIndicator
             size="large"
-            color="#FF421D"
+            color={isDarkMode ? "#fff" : "#000"}
             style={styles.activityIndicator}
           />
         )}
@@ -65,8 +79,8 @@ const Conta = () => {
         />
       </View>
 
-      <Text style={styles.name}>Nome de usuário: {userLogado?.name}</Text>
-      <Text style={styles.name}>E-mail: {userLogado?.email}</Text>
+      <Text style={[styles.name, { color: isDarkMode ? "#fff" : "#000" }]}>Nome de usuário: {userLogado?.name}</Text>
+      <Text style={[styles.name, { color: isDarkMode ? "#fff" : "#000" }]}>E-mail: {userLogado?.email}</Text>
 
       <Button
         style={styles.button}
@@ -118,6 +132,12 @@ const styles = StyleSheet.create({
   titulo: {
     fontFamily: "Poppins_900Black",
     fontSize: 25,
+  },
+  lightTheme: {
+    backgroundColor: "#fff",
+  },
+  darkTheme: {
+    backgroundColor: "#000",
   },
 });
 

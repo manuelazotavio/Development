@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { useNavigation, useFocusEffect } from "@react-navigation/native"; // Mantendo o useFocusEffect
 import AdicionarBtn from "../components/AdicionarBtn";
 import authFetch from "../helpers/authFetch";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Home = () => {
   useFonts({
@@ -13,18 +14,31 @@ const Home = () => {
   });
 
   const [receitas, setReceitas] = useState([]);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [receitasFiltradas, setReceitasFiltradas] = useState([]); // Para receitas filtradas
   const [searchText, setSearchText] = useState(""); // Texto de pesquisa
   const [receitasFavoritas, setReceitasFavoritas] = useState([]);
   const navigation = useNavigation();
 
+  const loadThemePreference = async () => {
+    try {
+      const storedTheme = await AsyncStorage.getItem("isDarkMode");
+      setIsDarkMode(storedTheme === "true");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       // Recarregar as receitas e as favoritas toda vez que a tela for focada
       fetchReceitas();
-      fetchFavoritas();
+      fetchFavoritas(); 
+      loadThemePreference();
     }, [])
   );
+
+ 
 
   const fetchReceitas = async () => {
     try {
@@ -60,8 +74,8 @@ const Home = () => {
       const favoritosIds = data.favorito.map((fav) => fav.receitaId);
 
       const receitasFavoritasPromises = favoritosIds.map((id) =>
-        authFetch(`https://backcooking.onrender.com/receita/${id}`).then((res) =>
-          res.json()
+        authFetch(`https://backcooking.onrender.com/receita/${id}`).then(
+          (res) => res.json()
         )
       );
 
@@ -78,21 +92,21 @@ const Home = () => {
     if (text === "") {
       setReceitasFiltradas(receitas); // Exibe todas se o campo de pesquisa estiver vazio
     } else {
-
       const filtradas = receitas.filter((receita) =>
-        
         receita.name.toLowerCase().includes(text.toLowerCase())
       );
       setReceitasFiltradas(filtradas);
     }
   };
 
+  const themeStyles = isDarkMode ? styles.darkTheme : styles.lightTheme; 
+
   if (receitas.length === 0) {
     return (
-      <View style={styles.containerSplash}>
+      <View style={[styles.containerSplash, themeStyles]}>
         <View>
-          <Text style={styles.titulo}>Suas receitas</Text>
-          <Text style={styles.splash}>
+          <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>Suas receitas</Text>
+          <Text style={[styles.splash, { color: isDarkMode ? "#fff" : "#000" }]}>
             Você ainda não criou nenhuma receita.
           </Text>
           <AdicionarBtn
@@ -105,13 +119,20 @@ const Home = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, themeStyles]}>
       <ScrollView>
-        <Text style={styles.titulo}>Suas receitas</Text>
+        <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>Suas receitas</Text>
 
         {/* Campo de Pesquisa */}
         <TextInput
-          style={styles.input}
+        placeholderTextColor={isDarkMode ? "#888" : "#666"}
+          style={[
+            styles.input,
+            {
+              backgroundColor: isDarkMode ? "#333" : "#ededed",
+              color: isDarkMode ? "#fff" : "#000",
+            },
+          ]}
           placeholder="Pesquisar receitas..."
           value={searchText}
           onChangeText={handleSearch}
@@ -121,7 +142,7 @@ const Home = () => {
           {/* Lista de Receitas Filtradas */}
           <ListaReceitas receitas={receitasFiltradas} />
 
-          <Text style={styles.tituloFav}>Receitas favoritas</Text>
+          <Text style={[styles.tituloFav, { color: isDarkMode ? "#fff" : "#000" }]}>Receitas favoritas</Text>
           <ListaReceitas receitas={receitasFavoritas} />
         </View>
       </ScrollView>
@@ -131,8 +152,10 @@ const Home = () => {
 
 const styles = StyleSheet.create({
   container: {
+   paddingTop: 25,
+  
     flex: 1,
-    marginTop: 30,
+
   },
   containerLoading: {
     flex: 1,
@@ -170,13 +193,17 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
+    borderRadius: 10,
     marginBottom: 20,
     marginTop: 20,
     paddingHorizontal: 10,
     marginHorizontal: 30,
+  },
+  lightTheme: {
+    backgroundColor: "#fff",
+  },
+  darkTheme: {
+    backgroundColor: "#000",
   },
 });
 

@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import FastImage from "react-native-fast-image";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import useUserLoggedStore from "../stores/useUserLoggedStore";
 import React, { useState, useLayoutEffect } from "react";
 import authFetch from "../helpers/authFetch";
@@ -26,10 +26,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { useFonts } from "@expo-google-fonts/poppins";
 import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
-import loading from "../assets/carregando.gif";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Receita = () => {
   const [loadingImage, setLoadingImage] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
 
@@ -43,6 +44,15 @@ const Receita = () => {
 
   const token = useUserLoggedStore((state) => state.token);
   const userId = useUserLoggedStore((state) => state.id);
+
+  const loadThemePreference = async () => {
+    try {
+      const storedTheme = await AsyncStorage.getItem("isDarkMode");
+      setIsDarkMode(storedTheme === "true");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const getFavoritoById = async (userId, receitaId) => {
     try {
@@ -68,6 +78,7 @@ const Receita = () => {
 
   useLayoutEffect(() => {
     getFavoritoById(userId, receita.id);
+    loadThemePreference()
   }, []);
 
   if (!fontsLoaded) {
@@ -170,13 +181,16 @@ const Receita = () => {
     }
   };
 
+
+  const themeStyles = isDarkMode ? styles.darkTheme : styles.lightTheme; 
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, themeStyles]}>
       <ScrollView contentContainerStyle={{ alignItems: "center" }}>
         {loadingImage && (
           <ActivityIndicator
             size="large"
-            color="#FF421D"
+            color={isDarkMode ? "#fff" : "#000"}
             style={styles.fotoImgLoading}
           />
         )}
@@ -187,7 +201,7 @@ const Receita = () => {
           style={styles.fotoImg}
         />
 
-        <View style={styles.iconContainer}>
+        <View style={[styles.iconContainer, { backgroundColor: isDarkMode ? "#fff" : "#9EA69E" }]}>
           <Pressable onPress={() => setModalVisible(true)}>
             <FontAwesomeIcon icon={faTrashCan} size={19} />
           </Pressable>
@@ -209,34 +223,34 @@ const Receita = () => {
           </Pressable>
         </View>
         <View style={styles.card}>
-          <Text style={styles.titulo}>{receita.name}</Text>
+          <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>{receita.name}</Text>
           <View style={styles.infoContainer}>
             <View style={styles.infoItem}>
               <FontAwesomeIcon icon={faClock} size={19} color="#FF421D" />
-              <Text>{receita.tempo}</Text>
+              <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{receita.tempo}</Text>
             </View>
             <View style={styles.infoItem}>
               <FontAwesomeIcon icon={faStar} color="#F7D342" size={22} />
-              <Text>{receita.avaliacao}</Text>
+              <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{receita.avaliacao}</Text>
             </View>
             <View style={styles.infoItem}>
               <FontAwesomeIcon icon={faUser} color="#9EA69E" size={19} />
-              <Text>{receita.porcoes}</Text>
+              <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{receita.porcoes}</Text>
             </View>
           </View>
           <View style={styles.descricao}>
-            <Text style={styles.texto}>{receita.descricao}</Text>
+            <Text style={[styles.texto, { color: isDarkMode ? "#fff" : "#000" }]}>{receita.descricao}</Text>
           </View>
-          <Text style={styles.subtitulo}>ingredientes</Text>
+          <Text style={[styles.subtitulo, { color: isDarkMode ? "#fff" : "#000" }]}>ingredientes</Text>
           <View style={styles.ingredientes}>
             {receita.ingredientes.split(";").map((ingrediente, index) => (
-              <Text key={index}>{ingrediente} </Text>
+              <Text style={{ color: isDarkMode ? "#fff" : "#000" }} key={index}>{ingrediente} </Text>
             ))}
           </View>
-          <Text style={styles.subtitulo}>passo a passo</Text>
+          <Text style={[styles.subtitulo, { color: isDarkMode ? "#fff" : "#000" }]}>passo a passo</Text>
           <View style={styles.ingredientes}>
             {receita.instrucao.split(";").map((step, index) => (
-              <Text style={styles.textoIng} key={index}>
+              <Text style={[styles.textoIng, { color: isDarkMode ? "#fff" : "#000" }]} key={index}>
                 <Text style={{ fontWeight: "bold" }}>{`${index + 1}. `}</Text>
                 {step}
               </Text>
@@ -281,7 +295,6 @@ const Receita = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFF",
     justifyContent: "center",
   },
   card: {
@@ -387,7 +400,6 @@ const styles = StyleSheet.create({
     right: -20,
     borderRadius: 20,
     padding: 10,
-    backgroundColor: "#9EA69E",
     flexDirection: "row",
     justifyContent: "space-between",
     marginRight: 40,
@@ -395,17 +407,22 @@ const styles = StyleSheet.create({
   },
   texto: {
     fontSize: 18,
-    color: "#9EA69E",
+    
   },
   textoIng: {
     fontSize: 16,
-    color: "#000",
   },
   subtitulo: {
     fontSize: 18,
     fontFamily: "Poppins_900Black",
     alignSelf: "flex-start",
     paddingVertical: 10,
+  },
+  lightTheme: {
+    backgroundColor: "#fff",
+  },
+  darkTheme: {
+    backgroundColor: "#000",
   },
   ingredientes: {},
 });

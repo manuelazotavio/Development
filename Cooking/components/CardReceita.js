@@ -5,11 +5,24 @@ import { faUser } from '@fortawesome/free-solid-svg-icons/faUser';
 import { faClock } from '@fortawesome/free-solid-svg-icons/faClock';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CardReceita = ({ receita }) => {
   const navigation = useNavigation();
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [loadingImage, setLoadingImage] = useState(true);
-  
+
+  const loadThemePreference = async () => {
+    try {
+      const storedTheme = await AsyncStorage.getItem("isDarkMode");
+      setIsDarkMode(storedTheme === "true");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  loadThemePreference()
+
   return (
     <Pressable onPress={() => navigation.navigate('Receita', { receita })}>
       <View style={styles.card}>
@@ -17,7 +30,7 @@ const CardReceita = ({ receita }) => {
           {loadingImage && (
             <ActivityIndicator
               size="large"
-              color="#FF421D"
+              color={isDarkMode ? "#fff" : "#000"}
               style={styles.activityIndicator}
             />
           )}
@@ -28,19 +41,19 @@ const CardReceita = ({ receita }) => {
             style={styles.fotoImg} 
           />
         </View>
-        <Text style={styles.titulo}>{receita.name}</Text>
+        <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>{receita.name}</Text>
         <View style={styles.infoContainer}>
           <View style={styles.infoItem}>
             <FontAwesomeIcon icon={faClock} size={19} color='#FF421D' />
-            <Text>{receita.tempo}</Text>
+            <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{receita.tempo}</Text>
           </View>
           <View style={styles.infoItem}>
             <FontAwesomeIcon icon={faStar} color="#F7D342" size={23} />
-            <Text>{receita.avaliacao}</Text>
+            <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{receita.avaliacao}</Text>
           </View>
           <View style={styles.infoItem}>
             <FontAwesomeIcon icon={faUser} color='#9EA69E' size={19} />
-            <Text>{receita.porcoes}</Text>
+            <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{receita.porcoes}</Text>
           </View>
         </View>
       </View>

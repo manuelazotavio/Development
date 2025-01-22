@@ -9,13 +9,14 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ActivityIndicator,
+  Switch,
 } from "react-native";
 import Button from "../components/Button.js";
 import { useNavigation } from "@react-navigation/native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import logo from "../assets/logo.png";
 import { useFonts } from "@expo-google-fonts/poppins";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useUserLoggedStore from "../stores/useUserLoggedStore.js";
 import CadastrarBtn from "../components/CadastrarBtn.js";
@@ -26,8 +27,42 @@ const Login = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [txtEmail, setTxtEmail] = useState("");
   const [txtPass, setTxtPass] = useState("");
+  const [isDarkMode, setIsDarkMode] = useState(false); // Controle do modo noturno
   const navigation = useNavigation();
   const login = useUserLoggedStore((state) => state.login);
+
+  // Carregar o tema salvo ao iniciar o app
+  useEffect(() => {
+    const loadTheme = async () => {
+      try {
+        const savedTheme = await AsyncStorage.getItem("isDarkMode");
+        if (savedTheme !== null) {
+          setIsDarkMode(JSON.parse(savedTheme));
+        }
+      } catch (error) {
+        console.log("Erro ao carregar tema:", error);
+      }
+    };
+
+    loadTheme();
+  }, []);
+
+  // Alternância do tema e salvamento
+  const toggleTheme = async (value) => {
+    try {
+      setIsDarkMode(value);
+  
+      if (value) {
+        // Salvar tema no AsyncStorage
+        await AsyncStorage.setItem("isDarkMode", JSON.stringify(value));
+      } else {
+        // Remover tema do AsyncStorage
+        await AsyncStorage.removeItem("isDarkMode");
+      }
+    } catch (error) {
+      console.log("Erro ao salvar/remover tema:", error);
+    }
+  };
 
   const handleLogin = async () => {
     try {
@@ -91,68 +126,67 @@ const Login = () => {
     return null;
   }
 
+  const themeStyles = isDarkMode ? styles.darkTheme : styles.lightTheme; // Estilos dinâmicos
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={{ backgroundColor: "#fff", width: "100%", flex: 1 }}>
-        <View style={styles.container}>
-          <Image style={styles.logo} source={logo}></Image>
-          <Text style={styles.titulo}>Login</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholder="E-mail"
-            onChangeText={setTxtEmail}
-            value={txtEmail}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Senha   "
-            onChangeText={setTxtPass}
-            value={txtPass}
-            secureTextEntry={true}
-          />
-
-          {isLoading ? (
-            <ActivityIndicator size="large" color="black" />
-          ) : (
-            <>
-              <Button title="Entrar" onPress={handleLogin} />    
-              <CadastrarBtn title="Esqueceu a senha?" onPress={() => navigation.navigate("EsqueciSenha")} />
-            </>
-          )}
-
-          <View style={styles.descricao}>
-            <Text style={styles.texto}>Não possui um cadastro?</Text>
-          </View>
-          <CadastrarBtn
-            title="Cadastre-se"
-            onPress={() => navigation.navigate("Cadastrar")}
-          />
+      <View style={[styles.container, themeStyles]}>
+        {/* Alternância do tema */}
+        <View style={styles.switchContainer}>
+          <Text style={[styles.switchLabel, { color: isDarkMode ? "#fff" : "#000" }]}>
+            Modo Noturno
+          </Text>
+          <Switch value={isDarkMode} onValueChange={toggleTheme} />
         </View>
-        {modalVisible && (
-          <View style={styles.centeredView}>
-            <Modal
-              animationType="fade"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                setModalVisible(!modalVisible);
-              }}
-            >
-              <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                  <Text style={styles.modalText}>{modalMessage}</Text>
-                  <Pressable
-                    style={[styles.button, styles.buttonClose]}
-                    onPress={() => setModalVisible(!modalVisible)}
-                  >
-                    <Text style={styles.textStyle}>Tentar novamente</Text>
-                  </Pressable>
-                </View>
-              </View>
-            </Modal>
-          </View>
+
+        <Image style={styles.logo} source={logo}></Image>
+        <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>
+          Login
+        </Text>
+
+        <TextInput
+          style={[
+            styles.input,
+            { backgroundColor: isDarkMode ? "#333" : "#ededed", color: isDarkMode ? "#fff" : "#000" },
+          ]}
+          placeholder="E-mail"
+          placeholderTextColor={isDarkMode ? "#888" : "#666"}
+          onChangeText={setTxtEmail}
+          value={txtEmail}
+        />
+        <TextInput
+          style={[
+            styles.input,
+            { backgroundColor: isDarkMode ? "#333" : "#ededed", color: isDarkMode ? "#fff" : "#000" },
+          ]}
+          placeholder="Senha"
+          placeholderTextColor={isDarkMode ? "#888" : "#666"}
+          onChangeText={setTxtPass}
+          value={txtPass}
+          secureTextEntry={true}
+        />
+
+        {isLoading ? (
+          <ActivityIndicator size="large" color={isDarkMode ? "#fff" : "#000"} />
+        ) : (
+          <>
+            <Button title="Entrar" onPress={handleLogin} />
+            <CadastrarBtn
+              title="Esqueceu a senha?"
+              onPress={() => navigation.navigate("EsqueciSenha")}
+            />
+          </>
         )}
+
+        <View style={styles.descricao}>
+          <Text style={[styles.texto, { color: isDarkMode ? "#aaa" : "#9EA69E" }]}>
+            Não possui um cadastro?
+          </Text>
+        </View>
+        <CadastrarBtn
+          title="Cadastre-se"
+          onPress={() => navigation.navigate("Cadastrar")}
+        />
       </View>
     </TouchableWithoutFeedback>
   );
@@ -161,68 +195,23 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
     justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: 20,
   },
   input: {
     height: 40,
     width: "80%",
-    backgroundColor: "#ededed",
     marginBottom: 10,
     marginTop: 5,
     padding: 10,
     borderRadius: 10,
-  },
-  button: {
-    marginVertical: 10,
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 5,
-    elevation: 2,
   },
   logo: {
     width: 100,
     height: 100,
     marginBottom: 30,
     padding: 0,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-  },
-  buttonClose: {
-    backgroundColor: "#FF421D",
-    paddingHorizontal: 30,
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-    fontFamily: "Poppins_900Black",
-    fontSize: 20,
   },
   titulo: {
     fontFamily: "Poppins_900Black",
@@ -235,7 +224,24 @@ const styles = StyleSheet.create({
   },
   texto: {
     fontSize: 18,
-    color: "#9EA69E",
+  },
+  switchContainer: {
+    position: "absolute",
+    top: 50,
+    right: 20,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  switchLabel: {
+    marginRight: 10,
+    fontSize: 16,
+    fontFamily: "Poppins",
+  },
+  lightTheme: {
+    backgroundColor: "#fff",
+  },
+  darkTheme: {
+    backgroundColor: "#000",
   },
 });
 

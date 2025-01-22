@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Linking, StatusBar } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -60,38 +61,65 @@ const ReceitaNavigator = () => (
   </Stack.Navigator>
 );
 
-const MainNavigator = () => (
-  <Tab.Navigator
-    screenOptions={{
-      headerShown: false,
-      tabBarShowLabel: false,
-    }}
-  >
-    <Tab.Screen
-      name="Receitas"
-      component={ReceitaNavigator}
-      options={{
-        tabBarIcon: () => <Feather name="home" color="#000" size={25} />,
+const MainNavigator = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const getThemePreference = async () => {
+      try {
+        const storedTheme = await AsyncStorage.getItem("isDarkMode");
+        if (storedTheme !== null) {
+          setIsDarkMode(storedTheme === "true");
+        }
+      } catch (error) {
+        console.error("Erro ao recuperar tema:", error);
+      }
+    };
+
+    getThemePreference();
+  }, []);
+
+  const tabBarStyle = {
+    backgroundColor: isDarkMode ? "#000" : "#fff",
+    borderTopColor: isDarkMode ? "#333" : "#ccc",
+  };
+
+  const iconColor = isDarkMode ? "#fff" : "#000";
+
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarStyle: tabBarStyle,
       }}
-    />
-    <Tab.Screen
-      name="CriarReceita"
-      component={CriarReceita}
-      options={{
-        tabBarIcon: () => (
-          <Feather name="plus-square" size={24} color="black" />
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="Conta"
-      component={Conta}
-      options={{
-        tabBarIcon: () => <Feather name="user" size={24} color="black" />,
-      }}
-    />
-  </Tab.Navigator>
-);
+    >
+      <Tab.Screen
+        name="Receitas"
+        component={ReceitaNavigator}
+        options={{
+          tabBarIcon: () => <Feather name="home" color={iconColor} size={25} />,
+        }}
+      />
+      <Tab.Screen
+        name="CriarReceita"
+        component={CriarReceita}
+        options={{
+          tabBarIcon: () => (
+            <Feather name="plus-square" size={24} color={iconColor} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Conta"
+        component={Conta}
+        options={{
+          tabBarIcon: () => <Feather name="user" size={24} color={iconColor} />,
+        }}
+      />
+    </Tab.Navigator>
+  );
+};
 
 const DeepLinkHandler = () => {
   const navigation = useNavigation();
@@ -125,9 +153,32 @@ const DeepLinkHandler = () => {
 
 // App principal
 const App = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const getThemePreference = async () => {
+      try {
+        const storedTheme = await AsyncStorage.getItem("isDarkMode");
+        if (storedTheme !== null) {
+          setIsDarkMode(storedTheme === "true");
+        }
+      } catch (error) {
+        console.error("Erro ao recuperar tema:", error);
+      }
+    };
+
+    getThemePreference();
+  }, []);
+
+
+
   return (
+
     <NavigationContainer linking={linking}>
-      <StatusBar barStyle="dark-content" backgroundColor="white" />
+      <StatusBar
+        barStyle={isDarkMode ? "light-content" : "dark-content"}
+        backgroundColor={isDarkMode ? "#000" : "#fff"}
+      />
       <DeepLinkHandler />
       <Stack.Navigator>
         <Stack.Screen
