@@ -212,7 +212,7 @@ const Receita = () => {
             </Pressable>
           ) : (
             <Pressable onPress={favReceita}>
-              <FontAwesomeIcon icon={faHeart} size={19} color="#fff" />
+              <FontAwesomeIcon icon={faHeart} size={19} color={isDarkMode ? "#999" : "#fff"} />
             </Pressable>
           )}
 

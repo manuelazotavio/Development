@@ -10,7 +10,8 @@ import {
   Keyboard,
   ActivityIndicator,
   Switch,
-  StatusBar
+  StatusBar,
+  Alert
 } from "react-native";
 import Button from "../components/Button.js";
 import { useNavigation } from "@react-navigation/native";
@@ -100,16 +101,14 @@ const Login = () => {
       } else {
         const data = await response.json();
         if (response.status === 401) {
-          setModalMessage("Usuário não encontrado.");
-          setModalVisible(true);
+          Alert.alert("Erro", "Usuário não encontrado")
         }
         if (response.status === 400) {
           let errorMessage = "";
           for (let field in data.fields) {
             errorMessage += data.fields[field].messages[0] + " ";
           }
-          setModalMessage(errorMessage.trim());
-          setModalVisible(true);
+          Alert.alert(errorMessage.trim())
         }
       }
     } catch (error) {
