@@ -9,7 +9,8 @@ import {
   Text,
   ActivityIndicator,
   Alert,
-  Switch
+  Switch,
+  StatusBar
 } from "react-native";
 import Button from "../components/Button.js";
 import { useState, useEffect } from "react";
@@ -183,7 +184,12 @@ const EditarUser = () => {
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      
       <View style={[styles.container, themeStyles]}>
+        <StatusBar
+        barStyle={isDarkMode ? "light-content" : "dark-content"}
+        backgroundColor={isDarkMode ? "#000" : "#fff"}
+      />
         <View style={styles.switchContainer}>
           <Text
             style={[

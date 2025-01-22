@@ -9,20 +9,39 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   ActivityIndicator,
-  Keyboard
+  Keyboard,
+  StatusBar
 } from "react-native";
 import logo from '../assets/logo.png'
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../components/Button";
 import * as ImagePicker from "expo-image-picker"; // Usando Expo Image Picker
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 const Cadastrar = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [avatar, setAvatar] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [txtName, setTxtName] = useState("");
   const [txtEmail, setTxtEmail] = useState("");
   const [txtPass, setTxtPass] = useState("");
   const navigation = useNavigation();
+
+  const loadThemePreference = async () => {
+    try {
+      const storedTheme = await AsyncStorage.getItem("isDarkMode");
+      setIsDarkMode(storedTheme === "true");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+     
+      loadThemePreference();
+    }, [])
+  );
 
   // Função para selecionar imagem
   const handleAvatarChange = async () => {
@@ -85,25 +104,45 @@ const Cadastrar = () => {
     }
   };
 
+  const themeStyles = isDarkMode ? styles.darkTheme : styles.lightTheme;
+
   return (
+    
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> 
-    <View style={styles.container}>
+    
+    <View style={[styles.container, themeStyles]}>
+      <StatusBar
+        barStyle={isDarkMode ? "light-content" : "dark-content"}
+        backgroundColor={isDarkMode ? "#000" : "#fff"}
+      />
        <Image style={styles.logo} source={logo}></Image>
-      <Text style={styles.titulo}>Cadastrar</Text>
+      <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>Cadastrar</Text>
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          { backgroundColor: isDarkMode ? "#333" : "#ededed", color: isDarkMode ? "#fff" : "#000" },
+        ]}
         placeholder="Nome..."
+        placeholderTextColor={isDarkMode ? "#888" : "#666"}
         onChangeText={setTxtName}
         value={txtName}
       />
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          { backgroundColor: isDarkMode ? "#333" : "#ededed", color: isDarkMode ? "#fff" : "#000" },
+        ]}
+        placeholderTextColor={isDarkMode ? "#888" : "#666"}
         placeholder="Email..."
         onChangeText={setTxtEmail}
         value={txtEmail}
       />
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          { backgroundColor: isDarkMode ? "#333" : "#ededed", color: isDarkMode ? "#fff" : "#000" },
+        ]}
+        placeholderTextColor={isDarkMode ? "#888" : "#666"}
         placeholder="Senha..."
         secureTextEntry
         onChangeText={setTxtPass}
@@ -113,12 +152,12 @@ const Cadastrar = () => {
         {avatar ? (
           <Image source={{ uri: avatar }} style={styles.avatar} />
         ) : (
-          <Text style={styles.avatarText}>Escolha um avatar para seu perfil</Text>
+          <Text style={[styles.avatarText, { color: isDarkMode ? "#aaa" : "#9EA69E" }]}>Escolha um avatar para seu perfil</Text>
         )}
       </TouchableOpacity>
       
               {isLoading ? (
-                <ActivityIndicator size="large" color="black" />
+                <ActivityIndicator size="large" color={isDarkMode ? "#fff" : "#000"}  />
               ) : (
                 <>
       <Button title="Cadastrar" onPress={postUser} />
@@ -175,6 +214,12 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     color: "#777",
+  },
+  lightTheme: {
+    backgroundColor: "#fff",
+  },
+  darkTheme: {
+    backgroundColor: "#000",
   },
 });
 

@@ -6,22 +6,39 @@ import {
   Image,
   ActivityIndicator,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
 } from "react-native";
-import { Poppins_900Black } from "@expo-google-fonts/poppins";
-import { useFonts } from "@expo-google-fonts/poppins";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import logo from '../assets/logo.png'
-import useUserLoggedStore from "../stores/useUserLoggedStore";
+import logo from "../assets/logo.png";
 import Button from "../components/Button";
 
 const EsqueciSenha = () => {
   const [txtEmail, setTxtEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const navigation = useNavigation();
+
+  
+  const loadThemePreference = async () => {
+    try {
+      const storedTheme = await AsyncStorage.getItem("isDarkMode");
+      setIsDarkMode(storedTheme === "true");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+    
+      loadThemePreference();
+    }, [])
+  );
+
 
   const handleEnviarEmail = async () => {
     try {
@@ -49,34 +66,44 @@ const EsqueciSenha = () => {
     }
   };
 
+  const themeStyles = isDarkMode ? styles.darkTheme : styles.lightTheme; 
+
   return (
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-    <View style={{ backgroundColor: "#fff", width: "100%", flex: 1 }}>
-      <View style={styles.container}>
-        <Image style={styles.logo} source={logo}></Image>
-        <Text style={styles.titulo}>Esqueceu a senha?</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="E-mail"
-          value={txtEmail}
-          onChangeText={setTxtEmail}
-        />
-        <Text style={styles.texto}>
-          Um e-mail será enviado para sua caixa de entrada. Verifique os spams.
-        </Text>
-        {isLoading ? (
-          <ActivityIndicator size="large" color="black" />
-        ) : (
-          <>
-            <Button title="Enviar" onPress={handleEnviarEmail} />
-            <Button
-              title="Voltar"
-              onPress={() => navigation.navigate("Login")}
-            />
-          </>
-        )}
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={[{ backgroundColor: "#fff", width: "100%", flex: 1 }, themeStyles]}>
+        <View style={styles.container}>
+          <Image style={styles.logo} source={logo}></Image>
+          <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>Esqueceu a senha?</Text>
+          <TextInput
+            placeholderTextColor={isDarkMode ? "#888" : "#666"}
+            style={[
+              styles.input,
+              {
+                backgroundColor: isDarkMode ? "#333" : "#ededed",
+                color: isDarkMode ? "#fff" : "#000",
+              },
+            ]}
+            placeholder="E-mail"
+            value={txtEmail}
+            onChangeText={setTxtEmail}
+          />
+          <Text style={[styles.texto, { color: isDarkMode ? "#fff" : "#000" }]}>
+            Um e-mail será enviado para sua caixa de entrada. Verifique os
+            spams.
+          </Text>
+          {isLoading ? (
+            <ActivityIndicator size="large" color={isDarkMode ? "#fff" : "#000"} />
+          ) : (
+            <>
+              <Button title="Enviar" onPress={handleEnviarEmail} />
+              <Button
+                title="Voltar"
+                onPress={() => navigation.navigate("Login")}
+              />
+            </>
+          )}
+        </View>
       </View>
-    </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -149,7 +176,7 @@ const styles = StyleSheet.create({
   titulo: {
     fontFamily: "Poppins_900Black",
     fontSize: 30,
-    marginBottom: 20
+    marginBottom: 20,
   },
   descricao: {
     paddingVertical: 10,
@@ -159,6 +186,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 10,
     marginTop: 10,
+  },
+  lightTheme: {
+    backgroundColor: "#fff",
+  },
+  darkTheme: {
+    backgroundColor: "#000",
   },
 });
 export default EsqueciSenha;

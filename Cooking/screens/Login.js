@@ -10,6 +10,7 @@ import {
   Keyboard,
   ActivityIndicator,
   Switch,
+  StatusBar
 } from "react-native";
 import Button from "../components/Button.js";
 import { useNavigation } from "@react-navigation/native";
@@ -131,6 +132,10 @@ const Login = () => {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={[styles.container, themeStyles]}>
+      <StatusBar
+        barStyle={isDarkMode ? "light-content" : "dark-content"}
+        backgroundColor={isDarkMode ? "#000" : "#fff"}
+      />
         {/* Alternância do tema */}
         <View style={styles.switchContainer}>
           <Text style={[styles.switchLabel, { color: isDarkMode ? "#fff" : "#000" }]}>

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, Image, ActivityIndicator, StatusBar } from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { useFonts } from "@expo-google-fonts/poppins";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -60,7 +60,12 @@ const Conta = () => {
   const themeStyles = isDarkMode ? styles.darkTheme : styles.lightTheme;
 
   return (
+    
     <View style={[styles.container, themeStyles]}>
+      <StatusBar
+        barStyle={isDarkMode ? "light-content" : "dark-content"}
+        backgroundColor={isDarkMode ? "#000" : "#fff"}
+      />
       <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>Sua conta</Text>
 
       {/* Container da imagem e do ActivityIndicator */}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Linking, StatusBar } from "react-native";
+import { Linking, StatusBar, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -75,15 +75,17 @@ const MainNavigator = () => {
         console.error("Erro ao recuperar tema:", error);
       }
     };
-
+  
     getThemePreference();
   }, []);
+  
 
+
+  
   const tabBarStyle = {
     backgroundColor: isDarkMode ? "#000" : "#fff",
     borderTopColor: isDarkMode ? "#333" : "#ccc",
   };
-
   const iconColor = isDarkMode ? "#fff" : "#000";
 
   return (
@@ -153,32 +155,12 @@ const DeepLinkHandler = () => {
 
 // App principal
 const App = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  useEffect(() => {
-    const getThemePreference = async () => {
-      try {
-        const storedTheme = await AsyncStorage.getItem("isDarkMode");
-        if (storedTheme !== null) {
-          setIsDarkMode(storedTheme === "true");
-        }
-      } catch (error) {
-        console.error("Erro ao recuperar tema:", error);
-      }
-    };
-
-    getThemePreference();
-  }, []);
-
-
+ 
 
   return (
 
     <NavigationContainer linking={linking}>
-      <StatusBar
-        barStyle={isDarkMode ? "light-content" : "dark-content"}
-        backgroundColor={isDarkMode ? "#000" : "#fff"}
-      />
+      
       <DeepLinkHandler />
       <Stack.Navigator>
         <Stack.Screen

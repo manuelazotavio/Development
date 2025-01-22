@@ -11,11 +11,12 @@ import {
 } from "react-native";
 import Button from "../components/Button.js";
 import { useState } from "react";
+import React from "react";
 import AdicionarBtn from "../components/AdicionarBtn.js";
 import * as ImagePicker from "expo-image-picker"; // Usando Expo Image Picker
-import { useRoute, useNavigation } from "@react-navigation/native";
+import { useRoute, useNavigation, useFocusEffect } from "@react-navigation/native";
 import { faPencil } from "@fortawesome/free-solid-svg-icons/faPencil";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import useUserLoggedStore from "../stores/useUserLoggedStore";
 import authFetch from "../helpers/authFetch.js";
@@ -24,7 +25,7 @@ const EditarReceita = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const userId = useUserLoggedStore((state) => state.id);
-    const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { receita } = route.params;
 
@@ -59,6 +60,25 @@ const EditarReceita = () => {
   );
   const [passos, setPassos] = useState(receita.instrucao.split(";"));
 
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const getThemePreference = async () => {
+    try {
+      const storedTheme = await AsyncStorage.getItem("isDarkMode");
+      if (storedTheme !== null) {
+        setIsDarkMode(storedTheme === "true");
+      }
+    } catch (error) {
+      console.error("Erro ao recuperar tema:", error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getThemePreference();
+    }, [])
+  );
+
   const handleImagemChange = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -86,7 +106,7 @@ const EditarReceita = () => {
 
       const formData = new FormData();
 
-      setIsLoading(true)
+      setIsLoading(true);
 
       // Adiciona os campos ao FormData
 
@@ -133,30 +153,53 @@ const EditarReceita = () => {
     }
   };
 
+  const themeStyles = isDarkMode ? styles.darkTheme : styles.lightTheme;
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, themeStyles]}>
       <ScrollView>
-        <Text style={styles.titulo}>Edite sua receita!</Text>
+        <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>Edite sua receita!</Text>
         <View style={styles.form}>
           <TextInput
-            style={styles.input}
+          placeholderTextColor={isDarkMode ? "#888" : "#666"}
+            style={[
+              styles.input,
+              {
+                backgroundColor: isDarkMode ? "#333" : "#ededed",
+                color: isDarkMode ? "#fff" : "#000",
+              },
+            ]}
             placeholder="Título da Receita"
             onChangeText={setTxtName}
             value={txtName}
           />
           <TextInput
-            style={styles.inputDesc}
+          placeholderTextColor={isDarkMode ? "#888" : "#666"}
+            style={[
+              styles.inputDesc,
+              {
+                backgroundColor: isDarkMode ? "#333" : "#ededed",
+                color: isDarkMode ? "#fff" : "#000",
+              },
+            ]}
             placeholder="Compartilhe um pouco mais sobre o seu prato. O que você gosta nele?"
             onChangeText={setTxtDescricao}
             value={txtDescricao}
             multiline
           />
 
-          <Text style={styles.subtitulo}>Ingredientes</Text>
+          <Text style={[styles.subtitulo, { color: isDarkMode ? "#fff" : "#000" }]}>Ingredientes</Text>
           {ingredientes.map((ingrediente, index) => (
             <TextInput
               key={index}
-              style={styles.input}
+              placeholderTextColor={isDarkMode ? "#888" : "#666"}
+              style={[
+                styles.input,
+                {
+                  backgroundColor: isDarkMode ? "#333" : "#ededed",
+                  color: isDarkMode ? "#fff" : "#000",
+                },
+              ]}
               placeholder="250g de açúcar"
               onChangeText={(text) => handleIngredienteChange(text, index)}
               value={ingrediente}
@@ -164,12 +207,22 @@ const EditarReceita = () => {
           ))}
           <AdicionarBtn title="Ingrediente" onPress={addIngrediente} />
 
-          <Text style={styles.subtitulo}>Passo a passo</Text>
+          <Text style={[styles.subtitulo, { color: isDarkMode ? "#fff" : "#000" }]}>Passo a passo</Text>
           {passos.map((passo, index) => (
             <View key={index} style={styles.passoContainer}>
-              <Text style={styles.passoNumero}>{index + 1}.</Text>
+              <Text style={[
+                  styles.passoNumero,
+                  { color: isDarkMode ? "#fff" : "#000" },
+                ]}>{index + 1}.</Text>
               <TextInput
-                style={styles.inputPasso}
+              placeholderTextColor={isDarkMode ? "#888" : "#666"}
+              style={[
+                styles.inputPasso,
+                {
+                  backgroundColor: isDarkMode ? "#333" : "#ededed",
+                  color: isDarkMode ? "#fff" : "#000",
+                },
+              ]}
                 placeholder="Misture a massa até se 
 tornar homogênea."
                 onChangeText={(text) => handlePassoChange(text, index)}
@@ -179,24 +232,45 @@ tornar homogênea."
           ))}
           <AdicionarBtn title="Passo" onPress={addPasso} />
 
-          <Text>Porções</Text>
+          <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>Porções</Text>
           <TextInput
-            style={styles.input}
+          placeholderTextColor={isDarkMode ? "#888" : "#666"}
+            style={[
+              styles.input,
+              {
+                backgroundColor: isDarkMode ? "#333" : "#ededed",
+                color: isDarkMode ? "#fff" : "#000",
+              },
+            ]}
             placeholder="2 pessoas"
             onChangeText={setTxtPorcao}
             value={txtPorcao}
           />
-          <Text>Tempo de preparo</Text>
+          <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>Tempo de preparo</Text>
           <TextInput
-            style={styles.input}
+          placeholderTextColor={isDarkMode ? "#888" : "#666"}
+            style={[
+              styles.input,
+              {
+                backgroundColor: isDarkMode ? "#333" : "#ededed",
+                color: isDarkMode ? "#fff" : "#000",
+              },
+            ]}
             placeholder="1h e 30min"
             onChangeText={setTxtTempo}
             value={txtTempo}
           />
 
-          <Text>Avaliação</Text>
+          <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>Avaliação</Text>
           <TextInput
-            style={styles.input}
+          placeholderTextColor={isDarkMode ? "#888" : "#666"}
+            style={[
+              styles.input,
+              {
+                backgroundColor: isDarkMode ? "#333" : "#ededed",
+                color: isDarkMode ? "#fff" : "#000",
+              },
+            ]}
             placeholder="4.5"
             onChangeText={setTxtAvaliacao}
             value={String(txtAvaliacao)}
@@ -208,7 +282,7 @@ tornar homogênea."
             {loadingImage && (
               <ActivityIndicator
                 size="small"
-                color="#FF421D"
+                color={isDarkMode ? "#fff" : "#000"}
                 style={styles.fotoImgLoading}
               />
             )}
@@ -218,15 +292,16 @@ tornar homogênea."
               source={{ uri: imagem }}
               style={styles.avatar}
             />
-            <FontAwesomeIcon style={styles.pencil} icon={faPencil} size={22} />
+            <FontAwesomeIcon style={[styles.pencil, { backgroundColor: isDarkMode ? "#000" : "#fff", color: isDarkMode ? "#fff" : "#000" }]} icon={faPencil} size={22} />
           </TouchableOpacity>
-             {isLoading ? (
-                        <ActivityIndicator size="large" color="black" />
-                      ) : (
-                        <>
-          <Button title="Cancelar" onPress={() => navigation.goBack()} />
-          <Button title="Salvar" onPress={editReceita} /></>
-                      )}
+          {isLoading ? (
+            <ActivityIndicator size="large" color={isDarkMode ? "#fff" : "#000"} />
+          ) : (
+            <>
+              <Button title="Cancelar" onPress={() => navigation.goBack()} />
+              <Button title="Salvar" onPress={editReceita} />
+            </>
+          )}
         </View>
       </ScrollView>
     </View>
@@ -318,6 +393,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   subtitulo: {
+    fontFamily: "Poppins_900Black",
     fontSize: 20,
   },
   passoContainer: {
@@ -335,6 +411,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
     fontWeight: "bold",
     fontSize: 16,
+  },
+  lightTheme: {
+    backgroundColor: "#fff",
+  },
+  darkTheme: {
+    backgroundColor: "#000",
   },
 });
 
