@@ -49,7 +49,7 @@ const EsqueciSenha = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }), // Envia como JSON
+          body: JSON.stringify({ email, platform: "expo" }), // Envia como JSON
         }
       );
 
