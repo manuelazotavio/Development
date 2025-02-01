@@ -10,9 +10,12 @@ import {
   TouchableWithoutFeedback,
   ActivityIndicator,
   Keyboard,
-  StatusBar
+  StatusBar,
+  Pressable,
 } from "react-native";
-import logo from '../assets/logo.png'
+import logo from "../assets/logo.png";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "../components/Button";
 import * as ImagePicker from "expo-image-picker"; // Usando Expo Image Picker
@@ -21,6 +24,7 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 const Cadastrar = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [avatar, setAvatar] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [txtName, setTxtName] = useState("");
   const [txtEmail, setTxtEmail] = useState("");
@@ -36,9 +40,12 @@ const Cadastrar = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   useFocusEffect(
     React.useCallback(() => {
-     
       loadThemePreference();
     }, [])
   );
@@ -47,7 +54,10 @@ const Cadastrar = () => {
   const handleAvatarChange = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
-      Alert.alert("Permissão necessária", "Precisamos de acesso à sua galeria.");
+      Alert.alert(
+        "Permissão necessária",
+        "Precisamos de acesso à sua galeria."
+      );
       return;
     }
 
@@ -64,10 +74,13 @@ const Cadastrar = () => {
 
   // Função para enviar os dados
   const postUser = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     if (!txtName || !txtEmail || !txtPass || !avatar) {
-      Alert.alert("Erro", "Por favor, preencha todos os campos e selecione um avatar.");
-      setIsLoading(false)
+      Alert.alert(
+        "Erro",
+        "Por favor, preencha todos os campos e selecione um avatar."
+      );
+      setIsLoading(false);
       return;
     }
 
@@ -97,13 +110,12 @@ const Cadastrar = () => {
           for (let field in data.fields) {
             errorMessage += data.fields[field].messages[0] + " ";
           }
-          Alert.alert(errorMessage.trim())
+          Alert.alert(errorMessage.trim());
         }
       }
     } catch (error) {
-      
       Alert.alert("Erro", error.message, error.name, error.data);
-    }  finally {
+    } finally {
       setIsLoading(false); // Parar o carregamento
     }
   };
@@ -111,64 +123,96 @@ const Cadastrar = () => {
   const themeStyles = isDarkMode ? styles.darkTheme : styles.lightTheme;
 
   return (
-    
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}> 
-    
-    <View style={[styles.container, themeStyles]}>
-      <StatusBar
-        barStyle={isDarkMode ? "light-content" : "dark-content"}
-        backgroundColor={isDarkMode ? "#000" : "#fff"}
-      />
-       <Image style={styles.logo} source={logo}></Image>
-      <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>Cadastrar</Text>
-      <TextInput
-        style={[
-          styles.input,
-          { backgroundColor: isDarkMode ? "#333" : "#ededed", color: isDarkMode ? "#fff" : "#000" },
-        ]}
-        placeholder="Nome..."
-        placeholderTextColor={isDarkMode ? "#888" : "#666"}
-        onChangeText={setTxtName}
-        value={txtName}
-      />
-      <TextInput
-        style={[
-          styles.input,
-          { backgroundColor: isDarkMode ? "#333" : "#ededed", color: isDarkMode ? "#fff" : "#000" },
-        ]}
-        placeholderTextColor={isDarkMode ? "#888" : "#666"}
-        placeholder="Email..."
-        onChangeText={setTxtEmail}
-        value={txtEmail}
-      />
-      <TextInput
-        style={[
-          styles.input,
-          { backgroundColor: isDarkMode ? "#333" : "#ededed", color: isDarkMode ? "#fff" : "#000" },
-        ]}
-        placeholderTextColor={isDarkMode ? "#888" : "#666"}
-        placeholder="Senha..."
-        secureTextEntry
-        onChangeText={setTxtPass}
-        value={txtPass}
-      />
-      <TouchableOpacity style={styles.avatarPicker} onPress={handleAvatarChange}>
-        {avatar ? (
-          <Image source={{ uri: avatar }} style={styles.avatar} />
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={[styles.container, themeStyles]}>
+        <StatusBar
+          barStyle={isDarkMode ? "light-content" : "dark-content"}
+          backgroundColor={isDarkMode ? "#000" : "#fff"}
+        />
+        <Image style={styles.logo} source={logo}></Image>
+        <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>
+          Cadastrar
+        </Text>
+        <TextInput
+          style={[
+            styles.input,
+            {
+              backgroundColor: isDarkMode ? "#333" : "#ededed",
+              color: isDarkMode ? "#fff" : "#000",
+            },
+          ]}
+          placeholder="Nome..."
+          placeholderTextColor={isDarkMode ? "#888" : "#666"}
+          onChangeText={setTxtName}
+          value={txtName}
+        />
+        <TextInput
+          style={[
+            styles.input,
+            {
+              backgroundColor: isDarkMode ? "#333" : "#ededed",
+              color: isDarkMode ? "#fff" : "#000",
+            },
+          ]}
+          placeholderTextColor={isDarkMode ? "#888" : "#666"}
+          placeholder="Email..."
+          onChangeText={setTxtEmail}
+          value={txtEmail}
+        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={[
+              styles.input,
+              {
+                backgroundColor: isDarkMode ? "#333" : "#ededed",
+                color: isDarkMode ? "#fff" : "#000",
+                paddingRight: 40,
+              },
+            ]}
+            placeholder="Senha"
+            placeholderTextColor={isDarkMode ? "#888" : "#666"}
+            onChangeText={setTxtPass}
+            secureTextEntry={!showPassword}
+          />
+          <Pressable style={styles.eyeIcon} onPress={togglePasswordVisibility}>
+            <FontAwesomeIcon
+              icon={showPassword ? faEyeSlash : faEye}
+              size={20}
+              color={isDarkMode ? "#fff" : "#000"}
+            />
+          </Pressable>
+        </View>
+
+        <TouchableOpacity
+          style={styles.avatarPicker}
+          onPress={handleAvatarChange}
+        >
+          {avatar ? (
+            <Image source={{ uri: avatar }} style={styles.avatar} />
+          ) : (
+            <Text
+              style={[
+                styles.avatarText,
+                { color: isDarkMode ? "#aaa" : "#9EA69E" },
+              ]}
+            >
+              Escolha um avatar para seu perfil
+            </Text>
+          )}
+        </TouchableOpacity>
+
+        {isLoading ? (
+          <ActivityIndicator
+            size="large"
+            color={isDarkMode ? "#fff" : "#000"}
+          />
         ) : (
-          <Text style={[styles.avatarText, { color: isDarkMode ? "#aaa" : "#9EA69E" }]}>Escolha um avatar para seu perfil</Text>
+          <>
+            <Button title="Cadastrar" onPress={postUser} />
+            <Button title="Voltar" onPress={() => navigation.goBack()} />
+          </>
         )}
-      </TouchableOpacity>
-      
-              {isLoading ? (
-                <ActivityIndicator size="large" color={isDarkMode ? "#fff" : "#000"}  />
-              ) : (
-                <>
-      <Button title="Cadastrar" onPress={postUser} />
-      <Button title="Voltar" onPress={() => navigation.goBack()} />
-        </>
-              )}
-    </View>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
@@ -179,7 +223,7 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   titulo: {
     fontFamily: "Poppins_900Black",
@@ -196,11 +240,20 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 10,
   },
-  logo:{
+  logo: {
     width: 100,
     height: 100,
     margin: 0,
     padding: 0,
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "80%",
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 10,
   },
   avatarPicker: {
     alignItems: "center",

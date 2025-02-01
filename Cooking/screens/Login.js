@@ -3,37 +3,34 @@ import {
   Text,
   StyleSheet,
   TextInput,
-  Modal,
-  Image,
   Pressable,
-  TouchableWithoutFeedback,
-  Keyboard,
-  ActivityIndicator,
+  Image,
   Switch,
   StatusBar,
-  Alert
+  Alert,
+  ActivityIndicator,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import Button from "../components/Button.js";
 import { useNavigation } from "@react-navigation/native";
-import { Poppins_900Black } from "@expo-google-fonts/poppins";
-import logo from "../assets/logo.png";
-import { useFonts } from "@expo-google-fonts/poppins";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useUserLoggedStore from "../stores/useUserLoggedStore.js";
 import CadastrarBtn from "../components/CadastrarBtn.js";
+import logo from "../assets/logo.png";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [txtEmail, setTxtEmail] = useState("");
   const [txtPass, setTxtPass] = useState("");
-  const [isDarkMode, setIsDarkMode] = useState(false); // Controle do modo noturno
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const navigation = useNavigation();
   const login = useUserLoggedStore((state) => state.login);
 
-  // Carregar o tema salvo ao iniciar o app
   useEffect(() => {
     const loadTheme = async () => {
       try {
@@ -45,25 +42,20 @@ const Login = () => {
         console.log("Erro ao carregar tema:", error);
       }
     };
-
     loadTheme();
   }, []);
 
-  // Alternância do tema e salvamento
   const toggleTheme = async (value) => {
     try {
       setIsDarkMode(value);
-  
-      if (value) {
-        // Salvar tema no AsyncStorage
-        await AsyncStorage.setItem("isDarkMode", JSON.stringify(value));
-      } else {
-        // Remover tema do AsyncStorage
-        await AsyncStorage.removeItem("isDarkMode");
-      }
+      await AsyncStorage.setItem("isDarkMode", JSON.stringify(value));
     } catch (error) {
-      console.log("Erro ao salvar/remover tema:", error);
+      console.log("Erro ao salvar tema:", error);
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleLogin = async () => {
@@ -79,37 +71,16 @@ const Login = () => {
           body: JSON.stringify({ email: txtEmail, pass: txtPass }),
         }
       );
-
-      if (response?.ok) {
+      if (response.ok) {
         const data = await response.json();
-        try {
-          await AsyncStorage.setItem(
-            "userLogged",
-            JSON.stringify({ ...data.user, token: data.token })
-          );
-
-          await AsyncStorage.setItem("username", data.user.name);
-          await AsyncStorage.setItem("userId", String(data.user.id));
-          login(data.user, data.token);
-
-          navigation.navigate("Main");
-        } catch (error) {
-          console.log(error);
-          Alert.alert("Erro ao gravar dados de login no dispositivo!");
-          navigation.navigate("Login");
-        }
+        await AsyncStorage.setItem(
+          "userLogged",
+          JSON.stringify({ ...data.user, token: data.token })
+        );
+        login(data.user, data.token);
+        navigation.navigate("Main");
       } else {
-        const data = await response.json();
-        if (response.status === 401) {
-          Alert.alert("Erro", "Usuário não encontrado")
-        }
-        if (response.status === 400) {
-          let errorMessage = "";
-          for (let field in data.fields) {
-            errorMessage += data.fields[field].messages[0] + " ";
-          }
-          Alert.alert(errorMessage.trim())
-        }
+        Alert.alert("Erro", "Usuário não encontrado");
       }
     } catch (error) {
       console.log(error);
@@ -118,60 +89,74 @@ const Login = () => {
     }
   };
 
-  let [fontsLoaded] = useFonts({
-    Poppins_900Black,
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
-  const themeStyles = isDarkMode ? styles.darkTheme : styles.lightTheme; // Estilos dinâmicos
-
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={[styles.container, themeStyles]}>
-      <StatusBar
-        barStyle={isDarkMode ? "light-content" : "dark-content"}
-        backgroundColor={isDarkMode ? "#000" : "#fff"}
-      />
-        {/* Alternância do tema */}
+      <View
+        style={[
+          styles.container,
+          isDarkMode ? styles.darkTheme : styles.lightTheme,
+        ]}
+      >
+        <StatusBar
+          barStyle={isDarkMode ? "light-content" : "dark-content"}
+          backgroundColor={isDarkMode ? "#000" : "#fff"}
+        />
         <View style={styles.switchContainer}>
-          <Text style={[styles.switchLabel, { color: isDarkMode ? "#fff" : "#000" }]}>
+          <Text
+            style={[
+              styles.switchLabel,
+              { color: isDarkMode ? "#fff" : "#000" },
+            ]}
+          >
             Modo Noturno
           </Text>
           <Switch value={isDarkMode} onValueChange={toggleTheme} />
         </View>
-
-        <Image style={styles.logo} source={logo}></Image>
+        <Image style={styles.logo} source={logo} />
         <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>
           Login
         </Text>
-
         <TextInput
           style={[
             styles.input,
-            { backgroundColor: isDarkMode ? "#333" : "#ededed", color: isDarkMode ? "#fff" : "#000" },
+            {
+              backgroundColor: isDarkMode ? "#333" : "#ededed",
+              color: isDarkMode ? "#fff" : "#000",
+            },
           ]}
           placeholder="E-mail"
           placeholderTextColor={isDarkMode ? "#888" : "#666"}
           onChangeText={setTxtEmail}
           value={txtEmail}
         />
-        <TextInput
-          style={[
-            styles.input,
-            { backgroundColor: isDarkMode ? "#333" : "#ededed", color: isDarkMode ? "#fff" : "#000" },
-          ]}
-          placeholder="Senha"
-          placeholderTextColor={isDarkMode ? "#888" : "#666"}
-          onChangeText={setTxtPass}
-          value={txtPass}
-          secureTextEntry={true}
-        />
-
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={[
+              styles.input,
+              {
+                backgroundColor: isDarkMode ? "#333" : "#ededed",
+                color: isDarkMode ? "#fff" : "#000",
+                paddingRight: 40,
+              },
+            ]}
+            placeholder="Senha"
+            placeholderTextColor={isDarkMode ? "#888" : "#666"}
+            onChangeText={setTxtPass}
+            secureTextEntry={!showPassword}
+          />
+          <Pressable style={styles.eyeIcon} onPress={togglePasswordVisibility}>
+            <FontAwesomeIcon
+              icon={showPassword ? faEyeSlash : faEye}
+              size={20}
+              color={isDarkMode ? "#fff" : "#000"}
+            />
+          </Pressable>
+        </View>
         {isLoading ? (
-          <ActivityIndicator size="large" color={isDarkMode ? "#fff" : "#000"} />
+          <ActivityIndicator
+            size="large"
+            color={isDarkMode ? "#fff" : "#000"}
+          />
         ) : (
           <>
             <Button title="Entrar" onPress={handleLogin} />
@@ -183,7 +168,9 @@ const Login = () => {
         )}
 
         <View style={styles.descricao}>
-          <Text style={[styles.texto, { color: isDarkMode ? "#aaa" : "#9EA69E" }]}>
+          <Text
+            style={[styles.texto, { color: isDarkMode ? "#aaa" : "#9EA69E" }]}
+          >
             Não possui um cadastro?
           </Text>
         </View>
@@ -207,27 +194,28 @@ const styles = StyleSheet.create({
     height: 40,
     width: "80%",
     marginBottom: 10,
-    marginTop: 5,
     padding: 10,
     borderRadius: 10,
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "80%",
+  },
+  eyeIcon: {
+    position: "absolute",
+    right: 10,
   },
   logo: {
     width: 100,
     height: 100,
     marginBottom: 30,
-    padding: 0,
   },
   titulo: {
-    fontFamily: "Poppins_900Black",
     fontSize: 30,
-    marginTop: 40,
-    marginLeft: 5,
-  },
-  descricao: {
-    paddingVertical: 10,
-  },
-  texto: {
-    fontSize: 18,
+    fontFamily: "Poppins",
+    fontWeight: "900",
+    marginBottom: 20,
   },
   switchContainer: {
     position: "absolute",
@@ -236,10 +224,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  switchLabel: {
-    marginRight: 10,
-    fontSize: 16,
+  switchLabel:{
     fontFamily: "Poppins",
+    fontWeight: 600,
+    marginRight: 10,
   },
   lightTheme: {
     backgroundColor: "#fff",
