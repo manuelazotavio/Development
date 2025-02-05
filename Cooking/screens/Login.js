@@ -12,8 +12,10 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { useFonts } from "@expo-google-fonts/poppins";
 import Button from "../components/Button.js";
 import { useNavigation } from "@react-navigation/native";
+import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
@@ -89,6 +91,16 @@ const Login = () => {
     }
   };
 
+  
+  let [fontsLoaded] = useFonts({
+    Poppins_900Black,
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View
@@ -154,6 +166,7 @@ const Login = () => {
         </View>
         {isLoading ? (
           <ActivityIndicator
+            style={styles.loading}
             size="large"
             color={isDarkMode ? "#fff" : "#000"}
           />
@@ -231,6 +244,9 @@ const styles = StyleSheet.create({
   },
   lightTheme: {
     backgroundColor: "#fff",
+  },
+  loading: {
+    margin: 10
   },
   darkTheme: {
     backgroundColor: "#000",

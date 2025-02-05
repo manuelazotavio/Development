@@ -19,6 +19,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import Button from "../components/Button";
 import CadastrarBtn from "../components/CadastrarBtn";
 
+
 const ValidToken = ({ route }) => {
   const navigation = useNavigation();
   const { token } = route.params;
@@ -85,7 +86,7 @@ const ValidToken = ({ route }) => {
           ) : (
             <>
               <CadastrarBtn
-                title="Redefinir Senha"
+                title="Mudar senha"
                 onPress={handleValidToken}
               />
               <Button
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
 
   titulo: {
     fontFamily: "Poppins_900Black",
-    fontSize: 30,
+    fontSize: 27,
     marginBottom: 20,
     textAlign: "center",
   },

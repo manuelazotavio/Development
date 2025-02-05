@@ -4,6 +4,7 @@ import {
   TextInput,
   StyleSheet,
   Image,
+  Alert,
   ActivityIndicator,
   TouchableWithoutFeedback,
   Keyboard,
@@ -55,7 +56,7 @@ const EsqueciSenha = () => {
 
       const data = await response.json();
       if (response.ok) {
-        alert("Verifique seu e-mail");
+        Alert.alert("Sucesso", "Verifique seu e-mail");
       } else {
         alert(data.error);
       }
