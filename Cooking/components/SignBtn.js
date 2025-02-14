@@ -1,6 +1,6 @@
 import { Pressable, View, Text, StyleSheet } from "react-native"
 
-const CadastrarBtn = ({title, onPress}) => {
+const SignBtn = ({title, onPress}) => {
   return (
     <Pressable  style={styles.tHButton} onPress={onPress}>
         <View style={styles.customButton}>
@@ -31,4 +31,4 @@ const styles = StyleSheet.create({
       }
 })
 
-export default CadastrarBtn
+export default SignBtn
