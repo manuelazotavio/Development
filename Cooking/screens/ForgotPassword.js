@@ -16,7 +16,7 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import logo from "../assets/logo.png";
 import Button from "../components/Button";
 
-const EsqueciSenha = () => {
+const ForgotPassword = () => {
   const [txtEmail, setTxtEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -41,16 +41,16 @@ const EsqueciSenha = () => {
   );
 
 
-  const handleEnviarEmail = async () => {
+  const handleSendEmail = async () => {
     try {
       setIsLoading(true);
-      const email = txtEmail; // Obtém o e-mail digitado pelo usuário
+      const email = txtEmail; 
       const response = await fetch(
-        "https://backcooking.onrender.com/auth/redefinir-senha",
+        "https://backcooking.onrender.com/auth/forgot-password",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, platform: "expo" }), // Envia como JSON
+          body: JSON.stringify({ email, platform: "expo" }), 
         }
       );
 
@@ -74,7 +74,7 @@ const EsqueciSenha = () => {
       <View style={[{ backgroundColor: "#fff", width: "100%", flex: 1 }, themeStyles]}>
         <View style={styles.container}>
           <Image style={styles.logo} source={logo}></Image>
-          <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>Esqueceu a senha?</Text>
+          <Text style={[styles.title, { color: isDarkMode ? "#fff" : "#000" }]}>Esqueceu a senha?</Text>
           <TextInput
             placeholderTextColor={isDarkMode ? "#888" : "#666"}
             style={[
@@ -88,7 +88,7 @@ const EsqueciSenha = () => {
             value={txtEmail}
             onChangeText={setTxtEmail}
           />
-          <Text style={[styles.texto, { color: isDarkMode ? "#fff" : "#000" }]}>
+          <Text style={[styles.text, { color: isDarkMode ? "#fff" : "#000" }]}>
             Um e-mail será enviado para sua caixa de entrada. Verifique os
             spams.
           </Text>
@@ -96,7 +96,7 @@ const EsqueciSenha = () => {
             <ActivityIndicator size="large" color={isDarkMode ? "#fff" : "#000"} />
           ) : (
             <>
-              <Button title="Enviar" onPress={handleEnviarEmail} />
+              <Button title="Enviar" onPress={handleSendEmail} />
               <Button
                 title="Voltar"
                 onPress={() => navigation.navigate("Login")}
@@ -174,15 +174,15 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins_900Black",
     fontSize: 20,
   },
-  titulo: {
+  title: {
     fontFamily: "Poppins_900Black",
     fontSize: 30,
     marginBottom: 20,
   },
-  descricao: {
+  description: {
     paddingVertical: 10,
   },
-  texto: {
+  text: {
     fontSize: 14,
     textAlign: "center",
     marginBottom: 10,
@@ -195,4 +195,4 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
 });
-export default EsqueciSenha;
+export default ForgotPassword;
