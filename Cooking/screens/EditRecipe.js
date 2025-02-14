@@ -12,8 +12,8 @@ import {
 import Button from "../components/Button.js";
 import { useState } from "react";
 import React from "react";
-import AdicionarBtn from "../components/AdicionarBtn.js";
-import * as ImagePicker from "expo-image-picker"; // Usando Expo Image Picker
+import AddBtn from "../components/AdicionarBtn.js";
+import * as ImagePicker from "expo-image-picker"; 
 import { useRoute, useNavigation, useFocusEffect } from "@react-navigation/native";
 import { faPencil } from "@fortawesome/free-solid-svg-icons/faPencil";
 import AsyncStorage from "@react-native-async-storage/async-storage";
