@@ -1,18 +1,18 @@
 import {View, StyleSheet, FlatList, Text, Platform} from 'react-native'
 import { useEffect, useState } from 'react'
-import CardReceita from './CardReceita.js'
+import CardRecipe from './CardRecipe.js'
 import authFetch from '../helpers/authFetch.js'
 
-const ListaReceitas = ({receitas}) => {
+const ListRecipes = ({recipes}) => {
   return (
     
-          <View style={styles.listReceita}>
+          <View style={styles.listRecipes}>
             <FlatList
-              data={receitas}
+              data={recipes}
               horizontal={true}
               keyExtractor={(item) => item.id}
               //showsHorizontalScrollIndicator={false}
-              renderItem={({item}) => <CardReceita receita={item} />} 
+              renderItem={({item}) => <CardRecipe recipe={item} />} 
             />
           </View>
       );
@@ -20,13 +20,13 @@ const ListaReceitas = ({receitas}) => {
 }
 
 const styles = StyleSheet.create({
-    listReceita:{
+    listRecipe:{
       //display: 'flex',
       maxWidth: '100%',
       //alignItems: 'center',
       //maxHeight: Platform.OS === 'web' ? '90vh' : null
     },
-    flatListReceita: {
+    flatListRecipe: {
       alignSelf: 'center'
     }
   }
