@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const CardReceita = ({ receita }) => {
+const CardRecipe = ({ recipe }) => {
   const navigation = useNavigation();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [loadingImage, setLoadingImage] = useState(true);
@@ -24,7 +24,7 @@ const CardReceita = ({ receita }) => {
   loadThemePreference()
 
   return (
-    <Pressable onPress={() => navigation.navigate('Receita', { receita })}>
+    <Pressable onPress={() => navigation.navigate('Recipe', { recipe })}>
       <View style={styles.card}>
         <View style={styles.imageContainer}>
           {loadingImage && (
@@ -37,23 +37,23 @@ const CardReceita = ({ receita }) => {
           <Image 
             onLoad={() => setLoadingImage(false)}
             onError={() => setLoadingImage(false)} 
-            source={{ uri: receita.imagem }} 
-            style={styles.fotoImg} 
+            source={{ uri: recipe.image }} 
+            style={styles.img} 
           />
         </View>
-        <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>{receita.name}</Text>
+        <Text style={[styles.title, { color: isDarkMode ? "#fff" : "#000" }]}>{recipe.name}</Text>
         <View style={styles.infoContainer}>
           <View style={styles.infoItem}>
             <FontAwesomeIcon icon={faClock} size={19} color='#FF421D' />
-            <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{receita.tempo}</Text>
+            <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{recipe.time}</Text>
           </View>
           <View style={styles.infoItem}>
             <FontAwesomeIcon icon={faStar} color="#F7D342" size={23} />
-            <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{receita.avaliacao}</Text>
+            <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{recipe.rating}</Text>
           </View>
           <View style={styles.infoItem}>
             <FontAwesomeIcon icon={faUser} color='#9EA69E' size={19} />
-            <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{receita.porcoes}</Text>
+            <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{recipe.portions}</Text>
           </View>
         </View>
       </View>
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     height: 200,
     position: 'relative', // Permite o uso de position: absolute nos elementos filhos
   },
-  fotoImg: {
+  img: {
     width: '100%',
     height: '100%',
     borderRadius: 20,
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     gap: 30,
     paddingVertical: 10,
   },
-  titulo: {
+  title: {
     fontFamily: 'Poppins_900Black',
     fontSize: 18,
     marginTop: 10,
@@ -111,4 +111,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CardReceita;
+export default CardRecipe;
