@@ -21,7 +21,7 @@ import Button from "../components/Button";
 import * as ImagePicker from "expo-image-picker"; // Usando Expo Image Picker
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
-const Cadastrar = () => {
+const SignIn = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [avatar, setAvatar] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
@@ -50,7 +50,7 @@ const Cadastrar = () => {
     }, [])
   );
 
-  // Função para selecionar imagem
+
   const handleAvatarChange = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -62,9 +62,9 @@ const Cadastrar = () => {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true, // Permite edição básica da imagem
-      aspect: [1, 1], // Define a proporção (ex.: quadrado)
-      quality: 1, // Qualidade máxima da imagem
+      allowsEditing: true, 
+      aspect: [1, 1], 
+      quality: 1,
     });
 
     if (!result.canceled) {
@@ -72,7 +72,7 @@ const Cadastrar = () => {
     }
   };
 
-  // Função para enviar os dados
+
   const postUser = async () => {
     setIsLoading(true);
     if (!txtName || !txtEmail || !txtPass || !avatar) {
@@ -103,7 +103,7 @@ const Cadastrar = () => {
       const data = await response.json();
       if (data?.success) {
         Alert.alert("Sucesso", "Usuário cadastrado!");
-        navigation.goBack(); // Volta para a tela anterior
+        navigation.goBack(); 
       } else {
         if (response.status === 400) {
           let errorMessage = "";
@@ -116,7 +116,7 @@ const Cadastrar = () => {
     } catch (error) {
       Alert.alert("Erro", error.message, error.name, error.data);
     } finally {
-      setIsLoading(false); // Parar o carregamento
+      setIsLoading(false); 
     }
   };
 
@@ -130,7 +130,7 @@ const Cadastrar = () => {
           backgroundColor={isDarkMode ? "#000" : "#fff"}
         />
         <Image style={styles.logo} source={logo}></Image>
-        <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>
+        <Text style={[styles.title, { color: isDarkMode ? "#fff" : "#000" }]}>
           Cadastrar
         </Text>
         <TextInput
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "white",
   },
-  titulo: {
+  title: {
     fontFamily: "Poppins_900Black",
     fontSize: 30,
     marginTop: 40,
@@ -280,4 +280,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Cadastrar;
+export default SignIn;
