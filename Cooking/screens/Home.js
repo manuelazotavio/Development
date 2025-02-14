@@ -1,10 +1,10 @@
 import { View, Text, StyleSheet, ScrollView, TextInput } from "react-native";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 import { useFonts } from "@expo-google-fonts/poppins";
-import ListaReceitas from "../components/ListaReceitas";
+import ListRecipes from "../components/ListRecipes";
 import React, { useState } from "react";
-import { useNavigation, useFocusEffect } from "@react-navigation/native"; // Mantendo o useFocusEffect
-import AdicionarBtn from "../components/AdicionarBtn";
+import { useNavigation, useFocusEffect } from "@react-navigation/native"; 
+import AddBtn from "../components/AddBtn";
 import authFetch from "../helpers/authFetch";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -13,11 +13,11 @@ const Home = () => {
     Poppins_900Black,
   });
 
-  const [receitas, setReceitas] = useState([]);
+  const [recipes, setRecipes] = useState([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [receitasFiltradas, setReceitasFiltradas] = useState([]); // Para receitas filtradas
-  const [searchText, setSearchText] = useState(""); // Texto de pesquisa
-  const [receitasFavoritas, setReceitasFavoritas] = useState([]);
+  const [filteredRecipes, setFilteredRecipes] = useState([]); 
+  const [searchText, setSearchText] = useState(""); 
+  const [favoriteRecipes, setFavoriteRecipes] = useState([]);
   const navigation = useNavigation();
 
   const loadThemePreference = async () => {
@@ -30,20 +30,19 @@ const Home = () => {
   };
 
   useFocusEffect(
-    React.useCallback(() => {
-      // Recarregar as receitas e as favoritas toda vez que a tela for focada
-      fetchReceitas();
-      fetchFavoritas(); 
+    React.useCallback(() => 
+      fetchRecipes();
+      fetchFavorites(); 
       loadThemePreference();
     }, [])
   );
 
  
 
-  const fetchReceitas = async () => {
+  const fetchRecipes = async () => {
     try {
       const result = await authFetch(
-        "https://backcooking.onrender.com/receita",
+        "https://backcooking.onrender.com/recipe",
         {
           headers: {
             "Content-Type": "application/json",
@@ -51,18 +50,18 @@ const Home = () => {
         }
       );
       const data = await result.json();
-      setReceitas(data.receita);
-      setReceitasFiltradas(data.receita); // Inicialmente exibe todas as receitas
+      setRecipes(data.recipe);
+      setFilteredRecipes(data.recipe); 
     } catch (error) {
       navigation.navigate("Login");
       console.error(error);
     }
   };
 
-  const fetchFavoritas = async () => {
+  const fetchFavorites = async () => {
     try {
       const result = await authFetch(
-        "https://backcooking.onrender.com/favorito",
+        "https://backcooking.onrender.com/favorite",
         {
           headers: {
             "Content-Type": "application/json",
@@ -71,47 +70,47 @@ const Home = () => {
       );
       const data = await result.json();
 
-      const favoritosIds = data.favorito.map((fav) => fav.receitaId);
+      const favoritesIds = data.favorite.map((fav) => fav.recipeId);
 
-      const receitasFavoritasPromises = favoritosIds.map((id) =>
-        authFetch(`https://backcooking.onrender.com/receita/${id}`).then(
+      const favoriteRecipesPromises = favoritesIds.map((id) =>
+        authFetch(`https://backcooking.onrender.com/recipe/${id}`).then(
           (res) => res.json()
         )
       );
 
-      const receitasData = await Promise.all(receitasFavoritasPromises);
-      setReceitasFavoritas(receitasData.map((data) => data.receita));
+      const recipeData = await Promise.all(favoriteRecipesPromises);
+      setFavoriteRecipes(recipeData.map((data) => data.recipe));
     } catch (error) {
       console.error(error);
     }
   };
 
-  // Função para atualizar a lista de receitas filtradas com base no texto de pesquisa
+
   const handleSearch = (text) => {
     setSearchText(text);
     if (text === "") {
-      setReceitasFiltradas(receitas); // Exibe todas se o campo de pesquisa estiver vazio
+      setFilteredRecipes(recipes); 
     } else {
-      const filtradas = receitas.filter((receita) =>
-        receita.name.toLowerCase().includes(text.toLowerCase())
+      const filtereds = recipes.filter((recipe) =>
+        recipe.name.toLowerCase().includes(text.toLowerCase())
       );
-      setReceitasFiltradas(filtradas);
+      setFilteredRecipes(filtereds);
     }
   };
 
   const themeStyles = isDarkMode ? styles.darkTheme : styles.lightTheme; 
 
-  if (receitas.length === 0) {
+  if (recipes.length === 0) {
     return (
       <View style={[styles.containerSplash, themeStyles]}>
         <View>
-          <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>Suas receitas</Text>
+          <Text style={[styles.title, { color: isDarkMode ? "#fff" : "#000" }]}>Suas receitas</Text>
           <Text style={[styles.splash, { color: isDarkMode ? "#fff" : "#000" }]}>
             Você ainda não criou nenhuma receita.
           </Text>
-          <AdicionarBtn
+          <AddBtn
             title={"Criar"}
-            onPress={() => navigation.navigate("CriarReceita")}
+            onPress={() => navigation.navigate("CreateRecipe")}
           />
         </View>
       </View>
@@ -121,9 +120,8 @@ const Home = () => {
   return (
     <View style={[styles.container, themeStyles]}>
       <ScrollView>
-        <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>Suas receitas</Text>
-
-        {/* Campo de Pesquisa */}
+        <Text style={[styles.title, { color: isDarkMode ? "#fff" : "#000" }]}>Suas receitas</Text>
+    
         <TextInput
         placeholderTextColor={isDarkMode ? "#888" : "#666"}
           style={[
@@ -139,11 +137,10 @@ const Home = () => {
         />
 
         <View>
-          {/* Lista de Receitas Filtradas */}
-          <ListaReceitas receitas={receitasFiltradas} />
+       <ListRecipes recipes={filteredRecipes} />
 
-          <Text style={[styles.tituloFav, { color: isDarkMode ? "#fff" : "#000" }]}>Receitas favoritas</Text>
-          <ListaReceitas receitas={receitasFavoritas} />
+          <Text style={[styles.titleFav, { color: isDarkMode ? "#fff" : "#000" }]}>Receitas favoritas</Text>
+          <ListRecipes recipes={favoritedRecipes} />
         </View>
       </ScrollView>
     </View>
@@ -177,14 +174,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
-  titulo: {
+  title: {
     fontFamily: "Poppins_900Black",
     fontSize: 30,
     marginTop: 40,
     marginLeft: 30,
     alignSelf: "flex-start",
   },
-  tituloFav: {
+  titleFav: {
     fontFamily: "Poppins_900Black",
     fontSize: 30,
     marginTop: 10,
