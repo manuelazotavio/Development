@@ -24,7 +24,7 @@ import useUserStore from "../stores/userStore.js";
 import useUserLoggedStore from "../stores/useUserLoggedStore.js";
 import authFetch from "../helpers/authFetch.js";
 
-const EditarUser = () => {
+const EditUser = () => {
   const route = useRoute();
   const navigation = useNavigation();
 
@@ -34,7 +34,7 @@ const EditarUser = () => {
 
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [loadingImage, setLoadingImage] = useState(true);
-  const { userLogado } = route.params;
+  const { userLogged } = route.params;
   const userId = userLogado.id;
   const [isLoading, setIsLoading] = useState(false);
   const [txtName, setTxtName] = useState(userLogado.name);
@@ -56,7 +56,7 @@ const EditarUser = () => {
     loadTheme();
   }, []);
 
-  // Alternância do tema e salvamento
+
   const toggleTheme = async (value) => {
     try {
       setIsDarkMode(value);
@@ -78,9 +78,9 @@ const EditarUser = () => {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true, // Permite edição básica da imagem
-      aspect: [1, 1], // Define a proporção (ex.: quadrado)
-      quality: 1, // Qualidade máxima da imagem
+      allowsEditing: true, 
+      aspect: [1, 1],
+      quality: 1, 
     });
 
     if (!result.canceled) {
@@ -127,7 +127,7 @@ const EditarUser = () => {
         await AsyncStorage.setItem("userLogged", JSON.stringify(data.user));
         updateUser(data.user);
         Alert.alert("Sucesso", "Usuário editado com sucesso!");
-        navigation.navigate("Conta");
+        navigation.navigate("Account");
       } else {
         Alert.alert(data.error);
       }
@@ -135,7 +135,7 @@ const EditarUser = () => {
       console.log("Error edit " + error.message);
       Alert.alert(error.message);
     } finally {
-      setIsLoading(false); // Parar o carregamento
+      setIsLoading(false); 
     }
   };
 
@@ -257,7 +257,7 @@ const EditarUser = () => {
           <>
             <Button
               title="Cancelar"
-              onPress={() => navigation.navigate("Conta")}
+              onPress={() => navigation.navigate("Account")}
             />
             <Button title="Salvar" onPress={editUser} />
           </>
@@ -283,13 +283,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   imageContainer: {
-    position: "relative", // Permite a sobreposição
+    position: "relative", 
     width: 100,
     height: 100,
     marginBottom: "10",
   },
   activityIndicator: {
-    position: "absolute", // Sobrepõe a imagem
+    position: "absolute", 
     top: 0,
     left: 0,
     right: 0,
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
 
-  titulo: {
+  title: {
     fontFamily: "Poppins_900Black",
     fontSize: 30,
     marginTop: 40,
@@ -349,4 +349,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditarUser;
+export default EditUser;
