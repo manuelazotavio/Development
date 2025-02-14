@@ -2,11 +2,9 @@ import useUserLoggedStore from "../stores/useUserLoggedStore.js"
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const authFetch = async (url, options) => {
-    console.log('Rodou authFetch...')
+
     const token = useUserLoggedStore.getState().token
     
-    console.log(token)
-
     allOptions = {
         ...options, 
         headers: {
