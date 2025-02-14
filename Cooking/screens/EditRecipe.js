@@ -21,44 +21,44 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import useUserLoggedStore from "../stores/useUserLoggedStore.js";
 import authFetch from "../helpers/authFetch.js";
 
-const EditarReceita = () => {
+const EditRecipe = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const userId = useUserLoggedStore((state) => state.id);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { receita } = route.params;
+  const { recipe } = route.params;
 
-  const addIngrediente = () => {
-    setIngredientes([...ingredientes, ""]);
+  const addIngredient = () => {
+    setIngredients([...ingredients, ""]);
   };
 
-  const addPasso = () => {
-    setPassos([...passos, ""]);
+  const addInstruction = () => {
+    setInstructions([...instructions, ""]);
   };
 
-  const handleIngredienteChange = (text, index) => {
-    const newIngredientes = [...ingredientes];
-    newIngredientes[index] = text;
-    setIngredientes(newIngredientes);
+  const handleIngredientChange = (text, index) => {
+    const newIngredients = [...ingredients];
+    newIngredients[index] = text;
+    setIngredients(newIngredients);
   };
 
-  const handlePassoChange = (text, index) => {
-    const newPassos = [...passos];
-    newPassos[index] = text;
-    setPassos(newPassos);
+  const handleInstructionChange = (text, index) => {
+    const newInstruction = [...instructions];
+    newInstruction[index] = text;
+    setInstructions(newInstruction);
   };
   const [loadingImage, setLoadingImage] = useState(true);
-  const [txtName, setTxtName] = useState(receita.name);
-  const [txtDescricao, setTxtDescricao] = useState(receita.descricao);
-  const [imagem, setImagem] = useState(receita.imagem);
-  const [txtPorcao, setTxtPorcao] = useState(receita.porcoes);
-  const [txtTempo, setTxtTempo] = useState(receita.tempo);
-  const [txtAvaliacao, setTxtAvaliacao] = useState(receita.avaliacao);
-  const [ingredientes, setIngredientes] = useState(
-    receita.ingredientes.split(";")
+  const [txtName, setTxtName] = useState(recipe.name);
+  const [txtDescription, setTxtDescription] = useState(recipe.descricao);
+  const [image, setImage] = useState(recipe.image);
+  const [txtPortion, setTxtPortion] = useState(recipe.portions);
+  const [txtTime, setTxtTime] = useState(recipe.time);
+  const [txtRating, setTxtRating] = useState(recipe.rating);
+  const [ingredients, setIngredients] = useState(
+    recipe.ingredients.split(";")
   );
-  const [passos, setPassos] = useState(receita.instrucao.split(";"));
+  const [instructions, setInstructions] = useState(recipe.instructions.split(";"));
 
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -79,7 +79,7 @@ const EditarReceita = () => {
     }, [])
   );
 
-  const handleImagemChange = async () => {
+  const handleImageChange = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       Alert.alert(
@@ -90,47 +90,45 @@ const EditarReceita = () => {
     }
 
     const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true, // Permite edição básica da imagem
-      aspect: [1, 1], // Define a proporção (ex.: quadrado)
-      quality: 1, // Qualidade máxima da imagem
+      allowsEditing: true, 
+      aspect: [1, 1], 
+      quality: 1, 
     });
 
     if (!result.canceled) {
-      setImagem(result.assets[0].uri);
+      setImage(result.assets[0].uri);
     }
   };
 
-  const editReceita = async () => {
+  const editRecipe = async () => {
     try {
       //const result = await authFetch('https://backend-api-express-1sem2024-rbd1.onrender.com/user/'+user.id, {
 
       const formData = new FormData();
 
-      setIsLoading(true);
-
-      // Adiciona os campos ao FormData
+      setIsLoading(true)
 
       formData.append("name", txtName);
-      formData.append("descricao", txtDescricao);
-      formData.append("porcoes", txtPorcao);
-      formData.append("tempo", txtTempo);
-      formData.append("avaliacao", parseInt(txtAvaliacao));
+      formData.append("description", txtDescription);
+      formData.append("portion", txtPortion);
+      formData.append("time", txtTime);
+      formData.append("rating", parseInt(txtRating));
       formData.append(
-        "ingredientes",
-        ingredientes.filter((ingrediente) => ingrediente !== "").join(";")
+        "ingredients",
+        ingredients.filter((ingredient) => ingredient !== "").join(";")
       );
       formData.append(
-        "instrucao",
-        passos.filter((passo) => passo !== "").join(";")
+        "instruction",
+        instructions.filter((instruction) => instruction !== "").join(";")
       );
 
-      formData.append("imagem", {
-        uri: imagem,
-        name: `imagem_${Date.now()}_${userId}.jpg`,
+      formData.append("image", {
+        uri: image,
+        name: `image_${Date.now()}_${userId}.jpg`,
         type: "image/jpeg",
       });
       const result = await authFetch(
-        "https://backcooking.onrender.com/receita/" + receita.id,
+        "https://backcooking.onrender.com/receita/" + recipe.id,
         {
           method: "PUT",
           body: formData,
@@ -149,7 +147,7 @@ const EditarReceita = () => {
       console.log("Error edit " + error.message);
       Alert.alert(error.message);
     } finally {
-      setIsLoading(false); // Parar o carregamento
+      setIsLoading(false); 
     }
   };
 
@@ -183,13 +181,13 @@ const EditarReceita = () => {
               },
             ]}
             placeholder="Compartilhe um pouco mais sobre o seu prato. O que você gosta nele?"
-            onChangeText={setTxtDescricao}
-            value={txtDescricao}
+            onChangeText={setTxtDescription}
+            value={txtDescription}
             multiline
           />
 
-          <Text style={[styles.subtitulo, { color: isDarkMode ? "#fff" : "#000" }]}>Ingredientes</Text>
-          {ingredientes.map((ingrediente, index) => (
+          <Text style={[styles.subtitle, { color: isDarkMode ? "#fff" : "#000" }]}>Ingredientes</Text>
+          {ingredients.map((ingredient, index) => (
             <TextInput
               key={index}
               placeholderTextColor={isDarkMode ? "#888" : "#666"}
@@ -201,23 +199,23 @@ const EditarReceita = () => {
                 },
               ]}
               placeholder="250g de açúcar"
-              onChangeText={(text) => handleIngredienteChange(text, index)}
-              value={ingrediente}
+              onChangeText={(text) => handleIngredientChange(text, index)}
+              value={ingredient}
             />
           ))}
-          <AdicionarBtn title="Ingrediente" onPress={addIngrediente} />
+          <AddBtn title="Ingrediente" onPress={addIngredient} />
 
-          <Text style={[styles.subtitulo, { color: isDarkMode ? "#fff" : "#000" }]}>Passo a passo</Text>
-          {passos.map((passo, index) => (
-            <View key={index} style={styles.passoContainer}>
+          <Text style={[styles.subtitle, { color: isDarkMode ? "#fff" : "#000" }]}>Passo a passo</Text>
+          {instructions.map((passo, index) => (
+            <View key={index} style={styles.instructionContainer}>
               <Text style={[
-                  styles.passoNumero,
+                  styles.instructionNumber,
                   { color: isDarkMode ? "#fff" : "#000" },
                 ]}>{index + 1}.</Text>
               <TextInput
               placeholderTextColor={isDarkMode ? "#888" : "#666"}
               style={[
-                styles.inputPasso,
+                styles.inputInstruction,
                 {
                   backgroundColor: isDarkMode ? "#333" : "#ededed",
                   color: isDarkMode ? "#fff" : "#000",
@@ -225,12 +223,12 @@ const EditarReceita = () => {
               ]}
                 placeholder="Misture a massa até se 
 tornar homogênea."
-                onChangeText={(text) => handlePassoChange(text, index)}
-                value={passo}
+                onChangeText={(text) => handleInstructionChange(text, index)}
+                value={instruction}
               />
             </View>
           ))}
-          <AdicionarBtn title="Passo" onPress={addPasso} />
+          <AddBtn title="Passo" onPress={addInstruction} />
 
           <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>Porções</Text>
           <TextInput
@@ -243,8 +241,8 @@ tornar homogênea."
               },
             ]}
             placeholder="2 pessoas"
-            onChangeText={setTxtPorcao}
-            value={txtPorcao}
+            onChangeText={setTxtPortion}
+            value={txtPortion}
           />
           <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>Tempo de preparo</Text>
           <TextInput
@@ -257,8 +255,8 @@ tornar homogênea."
               },
             ]}
             placeholder="1h e 30min"
-            onChangeText={setTxtTempo}
-            value={txtTempo}
+            onChangeText={setTxtTime}
+            value={txtTime}
           />
 
           <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>Avaliação</Text>
@@ -272,8 +270,8 @@ tornar homogênea."
               },
             ]}
             placeholder="4.5"
-            onChangeText={setTxtAvaliacao}
-            value={String(txtAvaliacao)}
+            onChangeText={setTxtRating}
+            value={String(txtRating)}
           />
           <TouchableOpacity
             style={styles.avatarPicker}
@@ -283,13 +281,13 @@ tornar homogênea."
               <ActivityIndicator
                 size="small"
                 color={isDarkMode ? "#fff" : "#000"}
-                style={styles.fotoImgLoading}
+                style={styles.imgLoading}
               />
             )}
             <Image
               onLoad={() => setLoadingImage(false)}
               onError={() => setLoadingImage(false)}
-              source={{ uri: imagem }}
+              source={{ uri: image }}
               style={styles.avatar}
             />
             <FontAwesomeIcon style={[styles.pencil, { backgroundColor: isDarkMode ? "#000" : "#fff", color: isDarkMode ? "#fff" : "#000" }]} icon={faPencil} size={22} />
@@ -299,7 +297,7 @@ tornar homogênea."
           ) : (
             <>
               <Button title="Cancelar" onPress={() => navigation.goBack()} />
-              <Button title="Salvar" onPress={editReceita} />
+              <Button title="Salvar" onPress={editRecipe} />
             </>
           )}
         </View>
@@ -315,7 +313,7 @@ const styles = StyleSheet.create({
     paddingTop: "40",
     paddingBottom: "30",
   },
-  imagemPicker: {
+  imagePicker: {
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -357,7 +355,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
   },
-  fotoImgLoading: {
+  imgLoading: {
     position: "absolute",
     top: 70,
     right: 143,
@@ -375,7 +373,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flexDirection: "row",
   },
-  inputPasso: {
+  inputInstruction: {
     height: 60,
     width: "auto",
     backgroundColor: "#ededed",
@@ -385,18 +383,18 @@ const styles = StyleSheet.create({
     marginTop: 8,
     flex: 1,
   },
-  titulo: {
+  title: {
     fontFamily: "Poppins_900Black",
     fontSize: 30,
     marginTop: 40,
     marginLeft: 20,
     alignSelf: "flex-start",
   },
-  subtitulo: {
+  subtitle: {
     fontFamily: "Poppins_900Black",
     fontSize: 20,
   },
-  passoContainer: {
+  instructionContainer: {
     flexDirection: "row",
     alignItems: "center",
   },
@@ -406,7 +404,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 20,
   },
-  passoNumero: {
+  instructionNumber: {
     width: 30,
     marginRight: 10,
     fontWeight: "bold",
@@ -420,4 +418,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EditarReceita;
+export default EditRecipe;
