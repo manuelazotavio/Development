@@ -7,16 +7,16 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import useUserLoggedStore from "../stores/useUserLoggedStore";
 import Button from "../components/Button";
 
-const Conta = () => {
+const Account = () => {
   const navigation = useNavigation();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [loadingImage, setLoadingImage] = useState(true);
-  const [userLogado, setUserLogado] = useState(null);
+  const [userLogged, setUserLogged] = useState(null);
 
   const fetchUser = async () => {
     const userString = await AsyncStorage.getItem("userLogged");
     const user = JSON.parse(userString);
-    setUserLogado(user);
+    setUserLogged(user);
   };
 
   const loadThemePreference = async () => {
@@ -66,9 +66,9 @@ const Conta = () => {
         barStyle={isDarkMode ? "light-content" : "dark-content"}
         backgroundColor={isDarkMode ? "#000" : "#fff"}
       />
-      <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>Sua conta</Text>
+      <Text style={[styles.title, { color: isDarkMode ? "#fff" : "#000" }]}>Sua conta</Text>
 
-      {/* Container da imagem e do ActivityIndicator */}
+   
       <View style={styles.imageContainer}>
         {loadingImage && (
           <ActivityIndicator
@@ -79,18 +79,18 @@ const Conta = () => {
         )}
         <Image
           style={styles.profileImage}
-          source={{ uri: userLogado?.avatar }}
-          onLoadEnd={() => setLoadingImage(false)} // Finaliza o carregamento
+          source={{ uri: userLogged?.avatar }}
+          onLoadEnd={() => setLoadingImage(false)} 
         />
       </View>
 
-      <Text style={[styles.name, { color: isDarkMode ? "#fff" : "#000" }]}>Nome de usuário: {userLogado?.name}</Text>
-      <Text style={[styles.name, { color: isDarkMode ? "#fff" : "#000" }]}>E-mail: {userLogado?.email}</Text>
+      <Text style={[styles.name, { color: isDarkMode ? "#fff" : "#000" }]}>Nome de usuário: {userLogged?.name}</Text>
+      <Text style={[styles.name, { color: isDarkMode ? "#fff" : "#000" }]}>E-mail: {userLogged?.email}</Text>
 
       <Button
         style={styles.button}
         title="Editar"
-        onPress={() => navigation.navigate("EditarUser", { userLogado })}
+        onPress={() => navigation.navigate("EditUser", { userLogged })}
       ></Button>
 
       <Button
@@ -112,13 +112,13 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   imageContainer: {
-    position: "relative", // Permite a sobreposição
+    position: "relative",
     width: 100,
     height: 100,
     marginBottom: '10'
   },
   activityIndicator: {
-    position: "absolute", // Sobrepõe a imagem
+    position: "absolute", 
     top: 0,
     left: 0,
     right: 0,
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   name: {
     fontWeight: "400",
   },
-  titulo: {
+  title: {
     fontFamily: "Poppins_900Black",
     fontSize: 25,
   },
@@ -146,4 +146,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Conta;
+export default Account;
