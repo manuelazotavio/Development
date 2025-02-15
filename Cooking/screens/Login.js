@@ -21,7 +21,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useUserLoggedStore from "../stores/useUserLoggedStore.js";
-import CadastrarBtn from "../components/CadastrarBtn.js";
+import SignBtn from "../components/SignBtn.js";
 import logo from "../assets/logo.png";
 
 const Login = () => {
@@ -125,7 +125,7 @@ const Login = () => {
           <Switch value={isDarkMode} onValueChange={toggleTheme} />
         </View>
         <Image style={styles.logo} source={logo} />
-        <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>
+        <Text style={[styles.title, { color: isDarkMode ? "#fff" : "#000" }]}>
           Login
         </Text>
         <TextInput
@@ -175,21 +175,21 @@ const Login = () => {
             <Button title="Entrar" onPress={handleLogin} />
             <CadastrarBtn
               title="Esqueceu a senha?"
-              onPress={() => navigation.navigate("EsqueciSenha")}
+              onPress={() => navigation.navigate("ForgotPassword")}
             />
           </>
         )}
 
-        <View style={styles.descricao}>
+        <View style={styles.description}>
           <Text
             style={[styles.texto, { color: isDarkMode ? "#aaa" : "#9EA69E" }]}
           >
             Não possui um cadastro?
           </Text>
         </View>
-        <CadastrarBtn
+        <SignBtn
           title="Cadastre-se"
-          onPress={() => navigation.navigate("Cadastrar")}
+          onPress={() => navigation.navigate("SignIn")}
         />
       </View>
     </TouchableWithoutFeedback>
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     height: 100,
     marginBottom: 30,
   },
-  titulo: {
+  title: {
     fontSize: 30,
     fontFamily: "Poppins",
     fontWeight: "900",
