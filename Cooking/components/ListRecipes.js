@@ -1,7 +1,7 @@
 import {View, StyleSheet, FlatList, Text, Platform} from 'react-native'
 import { useEffect, useState } from 'react'
 import CardRecipe from './CardRecipe.js'
-import authFetch from '../helpers/authFetch.js'
+
 
 const ListRecipes = ({recipes}) => {
   return (
@@ -21,10 +21,9 @@ const ListRecipes = ({recipes}) => {
 
 const styles = StyleSheet.create({
     listRecipe:{
-      //display: 'flex',
+
       maxWidth: '100%',
-      //alignItems: 'center',
-      //maxHeight: Platform.OS === 'web' ? '90vh' : null
+    
     },
     flatListRecipe: {
       alignSelf: 'center'
@@ -32,4 +31,4 @@ const styles = StyleSheet.create({
   }
 )
 
-export default ListaReceitas
+export default ListRecipes

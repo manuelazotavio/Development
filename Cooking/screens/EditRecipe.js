@@ -128,7 +128,7 @@ const EditRecipe = () => {
         type: "image/jpeg",
       });
       const result = await authFetch(
-        "https://backcooking.onrender.com/receita/" + recipe.id,
+        "https://backcooking.onrender.com/recipe/" + recipe.id,
         {
           method: "PUT",
           body: formData,
