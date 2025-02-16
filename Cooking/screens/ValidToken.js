@@ -17,7 +17,7 @@ import logo from "../assets/logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import Button from "../components/Button";
-import CadastrarBtn from "../components/CadastrarBtn";
+import SignBtn from '../components/SignBtn'
 
 
 const ValidToken = ({ route }) => {
@@ -61,7 +61,7 @@ const ValidToken = ({ route }) => {
       <View style={{ backgroundColor: "#fff", width: "100%", flex: 1 }}>
         <View style={styles.container}>
           <Image style={styles.logo} source={logo}></Image>
-          <Text style={styles.titulo}>Escolha sua nova senha</Text>
+          <Text style={styles.title}>Escolha sua nova senha</Text>
           <View style={styles.passwordContainer}>
             <TextInput
               style={[styles.input]}
@@ -91,7 +91,7 @@ const ValidToken = ({ route }) => {
               />
               <Button
                 title="Voltar"
-                onPress={() => navigation.navigate("EsqueciSenha")}
+                onPress={() => navigation.navigate("ForgotPassword")}
               />
             </>
           )}
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     padding: 0,
   },
 
-  titulo: {
+  title: {
     fontFamily: "Poppins_900Black",
     fontSize: 27,
     marginBottom: 20,
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     right: 10,
   },
 
-  texto: {
+  text: {
     fontSize: 14,
     textAlign: "center",
     marginBottom: 10,

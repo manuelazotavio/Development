@@ -9,7 +9,6 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import FastImage from "react-native-fast-image";
 import { Poppins_900Black } from "@expo-google-fonts/poppins";
 
 import useUserLoggedStore from "../stores/useUserLoggedStore";
@@ -28,7 +27,7 @@ import { useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Receita = () => {
+const Recipe = () => {
   const [loadingImage, setLoadingImage] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -40,7 +39,7 @@ const Receita = () => {
 
   const route = useRoute();
   const navigation = useNavigation();
-  const { receita } = route.params;
+  const { recipe } = route.params;
 
   const token = useUserLoggedStore((state) => state.token);
   const userId = useUserLoggedStore((state) => state.id);
@@ -54,10 +53,10 @@ const Receita = () => {
     }
   };
 
-  const getFavoritoById = async (userId, receitaId) => {
+  const getFavoriteById = async (userId, recipeId) => {
     try {
       const response = await authFetch(
-        `https://backcooking.onrender.com/favorito/${userId}/${receitaId}`,
+        `https://backcooking.onrender.com/favorite/${userId}/${recipeId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -77,7 +76,7 @@ const Receita = () => {
   };
 
   useLayoutEffect(() => {
-    getFavoritoById(userId, receita.id);
+    getFavoriteById(userId, recipe.id);
     loadThemePreference()
   }, []);
 
@@ -85,11 +84,11 @@ const Receita = () => {
     return null;
   }
 
-  //removerReceita
-  const removeReceita = async () => {
+
+  const removeRecipe = async () => {
     try {
       const result = await authFetch(
-        "https://backcooking.onrender.com/receita/" + receita.id,
+        "https://backcooking.onrender.com/recipe/" + recipe.id,
         {
           method: "DELETE",
           headers: {
@@ -113,12 +112,12 @@ const Receita = () => {
     }
   };
 
-  const favReceita = async () => {
+  const favRecipe = async () => {
     console.log("entrei favreceita");
     try {
       console.log(token);
       const result = await authFetch(
-        "https://backcooking.onrender.com/favorito/",
+        "https://backcooking.onrender.com/favorite/",
         {
           method: "POST",
           headers: {
@@ -126,7 +125,7 @@ const Receita = () => {
           },
           body: JSON.stringify({
             userId: Number(userId),
-            receitaId: receita.id,
+            recipeId: recipe.id,
           }),
         }
       );
@@ -146,14 +145,14 @@ const Receita = () => {
     }
   };
 
-  const favReceitaRemove = async () => {
+  const favRecipeRemove = async () => {
     console.log("entrei favreceitremove");
     try {
-      const receitaId = receita.id;
+      const recipeId = recipe.id;
       console.log(userId);
-      console.log(receitaId);
+      console.log(recipeId);
       const result = await authFetch(
-        "https://backcooking.onrender.com/favorito/",
+        "https://backcooking.onrender.com/favorite/",
         {
           method: "DELETE",
           headers: {
@@ -161,7 +160,7 @@ const Receita = () => {
           },
           body: JSON.stringify({
             userId: Number(userId),
-            receitaId: Number(receitaId),
+            recipeId: Number(recipeId),
           }),
         }
       );
@@ -191,14 +190,14 @@ const Receita = () => {
           <ActivityIndicator
             size="large"
             color={isDarkMode ? "#fff" : "#000"}
-            style={styles.fotoImgLoading}
+            style={styles.imgLoading}
           />
         )}
         <Image
-          source={{ uri: receita?.imagem }}
+          source={{ uri: recipe?.image }}
           onLoad={() => setLoadingImage(false)}
           onError={() => setLoadingImage(false)}
-          style={styles.fotoImg}
+          style={styles.img}
         />
 
         <View style={[styles.iconContainer, { backgroundColor: isDarkMode ? "#fff" : "#9EA69E" }]}>
@@ -207,50 +206,50 @@ const Receita = () => {
           </Pressable>
 
           {isFavorited ? (
-            <Pressable onPress={favReceitaRemove}>
+            <Pressable onPress={favRecipeRemove}>
               <FontAwesomeIcon icon={faHeart} size={19} color="#d31717" />
             </Pressable>
           ) : (
-            <Pressable onPress={favReceita}>
+            <Pressable onPress={favRecipe}>
               <FontAwesomeIcon icon={faHeart} size={19} color={isDarkMode ? "#999" : "#fff"} />
             </Pressable>
           )}
 
           <Pressable
-            onPress={() => navigation.navigate("EditarReceita", { receita })}
+            onPress={() => navigation.navigate("EditRecipe", { recipe })}
           >
             <FontAwesomeIcon icon={faPencil} size={19} />
           </Pressable>
         </View>
         <View style={styles.card}>
-          <Text style={[styles.titulo, { color: isDarkMode ? "#fff" : "#000" }]}>{receita.name}</Text>
+          <Text style={[styles.title, { color: isDarkMode ? "#fff" : "#000" }]}>{recipe.name}</Text>
           <View style={styles.infoContainer}>
             <View style={styles.infoItem}>
               <FontAwesomeIcon icon={faClock} size={19} color="#FF421D" />
-              <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{receita.tempo}</Text>
+              <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{recipe.time}</Text>
             </View>
             <View style={styles.infoItem}>
               <FontAwesomeIcon icon={faStar} color="#F7D342" size={22} />
-              <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{receita.avaliacao}</Text>
+              <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{recipe.rating}</Text>
             </View>
             <View style={styles.infoItem}>
               <FontAwesomeIcon icon={faUser} color="#9EA69E" size={19} />
-              <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{receita.porcoes}</Text>
+              <Text style={{ color: isDarkMode ? "#fff" : "#000" }}>{recipe.portions}</Text>
             </View>
           </View>
-          <View style={styles.descricao}>
-            <Text style={[styles.texto, { color: isDarkMode ? "#fff" : "#000" }]}>{receita.descricao}</Text>
+          <View style={styles.description}>
+            <Text style={[styles.text, { color: isDarkMode ? "#fff" : "#000" }]}>{recipe.description}</Text>
           </View>
-          <Text style={[styles.subtitulo, { color: isDarkMode ? "#fff" : "#000" }]}>ingredientes</Text>
-          <View style={styles.ingredientes}>
-            {receita.ingredientes.split(";").map((ingrediente, index) => (
-              <Text style={{ color: isDarkMode ? "#fff" : "#000" }} key={index}>{ingrediente} </Text>
+          <Text style={[styles.subtitle, { color: isDarkMode ? "#fff" : "#000" }]}>ingredientes</Text>
+          <View style={styles.ingredients}>
+            {recipe.ingredients.split(";").map((ingredient, index) => (
+              <Text style={{ color: isDarkMode ? "#fff" : "#000" }} key={index}>{ingredient} </Text>
             ))}
           </View>
-          <Text style={[styles.subtitulo, { color: isDarkMode ? "#fff" : "#000" }]}>passo a passo</Text>
-          <View style={styles.ingredientes}>
-            {receita.instrucao.split(";").map((step, index) => (
-              <Text style={[styles.textoIng, { color: isDarkMode ? "#fff" : "#000" }]} key={index}>
+          <Text style={[styles.subtitle, { color: isDarkMode ? "#fff" : "#000" }]}>passo a passo</Text>
+          <View style={styles.ingredients}>
+            {recipe.instruction.split(";").map((step, index) => (
+              <Text style={[styles.textIng, { color: isDarkMode ? "#fff" : "#000" }]} key={index}>
                 <Text style={{ fontWeight: "bold" }}>{`${index + 1}. `}</Text>
                 {step}
               </Text>
@@ -273,7 +272,7 @@ const Receita = () => {
                 <Text style={styles.modalText}>Tem certeza?</Text>
                 <Pressable
                   style={[styles.button, styles.buttonRemove]}
-                  onPress={removeReceita}
+                  onPress={removeRecipe}
                 >
                   <Text style={styles.textStyle}>Sim, remover receita</Text>
                 </Pressable>
@@ -306,12 +305,12 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     width: 300,
   },
-  fotoImg: {
+  img: {
     width: 500,
     height: 400,
     borderRadius: 20,
   },
-  fotoImgLoading: {
+  imgLoading: {
     marginTop: 400
   },
   infoContainer: {
@@ -321,7 +320,7 @@ const styles = StyleSheet.create({
     gap: 30,
     paddingVertical: 10,
   },
-  titulo: {
+  title: {
     fontFamily: "Poppins_900Black",
     fontSize: 26,
     marginTop: 20,
@@ -386,12 +385,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   infoItem: {
-    flexDirection: "column", // Altere para 'column'
+    flexDirection: "column", 
     alignItems: "center",
-    justifyContent: "center", // Adicione esta linha
+    justifyContent: "center", 
     marginRight: 10,
   },
-  descricao: {
+  description: {
     paddingVertical: 10,
   },
   iconContainer: {
@@ -405,14 +404,14 @@ const styles = StyleSheet.create({
     marginRight: 40,
     width: 100,
   },
-  texto: {
+  text: {
     fontSize: 18,
     
   },
-  textoIng: {
+  textIng: {
     fontSize: 16,
   },
-  subtitulo: {
+  subtitle: {
     fontSize: 18,
     fontFamily: "Poppins_900Black",
     alignSelf: "flex-start",
@@ -424,7 +423,7 @@ const styles = StyleSheet.create({
   darkTheme: {
     backgroundColor: "#000",
   },
-  ingredientes: {},
+  ingredients: {},
 });
 
-export default Receita;
+export default Recipe;

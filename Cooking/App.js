@@ -6,47 +6,45 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
 
-import CriarReceita from "./screens/CriarReceita";
-import Receita from "./screens/Receita";
-import Cadastrar from "./screens/Cadastrar";
-import EditarReceita from "./screens/EditarReceita";
+import CreateRecipe from "./screens/CreateRecipe";
+import Recipe from "./screens/Recipe";
+import SignBtn from "./screens/SignIn";
+import EditRecipe from "./screens/EditRecipe";
 import Splash from "./screens/Splash";
-import Conta from "./screens/Conta";
-import EditarUser from "./screens/EditarUser";
+import Account from "./screens/Account";
+import EditUser from "./screens/EditUser";
 import Home from "./screens/Home";
 import Login from "./screens/Login";
-import EsqueciSenha from "./screens/EsqueciSenha";
+import ForgotPassword from "./screens/ForgotPassword";
 import ValidToken from "./screens/ValidarToken";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Configuração de deep linking
 const linking = {
   prefixes: ["exp://192.168.0.125:8081"],
   config: {
     screens: {
       Splash: "splash",
       Login: "login",
-      Cadastrar: "register",
-      EsqueciSenha: "reset-password",
+      SignIn: "register",
+      ForgotPassword: "reset-password",
       ValidToken: "valid-token",
       Main: {
         screens: {
           Home: "home",
-          Conta: "account",
-          CriarReceita: "create-recipe",
-          Receita: "recipe",
+          Account: "account",
+          CreateRecipe: "create-recipe",
+          Recipe: "recipe",
         },
       },
-      EditarUser: "edit-user",
-      EditarReceita: "edit-recipe",
+      EditUser: "edit-user",
+      EditRecipe: "edit-recipe",
     },
   },
 };
 
-// Navigator principal para rotas tabuladas
-const ReceitaNavigator = () => (
+const RecipeNavigator = () => (
   <Stack.Navigator>
     <Stack.Screen
       name="Home"
@@ -54,8 +52,8 @@ const ReceitaNavigator = () => (
       options={{ headerShown: false }}
     />
     <Stack.Screen
-      name="Receita"
-      component={Receita}
+      name="Recipe"
+      component={Recipe}
       options={{ headerShown: false }}
     />
   </Stack.Navigator>
@@ -75,13 +73,10 @@ const MainNavigator = () => {
         console.error("Erro ao recuperar tema:", error);
       }
     };
-  
+
     getThemePreference();
   }, []);
-  
 
-
-  
   const tabBarStyle = {
     backgroundColor: isDarkMode ? "#000" : "#fff",
     borderTopColor: isDarkMode ? "#333" : "#ccc",
@@ -97,15 +92,15 @@ const MainNavigator = () => {
       }}
     >
       <Tab.Screen
-        name="Receitas"
-        component={ReceitaNavigator}
+        name="Recipes"
+        component={RecipeNavigator}
         options={{
           tabBarIcon: () => <Feather name="home" color={iconColor} size={25} />,
         }}
       />
       <Tab.Screen
-        name="CriarReceita"
-        component={CriarReceita}
+        name="CreateRecipe"
+        component={CreateRecipe}
         options={{
           tabBarIcon: () => (
             <Feather name="plus-square" size={24} color={iconColor} />
@@ -113,8 +108,8 @@ const MainNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Conta"
-        component={Conta}
+        name="Account"
+        component={Account}
         options={{
           tabBarIcon: () => <Feather name="user" size={24} color={iconColor} />,
         }}
@@ -145,22 +140,16 @@ const DeepLinkHandler = () => {
     });
 
     return () => {
-      subscription.remove(); // Remove a assinatura ao desmontar o componente
+      subscription.remove();
     };
   }, [navigation]);
 
   return null;
 };
 
-
-// App principal
 const App = () => {
- 
-
   return (
-
     <NavigationContainer linking={linking}>
-      
       <DeepLinkHandler />
       <Stack.Navigator>
         <Stack.Screen
@@ -174,8 +163,8 @@ const App = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Cadastrar"
-          component={Cadastrar}
+          name="SignIn"
+          component={SignIn}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -184,8 +173,8 @@ const App = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="EsqueciSenha"
-          component={EsqueciSenha}
+          name="ForgotPassword"
+          component={ForgotPassword}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -194,13 +183,13 @@ const App = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="EditarUser"
-          component={EditarUser}
+          name="EditUser"
+          component={EditUser}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="EditarReceita"
-          component={EditarReceita}
+          name="EditRecipe"
+          component={EditRecipe}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

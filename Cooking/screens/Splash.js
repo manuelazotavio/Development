@@ -40,7 +40,7 @@ const Splash = () => {
   return (
     <View style={styles.container}>
       <Image
-      source={require('../assets/carregando.gif')} 
+      source={require('../assets/loading.gif')} 
 
     />
     </View>
