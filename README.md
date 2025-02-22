@@ -2,6 +2,10 @@
 
 A solução proposta, Guarda-Receita, é uma aplicação para usuários que desejam armazenar e gerenciar suas receitas culinárias. A aplicação conta com três interfaces principais: um site público (landing page), um site para os usuários e uma versão mobile. O site público tem como objetivo apresentar a plataforma, permitindo que novos usuários se cadastrem e façam login. Já o site e a versão mobile são utilizados para registrar novas receitas, consultar receitas já cadastradas, além de editar e excluir registros existentes.
 
+Repositório versão web: https://github.com/manuelazotavio/cookingweb
+
+Repositório backend: https://github.com/manuelazotavio/backCooking
+
 # Como usar o Guarda-Receita?
 
 ## ⚙ Configuração do Ambiente:
